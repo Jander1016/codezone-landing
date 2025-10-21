@@ -1,12 +1,23 @@
 ---
+import GradientOverlay from '../components/GradientOverlay.astro';
+import GradientOverlay2 from '../components/GradientOverlay2.astro';
+import Separator from '../components/Separator.astro';
 import Layout from '../layouts/Layout.astro';
 import Footer from '../sections/Footer.astro';
 import Header from '../sections/Header.astro';
 import Hero from '../sections/Hero.astro';
+import Services from '../sections/Services.astro';
 ---
 
 <Layout>
-	<Header />
-	<Hero />
+	<GradientOverlay>
+		<Header />
+		<Hero />
+		<Separator />
+	</GradientOverlay>
+	<GradientOverlay2>
+		<Services />
+	</GradientOverlay2>
+	<Separator />
 	<Footer />
 </Layout>
