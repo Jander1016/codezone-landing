@@ -15,55 +15,58 @@ const sizes = {
 };
 ---
 
-<a
-  href={href}
-  class:list={[
-    "btn",
-    `btn-${variant}`,
-    sizes[size],
-  ]}
->
+<a href={href} class:list={["btn", `btn-${variant}`, sizes[size]]}>
   <slot />
   {icon && <img src={icon} alt="icon" class="ml-2" />}
 </a>
 
 <style>
- .btn {
-            width: auto;
-            display: inline-flex;
-            padding: 12px 16px;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            font-weight: 500;
-            color: #fcfcfc;
-            border-radius: 100px;
-        }
-    
-        .btn-outline {
-            background: transparent;
-            background-image: linear-gradient(180deg, rgba(18, 29, 70, 1) 0%, rgba(18, 29, 70, 1) 50%), linear-gradient(90deg, #C800DE 10%, #53EAFD 50%, #C800DE 90%);
-            background-clip: padding-box, border-box;
-            background-origin: border-box;
-            background-position: center left;
-            background-size: 200% 200%;
-            border: 2px solid transparent;
-            transition: all 600ms ease;
-        }
+  .btn {
+    width: auto;
+    display: inline-flex;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+    color: #fcfcfc;
+    border-radius: 100px;
+  }
 
-        .btn-outline:hover {
-            background-position: center right;
-            color: #b100ff;
-        }
-    
-        .btn-solid {
-            background-image: linear-gradient(90deg, #C800DE 10%, #53EAFD 50%, #C800DE 90%);
-            background-position: center left;
-            background-size: 200% 200%;
-            transition: all 600ms ease;
-        }
-    
-        .btn-solid:hover {
-            background-position: center right;
-        }
+  .btn-outline {
+    background: transparent;
+    background-image: linear-gradient(
+        180deg,
+        rgba(18, 29, 70, 1) 0%,
+        rgba(18, 29, 70, 1) 50%
+      ),
+      linear-gradient(90deg, #c800de 10%, #53eafd 50%, #c800de 90%);
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
+    background-position: center left;
+    background-size: 200% 200%;
+    border: 2px solid transparent;
+    transition: all 600ms ease;
+  }
+
+  .btn-outline:hover {
+    background-position: center right;
+    color: #b100ff;
+  }
+
+  .btn-solid {
+    background-image: linear-gradient(
+      90deg,
+      #c800de 10%,
+      #53eafd 50%,
+      #c800de 90%
+    );
+    background-position: center left;
+    background-size: 200% 200%;
+    transition: all 600ms ease;
+  }
+
+  .btn-solid:hover {
+    background-position: center right;
+  }
 </style>
