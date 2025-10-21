@@ -1,22 +1,83 @@
+---
+import GradientOverlay from "../components/GradientOverlay.astro";
+import "../styles/global.css";
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap"
+			rel="stylesheet"
+		/>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>CodeZone</title>
+		<meta
+			name="description"
+			content="Desarrollo de páginas web, software a medida e integración de sistemas(APIs)."
+		/>
+		<meta
+			name="keywords"
+			content="code, projects, experiments, coding, development"
+		/>
+		<meta name="author" content="CodeZone" />
+		<meta property="og:title" content="CodeZone" />
+		<meta
+			property="og:description"
+			content="Desarrollo de páginas web, software a medida e integración de sistemas(APIs)."
+		/>
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://yourwebsite.com" />
+		<meta property="og:image" content="https://yourwebsite.com/og-image.jpg" />
 	</head>
 	<body>
-		<slot />
+		<!-- <div
+			id="top"
+			class="min-h-screen w-full mx-auto px-4 sm:px-6 lg:px-8"
+		> -->
+		<div
+			id="background-mask"
+			class="relative z-1 min-h-screen w-full mx-auto px-4 sm:px-6 lg:px-8"
+		>
+			<GradientOverlay />
+			<div class="relative z-2">
+				<slot />
+			</div>
+		</div>
 	</body>
 </html>
 
 <style>
-	html,
 	body {
+		background: #000;
+		text-align: center;
+		font-family: "Funnel Display", system-ui, sans-serif;
+		font-optical-sizing: auto;
+		font-weight: 300;
+		font-style: normal;
+		letter-spacing: 0.5px;
+		color: var(--neutral-50);
 		margin: 0;
 		width: 100%;
 		height: 100%;
 	}
+
+	#background-mask {
+		width: 100%;
+		min-height: 100%;
+		margin: 0px;
+		background: url(/grid-100x100.svg), var(--primary-blue);
+	}
+
+	section {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 </style>
