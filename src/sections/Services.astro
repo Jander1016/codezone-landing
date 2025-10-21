@@ -1,0 +1,71 @@
+---
+import ServiceCard from "../components/ServiceCard.astro";
+---
+
+<section
+  id="services"
+  class="services-section flex flex-col items-center justify-center py-12"
+>
+  <div class="flex flex-col items-center w-full max-w-7xl mx-auto pb-8">
+    <img
+      src="/codezone-logo-color.svg"
+      alt="CodeZone"
+      class="size-70 h-auto mb-4"
+      loading="lazy"
+    />
+    <h2
+      class="text-5xl font-medium text-cyan-300 text-center mb-4"
+      style="letter-spacing:1px;"
+    >
+      Tech Your Vibes
+    </h2>
+    <div class="flex flex-col mt-9">
+      <p
+      class="text-sm text-neutral-100 text-center mb-2"
+      style="max-width:410px;"
+    >
+      En Codezone convertimos lo que tu negocio busca y necesita en tecnología a
+      medida, respetando su esencia y maximizando su valor.
+    </p>
+    <p
+      class="text-sm text-neutral-100 text-center mb-8"
+      style="max-width:410px;"
+    >
+      Ayudamos a marcas y empresas a crear productos inspiradores, confiables y
+      rentables.
+    </p>
+    </div>
+  </div>
+  <div
+    class="flex flex-col md:flex-row gap-8 justify-center items-stretch w-full max-w-7xl mx-auto"
+  >
+    <ServiceCard
+      title="Desarrollo Web"
+      description="Diseñamos y desarrollamos sitios web a medida, optimizados para el rendimientos SEO y experiencia de usuario, alineados con la identidad de tu marca."
+      image="/codezone-servicios-desarrollo-web.webp"
+      cta="Más info"
+      ctaHref="#web"
+    />
+    <ServiceCard
+      title="Software a medida"
+      description="Creamos aplicaciones y herramientas digitales personalizadas específicas para tu negocio y mejorar tus procesos internos."
+      image="/codezone-servicios-software.webp"
+      cta="Más info"
+      ctaHref="#software"
+    />
+    <ServiceCard
+      title="Integración de APIs"
+      description="Implementamos integraciones de sistemas y APIs que conectan tus plataformas, automatizan tareas y garantizan flujos de datos eficientes y seguro."
+      image="/codezone-servicios-apis.webp"
+      cta="Más info"
+      ctaHref="#api"
+    />
+  </div>
+</section>
+
+<style>
+  .services-section {
+    width: 100%;
+    min-height: 60vh;
+  }
+</style>
