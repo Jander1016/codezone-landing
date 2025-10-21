@@ -1,15 +1,13 @@
-<div
-  class="gradient-overlay w-full h-full"
->
+<div class="gradient-overlay w-full h-full">
   <slot />
 </div>
 
 <style>
   .gradient-overlay {
     background: radial-gradient(
-      ellipse at top,
-      rgba(83, 234, 253, 0.35) 0%,
-      rgba(18, 29, 69, 1) 35%,
+      ellipse at center,
+      rgba(200, 0, 222, 0.7) 0%,
+      rgba(18, 29, 69, 1) 50%,
       rgba(18, 29, 69, 0) 90%
     );
     backdrop-filter: blur(50px);
