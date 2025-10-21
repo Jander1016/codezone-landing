@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary-blue: #121D46;
+  --secondary-blue: #0e3261;
+  --light-gray: #FCFCFC;
+  --cyan-300: #53EAFD;
+  --fuchsia-600: #C800DE;
+  --neutral-50: #FAFAFA;
+}
+
+body {
+  font-family: 'Funnel Display', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  padding: 0px 0px;
+  margin: 0px;
+}
+
+/* Utilities used by header/hero */
+.muted {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.lead {
+  max-width: 760px;
+  margin: 0 auto;
+  color: rgba(83, 234, 253, 0.9);
+}
+
+/* ensure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
