@@ -37,7 +37,7 @@ import ServiceCard from "../components/ServiceCard.astro";
     </div>
   </div>
   <div
-    class="flex flex-col md:flex-row gap-8 justify-center items-stretch w-full max-w-7xl mx-auto"
+    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:flex-row justify-center items-stretch gap-8 w-full mx-auto md:place-items-center"
   >
     <ServiceCard
       title="Desarrollo Web"
@@ -59,13 +59,14 @@ import ServiceCard from "../components/ServiceCard.astro";
       image="/codezone-servicios-apis.webp"
       cta="Más info"
       ctaHref="#api"
+      className="md:col-span-2 md:mx-auto xl:col-span-1"
     />
   </div>
 </section>
 
-<style>
+<!-- <style>
   .services-section {
     width: 100%;
     min-height: 60vh;
   }
-</style>
+</style> -->
