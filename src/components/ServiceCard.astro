@@ -5,6 +5,7 @@ export interface Props {
   image: string;
   cta?: string;
   ctaHref?: string;
+  className?: string;
 }
 import Button from "./Button.astro";
 const {
@@ -13,10 +14,11 @@ const {
   image,
   cta = "Más info",
   ctaHref = "#",
+  className = "",
 } = Astro.props;
 ---
 
-<div class="card-layout outer-glow-fx">
+<div class={`card-layout outer-glow-fx ${className}`}>
   <div class="card-image">
     <img
       src={image}
