@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import ProcessCard from "../components/ProcessCard.astro";
+
+const processSteps = await getCollection("process");
+---
+
+<section id="process">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="text-lg font-semibold text-center text-cyan-300 mb-2">
+            Design Thinking + Scrum
+        </p>
+        <h2 class="text-5xl font-extrabold text-white text-center mb-16">
+            ¿Cómo lo hacemos?
+        </h2>
+
+        <div class="space-y-10 max-w-4xl mx-auto">
+            {
+                processSteps.map(({ data }, index) => (
+                    <ProcessCard
+                        image={data.image}
+                        title={data.title}
+                        description={data.description}
+                        className={`key=${data.image} ${index % 2 === 0 ? "" : "md:flex-row-reverse"}`}
+                    />
+                ))
+            }
+        </div>
+    </div>
+</section>

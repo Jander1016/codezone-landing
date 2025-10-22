@@ -16,6 +16,16 @@ const {
   ctaHref = "#",
   className = "",
 } = Astro.props;
+
+// Quick build-time optimization: add @2x to srcset only if file exists in public/
+import fs from 'fs';
+import path from 'path';
+const publicPath = path.resolve(Astro.site ? new URL(Astro.site).pathname : './public');
+// The `image` prop is like '/imagen.webp' — build the filesystem path
+const imagePath = path.join(process.cwd(), 'public', image.replace(/^[\/]/, ''));
+const image2xPath = imagePath.replace('.webp', '@2x.webp');
+const has2x = fs.existsSync(image2xPath);
+const srcsetValue = has2x ? `${image} 1x, ${image.replace('.webp', '@2x.webp')} 2x` : undefined;
 ---
 
 <div class={`card-layout outer-glow-fx ${className}`}>
@@ -24,7 +34,12 @@ const {
       src={image}
       alt={title}
       loading="lazy"
+      decoding="async"
+      width="1200"
+      height="600"
       class="w-full h-full object-cover"
+      srcset={srcsetValue}
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
     />
   </div>
   <div class="card-text">

@@ -33,11 +33,18 @@ import Button from "../components/Button.astro";
             class="absolute inset-0 w-full h-full object-contain animate-spin-slow"
             src="/neon-circles.svg"
             alt="Anillos neon"
+            width="520"
+            height="520"
+            loading="lazy"
           />
           <img
             class="absolute inset-0 m-auto w-[120px] h-auto md:w-[180px] animate-logo-pulse"
             src="/codezone-logo-header.svg"
-            alt="CodeZone"
+            alt="Logo CodeZone 2"
+            width="180"
+            height="180"
+            loading="eager"
+            fetchpriority="high"
           />
         </div>
       </div>
