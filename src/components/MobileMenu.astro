@@ -1,0 +1,234 @@
+---
+/**
+ * MobileMenu Component
+ * Full-screen mobile navigation overlay with smooth transitions
+ * Includes focus trap for keyboard navigation accessibility
+ */
+import type { NavItem } from '../types/components';
+
+interface Props {
+  navItems: NavItem[];
+}
+
+const { navItems } = Astro.props;
+---
+
+<div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+  <nav class="mobile-menu-content" role="navigation" aria-label="Mobile navigation">
+    <button
+      id="mobile-menu-close"
+      class="mobile-menu-close"
+      aria-label="Cerrar menú"
+      type="button"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
+    <ul class="mobile-menu-list">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class="mobile-menu-link"
+            aria-current={item.isActive ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
+
+<script>
+  // Mobile menu functionality
+  function initMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    
+    if (!mobileMenu || !mobileMenuClose || !mobileMenuOverlay) return;
+
+    // Focus trap elements
+    const focusableElements = mobileMenu.querySelectorAll(
+      'a[href], button:not([disabled])'
+    );
+    const firstFocusable = focusableElements[0] as HTMLElement;
+    const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    function openMenu() {
+      mobileMenu?.classList.add('mobile-menu-open');
+      mobileMenu?.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      firstFocusable?.focus();
+    }
+
+    function closeMenu() {
+      mobileMenu?.classList.remove('mobile-menu-open');
+      mobileMenu?.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = 'auto';
+      mobileMenuToggle?.focus();
+    }
+
+    // Close button click
+    mobileMenuClose.addEventListener('click', closeMenu);
+
+    // Overlay click to close
+    mobileMenuOverlay.addEventListener('click', closeMenu);
+
+    // Close on menu link click
+    const menuLinks = mobileMenu.querySelectorAll('.mobile-menu-link');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu?.classList.contains('mobile-menu-open')) {
+        closeMenu();
+      }
+    });
+
+    // Focus trap
+    mobileMenu.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstFocusable) {
+          e.preventDefault();
+          lastFocusable?.focus();
+        }
+      } else {
+        if (document.activeElement === lastFocusable) {
+          e.preventDefault();
+          firstFocusable?.focus();
+        }
+      }
+    });
+
+    // Expose open function globally for hamburger button
+    (window as any).openMobileMenu = openMenu;
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileMenu);
+  } else {
+    initMobileMenu();
+  }
+</script>
+
+<style>
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease-in-out;
+  }
+
+  .mobile-menu-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-menu-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-menu-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .mobile-menu-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: #53eafd;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: transform 300ms ease, color 300ms ease;
+  }
+
+  .mobile-menu-close:hover {
+    transform: rotate(90deg);
+    color: #c800de;
+  }
+
+  .mobile-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .mobile-menu-link {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #fcfcfc;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 300ms ease;
+    text-align: center;
+  }
+
+  .mobile-menu-link:hover,
+  .mobile-menu-link:focus {
+    color: #53eafd;
+    outline: 2px solid #53eafd;
+    outline-offset: 4px;
+    border-radius: 8px;
+  }
+
+  .mobile-menu-link[aria-current="page"] {
+    color: #c800de;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>

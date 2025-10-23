@@ -1,0 +1,50 @@
+---
+/**
+ * GradientText Component
+ * Reusable component for gradient text headings
+ * Supports different HTML tags and gradient presets
+ */
+import type { GradientTextProps } from '../types/components';
+
+interface Props extends GradientTextProps {
+  style?: string;
+}
+
+const { 
+  as: Tag = 'h2', 
+  gradient = 'cyan-purple', 
+  className = '',
+  style = ''
+} = Astro.props;
+
+const gradientClass = `gradient-${gradient}`;
+---
+
+<Tag class:list={[gradientClass, className]} style={style}>
+  <slot />
+</Tag>
+
+<style>
+  .gradient-cyan-purple {
+    background: linear-gradient(90deg, #53eafd 0%, #c800de 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+
+  .gradient-purple-cyan {
+    background: linear-gradient(90deg, #c800de 0%, #53eafd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+
+  .gradient-custom {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+</style>

@@ -1,0 +1,104 @@
+---
+/**
+ * TechStackCard Component
+ * Individual technology category card with icon and hover effect
+ */
+import type { TechStackCardProps } from '../types/components';
+
+interface Props extends TechStackCardProps {}
+
+const { name, icon, technologies, description } = Astro.props;
+---
+
+<div class="tech-card">
+  <div class="tech-icon-wrapper">
+    <img 
+      src={icon} 
+      alt={name}
+      class="tech-icon"
+      width="48"
+      height="48"
+      loading="lazy"
+    />
+  </div>
+  
+  <h3 class="tech-name">{name}</h3>
+  
+  {technologies.length > 0 ? (
+    <p class="tech-list">{technologies.join(', ')}</p>
+  ) : description && (
+    <p class="tech-description">{description}</p>
+  )}
+</div>
+
+<style>
+  .tech-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: transparent;
+    transition: transform 300ms ease-in-out;
+    max-width: 250px;
+    width: 100%;
+  }
+
+  .tech-card:hover {
+    transform: scale(1.05);
+  }
+
+  .tech-card:hover .tech-icon-wrapper {
+    background: radial-gradient(circle, rgba(83, 233, 253, 0.3) 0%, transparent 70%);
+    box-shadow: 0 0 40px rgba(83, 233, 253, 0.6), 0 0 60px rgba(83, 233, 253, 0.4);
+  }
+
+  .tech-icon-wrapper {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: radial-gradient(circle, rgba(83, 233, 253, 0.15) 0%, rgba(200, 0, 222, 0.1) 50%, transparent 70%);
+    box-shadow: 0 0 20px rgba(83, 233, 253, 0.3);
+    position: relative;
+    transition: all 300ms ease-in-out;
+  }
+
+  .tech-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, #c800de 0%, #53eafd 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+  }
+
+  .tech-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(83, 233, 253, 0.5));
+  }
+
+  .tech-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #53eafd;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .tech-list,
+  .tech-description {
+    font-size: 0.8125rem;
+    color: #a3a3a3;
+    line-height: 1.5;
+  }
+</style>
