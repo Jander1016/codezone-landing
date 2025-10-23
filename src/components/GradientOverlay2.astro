@@ -1,15 +1,22 @@
-<div class="gradient-overlay w-full h-full">
+---
+export interface Props {
+  className?: string;
+  position?: string;
+}
+const { className = "", position = "center" } = Astro.props;
+---
+
+<div class={`gradient-overlay w-full h-full ${className}`} style={`--overlay-position: ${position}`}>
   <slot />
 </div>
 
 <style>
   .gradient-overlay {
     background: radial-gradient(
-      ellipse at center,
+      ellipse at var(--overlay-position, center),
       rgba(200, 0, 222, 0.7) 0%,
       rgba(18, 29, 69, 1) 50%,
       rgba(18, 29, 69, 0) 90%
     );
-    backdrop-filter: blur(50px);
   }
 </style>
