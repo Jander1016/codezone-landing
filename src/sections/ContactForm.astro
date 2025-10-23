@@ -1,0 +1,358 @@
+---
+/**
+ * ContactForm Section
+ * Contact form with validation and contact information
+ * Two-column layout: info + form
+ */
+import GradientText from "../components/GradientText.astro";
+import FormInput from "../components/FormInput.astro";
+import Button from "../components/Button.astro";
+---
+
+<section id="contact" class="contact-section py-16">
+  <div class="contact-container max-w-7xl mx-auto px-4">
+    <div class="contact-grid">
+      <!-- Left Column: Contact Info -->
+      <div class="contact-info">
+        <h2 class="contact-heading">
+          ¿Hablamos de tu próxima <GradientText as="span" gradient="cyan-purple">idea digital</GradientText>?
+        </h2>
+        
+        <p class="contact-subtitle">
+          Cuéntanos qué necesitas y te ayudaremos a transformar tu idea en una solución digital real.
+        </p>
+        
+        <p class="contact-subtitle">
+          Nos encanta colaborar con marcas y negocios que buscan crecer a través del diseño y la tecnología.
+        </p>
+        
+        <div class="contact-logo">
+          <img
+            src="/codezone-logo-color.svg"
+            alt="CodeZone"
+            width="200"
+            height="auto"
+            loading="lazy"
+          />
+        </div>
+        
+        <div class="contact-details flex flex-row gap-4">
+          <!-- <Button href="mailto:info@codezone.com" variant="outline" size="small">info@codezone.com</Button> -->
+          <Button href="#contact" variant="outline" size="small">+34 691 019 753</Button>
+          <Button href="#contact" variant="outline" size="small">+34 691 019 753</Button>         
+          
+        </div>
+      </div>
+      
+      <!-- Right Column: Form -->
+      <div class="contact-form-wrapper">
+        <div class="form-card">
+          <h3 class="form-title">FORMULARIO DE CONTACTO</h3>
+          
+          <form id="contact-form" class="contact-form" novalidate>
+            <FormInput
+              type="text"
+              name="nombre"
+              label="Nombre:"
+              placeholder="Tu nombre y apellidos"
+              required={true}
+            />
+            
+            <FormInput
+              type="email"
+              name="email"
+              label="Email:"
+              placeholder="ejemplo: tu.nombre@example.com"
+              required={true}
+            />
+            
+            <FormInput
+              type="tel"
+              name="telefono"
+              label="Teléfono:"
+              placeholder="Ejemplo: +34681019753"
+              required={true}
+            />
+            
+            <FormInput
+              type="textarea"
+              name="mensaje"
+              label="Mensaje:"
+              placeholder="Déjanos un mensaje"
+              required={true}
+            />
+            
+            <div id="form-message" class="form-message" role="alert" aria-live="polite"></div>
+            
+            <Button href="#" variant="solid" size="large">
+              Enviar
+              <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+                <path d="M5 12h14"></path>
+                <path d="M12 5l7 7-7 7"></path>
+              </svg>
+            </Button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { validateField, isFormValid } from '../utils/validation';
+  import { sanitizeFormData, RateLimiter } from '../utils/sanitization';
+
+  // Initialize rate limiter
+  const rateLimiter = new RateLimiter();
+
+  function initContactForm() {
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const formMessage = document.getElementById('form-message');
+    
+    if (!form || !formMessage) return;
+
+    // Real-time validation on blur
+    const inputs = form.querySelectorAll('input, textarea');
+    inputs.forEach(input => {
+      input.addEventListener('blur', () => {
+        const field = input.getAttribute('name');
+        const value = (input as HTMLInputElement).value;
+        
+        if (field) {
+          const error = validateField(field, value);
+          const errorSpan = document.getElementById(`error-${field}`);
+          
+          if (error && errorSpan) {
+            errorSpan.textContent = error.message;
+            input.setAttribute('aria-invalid', 'true');
+            input.classList.add('form-input-error');
+          } else if (errorSpan) {
+            errorSpan.textContent = '';
+            input.setAttribute('aria-invalid', 'false');
+            input.classList.remove('form-input-error');
+          }
+        }
+      });
+    });
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Clear previous messages
+      formMessage.className = 'form-message';
+      formMessage.textContent = '';
+
+      // Get form data
+      const formData = new FormData(form);
+      const data: Record<string, string> = {};
+      formData.forEach((value, key) => {
+        data[key] = value.toString();
+      });
+
+      // Validate all fields
+      if (!isFormValid(data)) {
+        // Trigger validation display for all fields
+        inputs.forEach(input => {
+          const field = input.getAttribute('name');
+          const value = (input as HTMLInputElement).value;
+          
+          if (field) {
+            const error = validateField(field, value);
+            const errorSpan = document.getElementById(`error-${field}`);
+            
+            if (error && errorSpan) {
+              errorSpan.textContent = error.message;
+              input.setAttribute('aria-invalid', 'true');
+              input.classList.add('form-input-error');
+            }
+          }
+        });
+        
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Por favor, corrige los errores en el formulario.';
+        return;
+      }
+
+      // Rate limiting check
+      const userKey = 'contact-form-submission';
+      if (!rateLimiter.isAllowed(userKey, 5, 60000)) {
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Has enviado demasiados mensajes. Por favor, espera un minuto.';
+        return;
+      }
+
+      // Sanitize data
+      const sanitizedData = sanitizeFormData(data);
+
+      // Here you would normally send to an API endpoint
+      // For now, we'll simulate a successful submission
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Success
+        formMessage.className = 'form-message success';
+        formMessage.textContent = '¡Mensaje enviado con éxito! Te contactaremos pronto.';
+        
+        // Clear form
+        form.reset();
+        
+        // Clear error states
+        inputs.forEach(input => {
+          input.setAttribute('aria-invalid', 'false');
+          input.classList.remove('form-input-error');
+          const field = input.getAttribute('name');
+          if (field) {
+            const errorSpan = document.getElementById(`error-${field}`);
+            if (errorSpan) errorSpan.textContent = '';
+          }
+        });
+        
+        // Log sanitized data (in production, send to API)
+        console.log('Form submitted:', sanitizedData);
+        
+      } catch (error) {
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.';
+        console.error('Form submission error:', error);
+      }
+    });
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initContactForm);
+  } else {
+    initContactForm();
+  }
+</script>
+
+<style>
+  .contact-section {
+    width: 100%;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* Contact Info Styles */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-heading {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #fcfcfc;
+    line-height: 1.2;
+  }
+
+  .contact-subtitle {
+    font-size: 1rem;
+    color: #d4d4d4;
+    line-height: 1.6;
+  }
+
+  .contact-logo {
+    margin: 2rem 0;
+  }
+
+  /* .contact-details {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  } */
+
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 2px solid rgba(83, 233, 253, 0.3);
+    border-radius: 100px;
+    color: #53eafd;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 300ms ease;
+    width: fit-content;
+  }
+
+  .contact-link:hover {
+    border-color: #53eafd;
+    background: rgba(83, 233, 253, 0.1);
+    transform: translateX(4px);
+  }
+
+  /* Form Styles */
+  .contact-form-wrapper {
+    width: 100%;
+  }
+
+  .form-card {
+    background: linear-gradient(
+      180deg,
+      rgba(2, 6, 24, 0.8) 0%,
+      rgba(18, 29, 70, 0.6) 100%
+    );
+    border: 2px solid rgba(83, 233, 253, 0.2);
+    border-radius: 24px;
+    padding: 2rem;
+  }
+
+  .form-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #53eafd;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-message {
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+  }
+
+  .form-message.success {
+    display: block;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgb(34, 197, 94);
+    color: rgb(34, 197, 94);
+  }
+
+  .form-message.error {
+    display: block;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgb(239, 68, 68);
+    color: rgb(239, 68, 68);
+  }
+
+  /* Desktop Layout */
+  @media (min-width: 1024px) {
+    .contact-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .contact-heading {
+      font-size: 3rem;
+    }
+  }
+</style>
