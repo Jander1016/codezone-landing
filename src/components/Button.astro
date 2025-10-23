@@ -1,4 +1,9 @@
 ---
+/**
+ * Button Component
+ * Reusable button with gradient animations (PRESERVE EXISTING ANIMATIONS)
+ * Supports outline and solid variants with 600ms gradient animation
+ */
 interface Props {
   variant?: "outline" | "solid";
   size?: "small" | "medium" | "large";
@@ -18,6 +23,7 @@ const sizes = {
 <a href={href} class:list={["btn", `btn-${variant}`, sizes[size]]}>
   <slot />
   {icon && <img src={icon} alt="icon" class="ml-2" />}
+  <slot name="icon" />
 </a>
 
 <style>
@@ -31,6 +37,8 @@ const sizes = {
     font-weight: 500;
     color: #fcfcfc;
     border-radius: 100px;
+    white-space: nowrap;
+    cursor: pointer;
   }
 
   .btn-outline {
