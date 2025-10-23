@@ -1,101 +1,73 @@
-       <section id="tech-stack">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <p class="text-lg font-semibold text-center text-cyan-400 mb-2">Herramientas</p>
-                <h2 class="text-5xl font-extrabold text-white text-center mb-16">
-                    Nuestro Stack Tecnológico
-                </h2>
+---
+/**
+ * Stack Section - "Nuestro Stack Tenológico"
+ * Displays technology categories with responsive grid
+ * Mobile: 2 columns, Tablet: 3 columns, Desktop: 4 columns
+ */
+import GradientText from "../components/GradientText.astro";
+import TechStackCard from "../components/TechStackCard.astro";
+import { techStack } from "../data/techStack";
+---
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-                    
-                    <!-- Item 1: Aplicaciones Móviles -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 100ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M12 2v20M2 12h20M17 5l-2 2"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Aplicaciones Móviles</h3>
-                        <p class="text-gray-400 text-sm">React Native, Ionic Framework, Kotlin Multiplatform.</p>
-                    </div>
+<section id="stack" class="stack-section py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-lg font-semibold text-center text-cyan-400 mb-2">Herramientas</p>
+    <GradientText 
+      as="h2" 
+      gradient="cyan-purple"
+      className="text-5xl font-extrabold text-center mb-16"
+    >
+      Nuestro Stack Tecnológico
+    </GradientText>
 
-                    <!-- Item 2: Front-End -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 200ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M10 5l-7 7 7 7M14 5l7 7-7 7"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Front-End</h3>
-                        <p class="text-gray-400 text-sm">HTML & CSS, JavaScript / TypeScript, Angular, React, Vue.js.</p>
-                    </div>
-                    
-                    <!-- Item 3: Back-End -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 300ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M2 17l10 5 10-5M2 12l10 5 10-5M2 7l10 5 10-5"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Back-End</h3>
-                        <p class="text-gray-400 text-sm">PHP, Node.js, Java (Spring Boot), Go, Python (Django).</p>
-                    </div>
+    <div class="stack-grid">
+      {techStack.map((category) => (
+        <TechStackCard
+          name={category.name}
+          icon={category.icon}
+          technologies={category.technologies}
+          description={category.description}
+        />
+      ))}
+    </div>
+  </div>
+</section>
 
-                    <!-- Item 4: Desarrollo de Software -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 400ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M11 20l-9-9 9-9 9 9-9 9z"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Desarrollo de Software</h3>
-                        <p class="text-gray-400 text-sm">C, Electron.js, Tauri, .NET MAUI (C#), Qt, JavaFX.</p>
-                    </div>
-                    
-                    <!-- Item 5: Lenguajes de Scripting -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 500ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M4 14l6-6 6 6"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Lenguajes de Scripting</h3>
-                        <p class="text-gray-400 text-sm">Python, Bash</p>
-                    </div>
+<style>
+  .stack-section {
+    width: 100%;
+  }
 
-                    <!-- Item 6: Bases de datos NoSQL -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 600ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M5 12V3h14v9M5 12h14"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Bases de datos NoSQL</h3>
-                        <p class="text-gray-400 text-sm">Firebase, MongoDB, Cassandra.</p>
-                    </div>
-                    
-                    <!-- Item 7: Bases de datos Relacionales -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 700ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M13 14h6M4 14h6M4 9h16"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Bases de datos Relacionales</h3>
-                        <p class="text-gray-400 text-sm">PostgreSQL, MySQL, SQL Server</p>
-                    </div>
+  /* Mobile: 2 columns */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-items: center;
+  }
 
-                    <!-- Item 8: Desarrollo On-Cloud -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 800ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Desarrollo On-Cloud</h3>
-                        <p class="text-gray-400 text-sm">AWS, Azure, Google Cloud Platform</p>
-                    </div>
+  /* Tablet: 3 columns */
+  @media (min-width: 768px) {
+    .stack-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
 
-                    <!-- Item 9: Metodologías Ágiles -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 900ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zM12 16v-4M12 8h.01"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Metodologías Ágiles</h3>
-                        <p class="text-gray-400 text-sm">Design Thinking, SCRUM, KANBAN.</p>
-                    </div>
-                    
-                    <!-- Item 10: ¿Otras tecnologías? -->
-                    <div class="flex flex-col items-center text-center p-6 bg-gray-900/50 rounded-lg border border-gray-800 animate-on-scroll" style="transition-delay: 1000ms;">
-                        <div class="p-4 rounded-full mb-4 text-cyan-400" style="background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 80%); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 neon-text-glow"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">¿Otras tecnologías?</h3>
-                        <p class="text-gray-400 text-sm">Consúltanos y te daremos solución</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  /* Desktop: 4 columns for first 8, then 2 centered */
+  @media (min-width: 1024px) {
+    .stack-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3rem 2rem;
+    }
+    
+    /* Last 2 items centered */
+    .stack-grid > :nth-last-child(2),
+    .stack-grid > :nth-last-child(1) {
+      grid-column: span 2;
+      justify-self: center;
+    }
+  }
+</style>

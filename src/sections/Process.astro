@@ -1,30 +1,78 @@
 ---
-import { getCollection } from "astro:content";
+/**
+ * Process Section - "¿Cómo lo hacemos?"
+ * Displays Design Thinking + Scrum methodology steps
+ * Alternating left-right layout with scroll animations
+ */
 import ProcessCard from "../components/ProcessCard.astro";
-
-const processSteps = await getCollection("process");
+import GradientText from "../components/GradientText.astro";
+import { processSteps } from "../data/process";
 ---
 
-<section id="process">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p class="text-lg font-semibold text-center text-cyan-300 mb-2">
-            Design Thinking + Scrum
-        </p>
-        <h2 class="text-5xl font-extrabold text-white text-center mb-16">
-            ¿Cómo lo hacemos?
-        </h2>
+<section id="process" class="process-section py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <p class="text-lg font-semibold text-center text-cyan-300 mb-2">
+      Design Thinking + Scrum
+    </p>
+    <GradientText 
+      as="h2" 
+      gradient="purple-cyan" 
+      className="text-5xl font-medium text-center mb-10"
+      style="letter-spacing:1px;"
+    >
+      ¿Cómo lo hacemos?
+    </GradientText>
 
-        <div class="space-y-10 max-w-4xl mx-auto">
-            {
-                processSteps.map(({ data }, index) => (
-                    <ProcessCard
-                        image={data.image}
-                        title={data.title}
-                        description={data.description}
-                        className={`key=${data.image} ${index % 2 === 0 ? "" : "md:flex-row-reverse"}`}
-                    />
-                ))
-            }
-        </div>
+    <div class="process-steps space-y-16 max-w-4xl mx-auto p-8">
+      {processSteps.map((step, index) => (
+        <ProcessCard
+          number={step.number}
+          title={step.title}
+          description={step.description}
+          image={step.image}
+          isEven={index % 2 !== 0}
+        />
+      ))}
     </div>
+  </div>
 </section>
+
+<script>
+  // Scroll-triggered fade-in animations
+  function initProcessAnimations() {
+    const processCards = document.querySelectorAll('.process-card');
+    
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('fade-in-visible');
+          }, index * 150);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    processCards.forEach(card => {
+      observer.observe(card);
+    });
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProcessAnimations);
+  } else {
+    initProcessAnimations();
+  }
+</script>
+
+<style>
+  .process-section {
+    width: 100%;
+  }
+</style>

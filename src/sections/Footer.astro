@@ -1,7 +1,64 @@
-<footer>
-  <p>&copy; {new Date().getFullYear()} CodeZone. Todos los derechos reservados.</p>
-  <a href="#contact">Contacto</a>
-  <a href="#privacy">Política de Privacidad</a>
-  <a href="#terms">Términos de Servicio</a>
-  <a href="#cookies">Política de Cookies</a>
+
+<footer class="footer-section">
+  <div class="footer-container">
+    <div>
+      <img
+        src="/codezone-logo-header.svg"
+        alt="CodeZone Icon"
+        width="120"
+        height="auto"
+        loading="lazy"
+      />
+    </div>
+    <div class="footer-logo">
+      <img
+        src="/codezone-logo-color.svg"
+        alt="CodeZone"
+        width="200"
+        height="auto"
+        loading="lazy"
+      />
+      <p class="footer-tagline">Tech Your Vibes</p>
+    </div>
+    
+    <p class="footer-copyright">
+      &copy; {new Date().getFullYear()} Copyright www.codezone.es - Aviso Legal - Contacto: Telf:+34 691 019 753 - Mail:info@codezone.es
+    </p>
+  </div>
 </footer>
+
+<style>
+  .footer-section {
+    padding: 2rem 0;
+  }
+  .footer-container {
+    max-width: 7xl;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .footer-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.875rem;
+    color: #53eafd;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  .footer-copyright {
+    font-size: 0.75rem;
+    color: #d4d4d4;
+    text-align: center;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+</style>

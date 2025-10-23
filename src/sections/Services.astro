@@ -1,11 +1,18 @@
 ---
+/**
+ * Services Section - "Tech Your Vibes"
+ * Displays service cards with responsive grid layout
+ * Mobile: 1 column, Tablet: special layout, Desktop: 3 columns
+ */
 import ServiceCard from "../components/ServiceCard.astro";
-
+import GradientText from "../components/GradientText.astro";
+import { services } from "../data/services";
 ---
+
 <section
   id="services"
-  class="services-section flex flex-col items-center justify-center py-12 relative z-10"
->
+  class="services-section flex flex-col items-center justify-center py-12 md:py-20 ">
+  
   <div class="flex flex-col items-center w-full max-w-7xl mx-auto pb-8">
     <img
       src="/codezone-logo-color.svg"
@@ -13,16 +20,17 @@ import ServiceCard from "../components/ServiceCard.astro";
       class="size-70 h-auto mb-4"
       loading="lazy"
     />
-    <h2
-      class="text-5xl font-medium text-cyan-300 text-center mb-4"
+    <GradientText 
+      as="h2" 
+      gradient="cyan-purple" 
+      className="text-5xl font-medium text-center mb-4"
       style="letter-spacing:1px;"
     >
       Tech Your Vibes
-    </h2>
+    </GradientText>
     <div class="flex flex-col mt-9">
       <p
-        class="text-sm text-neutral-100 text-center mb-2"
-        style="max-width:410px;"
+        class="text-sm text-neutral-100 text-center mb-2 max-w-md"
       >
         En Codezone convertimos lo que tu negocio busca y necesita en tecnología
         a medida, respetando su esencia y maximizando su valor.
@@ -36,37 +44,64 @@ import ServiceCard from "../components/ServiceCard.astro";
       </p>
     </div>
   </div>
-  <div
-    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:flex-row justify-center items-stretch gap-8 w-full mx-auto md:place-items-center"
-  >
-    <ServiceCard
-      title="Desarrollo Web"
-      description="Diseñamos y desarrollamos sitios web a medida, optimizados para el rendimientos SEO y experiencia de usuario, alineados con la identidad de tu marca."
-      image="/codezone-servicios-desarrollo-web.webp"
-      cta="Más info"
-      ctaHref="#web"
-    />
-    <ServiceCard
-      title="Software a medida"
-      description="Creamos aplicaciones y herramientas digitales personalizadas específicas para tu negocio y mejorar tus procesos internos."
-      image="/codezone-servicios-software.webp"
-      cta="Más info"
-      ctaHref="#software"
-    />
-    <ServiceCard
-      title="Integración de APIs"
-      description="Implementamos integraciones de sistemas y APIs que conectan tus plataformas, automatizan tareas y garantizan flujos de datos eficientes y seguro."
-      image="/codezone-servicios-apis.webp"
-      cta="Más info"
-      ctaHref="#api"
-      className="md:col-span-2 md:mx-auto xl:col-span-1"
-    />
+  
+  <!-- Responsive Services Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:flex-row justify-center items-stretch gap-8 w-full mx-auto md:place-items-center px-4 sm:px-6 lg:px-8 max-w-7xl">
+    {services.map((service, index) => (
+      <ServiceCard
+        title={service.title}
+        description={service.description}
+        image={service.image}
+        cta={service.ctaText}
+        ctaHref={service.ctaHref}
+        className={index === 1 ? 'service-card-center' : index === 2 ? 'md:col-span-2 md:mx-auto xl:col-span-1' : ''}
+      />
+    ))}
   </div>
 </section>
 
-<!-- <style>
+<style>
   .services-section {
     width: 100%;
-    min-height: 60vh;
+    /* min-height: 60vh; */
+    padding: 4rem 1rem;
   }
-</style> -->
+
+  /* Mobile: Single column */
+  /* .services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    place-items: center;
+  } */
+
+  /* Tablet: Special layout - center card full width */
+  /* @media (min-width: 640px) and (max-width: 1023px) {
+    .services-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+
+    .service-card-center {
+      grid-column: 1 / -1;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+  } */
+
+  /* Desktop: 3 columns */
+  /* @media (min-width: 1024px) {
+    .services-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      padding: 0 2rem;
+    }
+
+    .service-card-center {
+      grid-column: auto;
+    }
+  } */
+</style>
