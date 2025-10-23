@@ -7,12 +7,6 @@ import "../styles/global.css";
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap"
-			rel="stylesheet"
-		/> -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<title>CodeZone</title>
 		<meta
@@ -36,7 +30,7 @@ import "../styles/global.css";
 	<body>
 		<div
 			id="background-mask"
-			class="relative z-1 min-h-screen w-full mx-auto px-4 sm:px-6 lg:px-8"
+			class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
 		>
 			<div class="relative z-2">
 				<slot />
@@ -56,8 +50,9 @@ import "../styles/global.css";
 		letter-spacing: 0.5px;
 		color: var(--neutral-50);
 		margin: 0;
-		width: 100%;
-		height: 100%;
+		font-size: clamp(1rem, 0.9591rem + 0.1818vw, 1.25rem);
+		/* width: 100%;
+		height: 100%; */
 	}
 
 	#background-mask {
@@ -66,12 +61,4 @@ import "../styles/global.css";
 		margin: 0px;
 		background: url(/grid-100x100.svg), var(--primary-blue);
 	}
-
-	section {
-            width: 100%;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 </style>

@@ -1,4 +1,8 @@
 ---
+/**
+ * Main Landing Page
+ * Integrates all sections with preserved animations
+ */
 import GradientOverlay from "../components/GradientOverlay.astro";
 import GradientOverlay2 from "../components/GradientOverlay2.astro";
 import Separator from "../components/Separator.astro";
@@ -9,25 +13,48 @@ import Hero from "../sections/Hero.astro";
 import Process from "../sections/Process.astro";
 import Services from "../sections/Services.astro";
 import Stack from "../sections/Stack.astro";
+import ContactForm from "../sections/ContactForm.astro";
 ---
 
 <Layout>
-	<GradientOverlay className="top-0">
-		<Header />
+	<!-- Header and Hero with preserved animations -->
+	<!-- Header moved out of GradientOverlay so position:fixed works correctly -->
+	<Header />
+	<GradientOverlay position={"top"}>
 		<Hero />
 	</GradientOverlay>
+
 	<Separator />
+
+	<!-- Services Section with preserved card animations -->
 	<GradientOverlay2>
 		<Services />
 	</GradientOverlay2>
+
 	<Separator />
-	<GradientOverlay>
+
+	<!-- Process Section with scroll animations -->
+	<GradientOverlay position="center">
 		<Process />
 	</GradientOverlay>
+
 	<Separator />
+
+	<!-- Tech Stack Section -->
 	<GradientOverlay2>
 		<Stack />
 	</GradientOverlay2>
+
 	<Separator />
-	<Footer />
+
+	<!-- Contact Form Section -->
+	<GradientOverlay>
+		<ContactForm />
+	</GradientOverlay>
+
+	<Separator />
+	
+	<GradientOverlay2 position="bottom">
+		<Footer />
+	</GradientOverlay2>
 </Layout>
