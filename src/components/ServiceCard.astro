@@ -54,37 +54,26 @@ const srcsetValue = has2x
     <h3 class="text-cyan-300 font-bold text-2xl mb-0">{title}</h3>
     <p class="text-neutral-100 m-0">{description}</p>
   </div>
-  <Button href={ctaHref} variant="outline" size="medium">
+  <Button href={ctaHref} variant="outline" size="medium" icon="icon-arrow.svg">
     {cta}
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#38AEBD"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="ml-2"
-      ><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg
-    >
   </Button>
 </div>
 
 <style>
   .card-layout {
     margin: 0 auto;
+    width: 100%;
     max-width: 380px;
     background: rgba(2, 6, 24, 0.4);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(83, 233, 253, 0.15);
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 20px;
     border-radius: 24px;
-    padding: 8px;
+    padding: 2px;
     text-align: left;
   }
 
