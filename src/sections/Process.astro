@@ -1,16 +1,11 @@
 ---
-/**
- * Process Section - "¿Cómo lo hacemos?"
- * Displays Design Thinking + Scrum methodology steps
- * Alternating left-right layout with scroll animations
- */
 import ProcessCard from "../components/ProcessCard.astro";
 import GradientText from "../components/GradientText.astro";
 import { processSteps } from "../data/process";
 ---
 
 <section id="process" class="process-section py-16">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
     <p class="text-lg font-semibold text-center text-cyan-300 mb-2">
       Design Thinking + Scrum
     </p>
@@ -18,12 +13,11 @@ import { processSteps } from "../data/process";
       as="h2" 
       gradient="purple-cyan" 
       className="text-5xl font-medium text-center mb-10"
-      style="letter-spacing:1px;"
     >
       ¿Cómo lo hacemos?
     </GradientText>
 
-    <div class="process-steps space-y-16 max-w-4xl mx-auto p-8">
+    <div class="process-steps space-y-16 max-w-5xl mx-auto p-8">
       {processSteps.map((step, index) => (
         <ProcessCard
           number={step.number}
