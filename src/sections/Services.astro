@@ -1,9 +1,4 @@
 ---
-/**
- * Services Section - "Tech Your Vibes"
- * Displays service cards with responsive grid layout
- * Mobile: 1 column, Tablet: special layout, Desktop: 3 columns
- */
 import ServiceCard from "../components/ServiceCard.astro";
 import GradientText from "../components/GradientText.astro";
 import { services } from "../data/services";
@@ -11,8 +6,8 @@ import { services } from "../data/services";
 
 <section
   id="services"
-  class="services-section flex flex-col items-center justify-center py-12 md:py-20 ">
-  
+  class="services-section flex flex-col items-center justify-center py-12 md:py-20"
+>
   <div class="flex flex-col items-center w-full max-w-7xl mx-auto pb-8">
     <img
       src="/codezone-logo-color.svg"
@@ -20,18 +15,16 @@ import { services } from "../data/services";
       class="size-70 h-auto mb-4"
       loading="lazy"
     />
-    <GradientText 
-      as="h2" 
-      gradient="cyan-purple" 
+    <GradientText
+      as="h2"
+      gradient="cyan-purple"
       className="text-5xl font-medium text-center mb-4"
       style="letter-spacing:1px;"
     >
       Tech Your Vibes
     </GradientText>
     <div class="flex flex-col mt-9">
-      <p
-        class="text-sm text-neutral-100 text-center mb-2 max-w-md"
-      >
+      <p class="text-sm text-neutral-100 text-center mb-2 max-w-md">
         En Codezone convertimos lo que tu negocio busca y necesita en tecnología
         a medida, respetando su esencia y maximizando su valor.
       </p>
@@ -44,19 +37,30 @@ import { services } from "../data/services";
       </p>
     </div>
   </div>
-  
+
   <!-- Responsive Services Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:flex-row justify-center items-stretch gap-8 w-full mx-auto md:place-items-center px-4 sm:px-6 lg:px-8 max-w-7xl">
-    {services.map((service, index) => (
-      <ServiceCard
-        title={service.title}
-        description={service.description}
-        image={service.image}
-        cta={service.ctaText}
-        ctaHref={service.ctaHref}
-        className={index === 1 ? 'service-card-center' : index === 2 ? 'md:col-span-2 md:mx-auto xl:col-span-1' : ''}
-      />
-    ))}
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:flex-row justify-center items-stretch gap-8 w-full mx-auto md:place-items-center max-w-[1532px]"
+  >
+    {
+      services.map((service, index) => (
+         <div
+          class={
+            index === 2
+              ? "flex h-full md:col-span-2 md:mx-auto md:max-w-[360px] xl:col-span-1 xl:mx-0"
+              : "flex h-full"
+          }
+        >
+          <ServiceCard
+            title={service.title}
+            description={service.description}
+            image={service.image}
+            cta={service.ctaText}
+            ctaHref={service.ctaHref}
+          />
+        </div>
+      ))
+    }
   </div>
 </section>
 
@@ -66,7 +70,11 @@ import { services } from "../data/services";
     /* min-height: 60vh; */
     padding: 4rem 1rem;
   }
-
+  
+  .service-card-center {
+      grid-column: auto;
+    }
+  
   /* Mobile: Single column */
   /* .services-grid {
     display: grid;
@@ -100,8 +108,6 @@ import { services } from "../data/services";
       padding: 0 2rem;
     }
 
-    .service-card-center {
-      grid-column: auto;
-    }
+    
   } */
 </style>
