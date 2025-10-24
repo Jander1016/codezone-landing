@@ -1,95 +1,117 @@
 ---
-/**
- * ContactForm Section
- * Contact form with validation and contact information
- * Two-column layout: info + form
- */
 import GradientText from "../components/GradientText.astro";
 import FormInput from "../components/FormInput.astro";
 import Button from "../components/Button.astro";
 ---
-
-<section id="contact" class="contact-section py-16">
-  <div class="contact-container max-w-7xl mx-auto px-4">
-    <div class="contact-grid">
+<section id="contact" class="py-16 w-full">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
       <!-- Left Column: Contact Info -->
-      <div class="contact-info">
-        <h2 class="contact-heading">
+      <div class="flex flex-col gap-6">
+        <h2 class="text-white font-semibold leading-tight text-3xl sm:text-4xl lg:text-5xl">
           ¿Hablamos de tu próxima <GradientText as="span" gradient="cyan-purple">idea digital</GradientText>?
         </h2>
-        
-        <p class="contact-subtitle">
+
+        <p class="text-gray-300 text-base leading-relaxed max-w-prose">
           Cuéntanos qué necesitas y te ayudaremos a transformar tu idea en una solución digital real.
         </p>
-        
-        <p class="contact-subtitle">
+
+        <p class="text-gray-300 text-base leading-relaxed max-w-prose">
           Nos encanta colaborar con marcas y negocios que buscan crecer a través del diseño y la tecnología.
         </p>
-        
-        <div class="contact-logo">
+
+        <div class="my-6">
           <img
             src="/codezone-logo-color.svg"
             alt="CodeZone"
-            width="200"
-            height="auto"
             loading="lazy"
+            class="w-full max-w-[280px] sm:max-w-[360px] md:max-w-[420px] mx-auto object-contain"
           />
         </div>
-        
-        <div class="contact-details flex flex-row gap-4">
-          <!-- <Button href="mailto:info@codezone.com" variant="outline" size="small">info@codezone.com</Button> -->
-          <Button href="#contact" variant="outline" size="small">+34 691 019 753</Button>
-          <Button href="#contact" variant="outline" size="small">+34 691 019 753</Button>         
-          
+
+        <div class="flex flex-wrap gap-3 items-center mt-2">
+          <Button
+            href="tel:+34691019753"
+            variant="outline"
+            size="small"
+            icon="icon-codezone-contact-phone.svg"
+            className="flex flex-row-reverse gap-2 whitespace-nowrap"
+          >
+            +34 691 019 753
+          </Button>
+
+          <Button
+            href="mailto:info@codezone.com"
+            variant="outline"
+            size="small"
+            icon="icon-codezone-contact-mail.svg"
+            className="flex flex-row-reverse gap-2 whitespace-nowrap"
+          >
+            info@codezone.com
+          </Button>
         </div>
       </div>
-      
+
       <!-- Right Column: Form -->
-      <div class="contact-form-wrapper">
-        <div class="form-card">
-          <h3 class="form-title">FORMULARIO DE CONTACTO</h3>
-          
-          <form id="contact-form" class="contact-form" novalidate>
-            <FormInput
-              type="text"
-              name="nombre"
-              label="Nombre:"
-              placeholder="Tu nombre y apellidos"
-              required={true}
-            />
+      <div class="w-full">
+        <div class="bg-gradient-to from-[#021018]/80 to-[#121D46]/60 border border-cyan-300/20 rounded-2xl p-4 sm:p-6 md:p-8">
+          <h3 class="text-cyan-400 text-center font-semibold tracking-wide mb-6">FORMULARIO DE CONTACTO</h3>
+
+          <form id="contact-form" class="flex flex-col gap-4" novalidate>
+            <div>
+              <FormInput
+                type="text"
+                name="nombre"
+                label="Nombre:"
+                placeholder="Tu nombre y apellidos"
+                required={true}
+              />
+              <span id="error-nombre" class="text-red-400 text-sm mt-1 block" aria-live="polite"></span>
+            </div>
+
+            <div>
+              <FormInput
+                type="email"
+                name="email"
+                label="Email:"
+                placeholder="ejemplo: tu.nombre@example.com"
+                required={true}
+              />
+              <span id="error-email" class="text-red-400 text-sm mt-1 block" aria-live="polite"></span>
+            </div>
+
+            <div>
+              <FormInput
+                type="tel"
+                name="telefono"
+                label="Teléfono:"
+                placeholder="Ejemplo: +34681019753"
+                required={true}
+              />
+              <span id="error-telefono" class="text-red-400 text-sm mt-1 block" aria-live="polite"></span>
+            </div>
+
+            <div>
+              <FormInput
+                type="textarea"
+                name="mensaje"
+                label="Mensaje:"
+                placeholder="Déjanos un mensaje"
+                required={false}
+              />
+              <span id="error-mensaje" class="text-red-400 text-sm mt-1 block" aria-live="polite"></span>
+            </div>
+
+            <div id="form-message" class="hidden" role="alert" aria-live="polite"></div>
             
-            <FormInput
-              type="email"
-              name="email"
-              label="Email:"
-              placeholder="ejemplo: tu.nombre@example.com"
-              required={true}
-            />
-            
-            <FormInput
-              type="tel"
-              name="telefono"
-              label="Teléfono:"
-              placeholder="Ejemplo: +34681019753"
-              required={true}
-            />
-            
-            <FormInput
-              type="textarea"
-              name="mensaje"
-              label="Mensaje:"
-              placeholder="Déjanos un mensaje"
-              required={true}
-            />
-            
-            <div id="form-message" class="form-message" role="alert" aria-live="polite"></div>
-            
-            <Button href="#" variant="solid" size="large">
+            <Button
+              href="#hero"
+              variant="solid"
+              size="large"
+              icon="icon-arrow.svg"
+              className="w-full mt-4"
+            >
               Enviar
-              <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
-                <path d="M5 12h14"></path>
-                <path d="M12 5l7 7-7 7"></path>
-              </svg>
             </Button>
           </form>
         </div>
@@ -98,261 +120,108 @@ import Button from "../components/Button.astro";
   </div>
 </section>
 
-<script>
+<script type="module">
   import { validateField, isFormValid } from '../utils/validation';
   import { sanitizeFormData, RateLimiter } from '../utils/sanitization';
 
-  // Initialize rate limiter
   const rateLimiter = new RateLimiter();
 
-  function initContactForm() {
-    const form = document.getElementById('contact-form') as HTMLFormElement;
-    const formMessage = document.getElementById('form-message');
-    
-    if (!form || !formMessage) return;
+  const setMessage = (el, type, text) => {
+    if (!el) return;
+    el.textContent = text || '';
+    if (!text) {
+      el.className = 'hidden';
+      return;
+    }
+    // Tailwind classes assigned dynamically
+    let base = 'block p-3 rounded-md text-center text-sm';
+    if (type === 'success') base += ' bg-green-50 border border-green-400 text-green-700';
+    else base += ' bg-red-50 border border-red-400 text-red-700';
+    el.className = base;
+  };
 
-    // Real-time validation on blur
-    const inputs = form.querySelectorAll('input, textarea');
+  function initContactForm() {
+    const form = document.getElementById('contact-form');
+    const formMessage = document.getElementById('form-message');
+    if (!form) return;
+    if (formMessage) formMessage.className = 'hidden';
+
+    const inputs = Array.from(form.querySelectorAll('input, textarea'));
+
     inputs.forEach(input => {
       input.addEventListener('blur', () => {
-        const field = input.getAttribute('name');
-        const value = (input as HTMLInputElement).value;
-        
-        if (field) {
-          const error = validateField(field, value);
-          const errorSpan = document.getElementById(`error-${field}`);
-          
-          if (error && errorSpan) {
-            errorSpan.textContent = error.message;
-            input.setAttribute('aria-invalid', 'true');
-            input.classList.add('form-input-error');
-          } else if (errorSpan) {
-            errorSpan.textContent = '';
-            input.setAttribute('aria-invalid', 'false');
-            input.classList.remove('form-input-error');
-          }
+        const name = input.name;
+        if (!name) return;
+        const errorSpan = document.getElementById(`error-${name}`);
+        const error = validateField(name, input.value);
+        if (error && errorSpan) {
+          errorSpan.textContent = error.message;
+          input.setAttribute('aria-invalid', 'true');
+          input.classList.add('border-red-400');
+        } else if (errorSpan) {
+          errorSpan.textContent = '';
+          input.setAttribute('aria-invalid', 'false');
+          input.classList.remove('border-red-400');
         }
       });
     });
 
-    // Form submission
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      // Clear previous messages
-      formMessage.className = 'form-message';
-      formMessage.textContent = '';
+      setMessage(formMessage, null, '');
 
-      // Get form data
-      const formData = new FormData(form);
-      const data: Record<string, string> = {};
-      formData.forEach((value, key) => {
-        data[key] = value.toString();
-      });
+      const data = {};
+      new FormData(form).forEach((v, k) => data[k] = v.toString());
 
       // Validate all fields
       if (!isFormValid(data)) {
-        // Trigger validation display for all fields
         inputs.forEach(input => {
-          const field = input.getAttribute('name');
-          const value = (input as HTMLInputElement).value;
-          
-          if (field) {
-            const error = validateField(field, value);
-            const errorSpan = document.getElementById(`error-${field}`);
-            
-            if (error && errorSpan) {
-              errorSpan.textContent = error.message;
-              input.setAttribute('aria-invalid', 'true');
-              input.classList.add('form-input-error');
-            }
+          const name = input.name;
+          if (!name) return;
+          const error = validateField(name, input.value);
+          const errorSpan = document.getElementById(`error-${name}`);
+          if (error && errorSpan) {
+            errorSpan.textContent = error.message;
+            input.setAttribute('aria-invalid', 'true');
+            input.classList.add('border-red-400');
           }
         });
-        
-        formMessage.className = 'form-message error';
-        formMessage.textContent = 'Por favor, corrige los errores en el formulario.';
+        setMessage(formMessage, 'error', 'Por favor, corrige los errores en el formulario.');
         return;
       }
 
-      // Rate limiting check
+      // Rate limiting
       const userKey = 'contact-form-submission';
       if (!rateLimiter.isAllowed(userKey, 5, 60000)) {
-        formMessage.className = 'form-message error';
-        formMessage.textContent = 'Has enviado demasiados mensajes. Por favor, espera un minuto.';
+        setMessage(formMessage, 'error', 'Has enviado demasiados mensajes. Por favor, espera un minuto.');
         return;
       }
 
-      // Sanitize data
-      const sanitizedData = sanitizeFormData(data);
+      const sanitized = sanitizeFormData(data);
 
-      // Here you would normally send to an API endpoint
-      // For now, we'll simulate a successful submission
       try {
-        // Simulate API call
+        // Simulate API call (replace this with real fetch to your endpoint)
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Success
-        formMessage.className = 'form-message success';
-        formMessage.textContent = '¡Mensaje enviado con éxito! Te contactaremos pronto.';
-        
-        // Clear form
+
+        setMessage(formMessage, 'success', '¡Mensaje enviado con éxito! Te contactaremos pronto.');
         form.reset();
-        
-        // Clear error states
-        inputs.forEach(input => {
-          input.setAttribute('aria-invalid', 'false');
-          input.classList.remove('form-input-error');
-          const field = input.getAttribute('name');
-          if (field) {
-            const errorSpan = document.getElementById(`error-${field}`);
-            if (errorSpan) errorSpan.textContent = '';
-          }
+        inputs.forEach(inp => {
+          inp.setAttribute('aria-invalid', 'false');
+          inp.classList.remove('border-red-400');
+          const es = document.getElementById(`error-${inp.name}`);
+          if (es) es.textContent = '';
         });
-        
-        // Log sanitized data (in production, send to API)
-        console.log('Form submitted:', sanitizedData);
-        
-      } catch (error) {
-        formMessage.className = 'form-message error';
-        formMessage.textContent = 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.';
-        console.error('Form submission error:', error);
+        console.log('Form submitted:', sanitized);
+      } catch (err) {
+        console.error('Form submission error:', err);
+        setMessage(formMessage, 'error', 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.');
       }
     });
   }
 
-  // Initialize on page load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initContactForm);
   } else {
     initContactForm();
   }
 </script>
-
-<style>
-  .contact-section {
-    width: 100%;
-  }
-
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    align-items: start;
-  }
-
-  /* Contact Info Styles */
-  .contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .contact-heading {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: #fcfcfc;
-    line-height: 1.2;
-  }
-
-  .contact-subtitle {
-    font-size: 1rem;
-    color: #d4d4d4;
-    line-height: 1.6;
-  }
-
-  .contact-logo {
-    margin: 2rem 0;
-  }
-
-  /* .contact-details {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-  } */
-
-  .contact-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    background: transparent;
-    border: 2px solid rgba(83, 233, 253, 0.3);
-    border-radius: 100px;
-    color: #53eafd;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: all 300ms ease;
-    width: fit-content;
-  }
-
-  .contact-link:hover {
-    border-color: #53eafd;
-    background: rgba(83, 233, 253, 0.1);
-    transform: translateX(4px);
-  }
-
-  /* Form Styles */
-  .contact-form-wrapper {
-    width: 100%;
-  }
-
-  .form-card {
-    background: linear-gradient(
-      180deg,
-      rgba(2, 6, 24, 0.8) 0%,
-      rgba(18, 29, 70, 0.6) 100%
-    );
-    border: 2px solid rgba(83, 233, 253, 0.2);
-    border-radius: 24px;
-    padding: 2rem;
-  }
-
-  .form-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #53eafd;
-    text-align: center;
-    margin-bottom: 2rem;
-    letter-spacing: 1px;
-  }
-
-  .contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .form-message {
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 500;
-    display: none;
-  }
-
-  .form-message.success {
-    display: block;
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgb(34, 197, 94);
-    color: rgb(34, 197, 94);
-  }
-
-  .form-message.error {
-    display: block;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgb(239, 68, 68);
-    color: rgb(239, 68, 68);
-  }
-
-  /* Desktop Layout */
-  @media (min-width: 1024px) {
-    .contact-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-    }
-
-    .contact-heading {
-      font-size: 3rem;
-    }
-  }
-</style>
