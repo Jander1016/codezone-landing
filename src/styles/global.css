@@ -14,14 +14,14 @@ body {
   font-family: 'Funnel Display', sans-serif;
 }
 
-h1,
+/* h1,
 h2,
 h3,
 h4,
 h5 {
   padding: 0px 0px;
   margin: 0px;
-}
+} */
 
 /* Utilities used by header/hero */
 .muted {
