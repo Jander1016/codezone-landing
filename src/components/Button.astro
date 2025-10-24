@@ -1,17 +1,13 @@
 ---
-/**
- * Button Component
- * Reusable button with gradient animations (PRESERVE EXISTING ANIMATIONS)
- * Supports outline and solid variants with 600ms gradient animation
- */
 interface Props {
   variant?: "outline" | "solid";
   size?: "small" | "medium" | "large";
   href: string;
   icon?: string;
+  className?: string;
 }
 
-const { variant = "solid", size = "medium", href, icon } = Astro.props;
+const { variant = "solid", size = "medium", href, icon, className } = Astro.props;
 
 const sizes = {
   small: "px-4 py-2 text-sm",
@@ -20,9 +16,9 @@ const sizes = {
 };
 ---
 
-<a href={href} class:list={["btn", `btn-${variant}`, sizes[size]]}>
+<a href={href} class:list={["btn", `btn-${variant}`, sizes[size], className]}>
   <slot />
-  {icon && <img src={icon} alt="icon" class="ml-2" />}
+  {icon && <img src={`./${icon}`} alt="icon" class="ml-2" loading="lazy" />}
   <slot name="icon" />
 </a>
 
