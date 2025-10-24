@@ -1,9 +1,4 @@
 ---
-/**
- * Stack Section - "Nuestro Stack Tenológico"
- * Displays technology categories with responsive grid
- * Mobile: 2 columns, Tablet: 3 columns, Desktop: 4 columns
- */
 import GradientText from "../components/GradientText.astro";
 import TechStackCard from "../components/TechStackCard.astro";
 import { techStack } from "../data/techStack";
@@ -11,63 +6,33 @@ import { techStack } from "../data/techStack";
 
 <section id="stack" class="stack-section py-16">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <p class="text-lg font-semibold text-center text-cyan-400 mb-2">Herramientas</p>
-    <GradientText 
-      as="h2" 
-      gradient="cyan-purple"
-      className="text-5xl font-extrabold text-center mb-16"
-    >
-      Nuestro Stack Tecnológico
-    </GradientText>
+    <div class="pb-10">
+      <p class="text-2xl font-semibold text-center text-cyan-400 mb-2">
+        Herramientas
+      </p>
+      <GradientText
+        as="h2"
+        gradient="cyan-purple"
+        className="text-5xl font-extrabold text-center mb-16"
+      >
+        Nuestro Stack Tecnológico
+      </GradientText>
+    </div>
 
-    <div class="stack-grid">
-      {techStack.map((category) => (
-        <TechStackCard
-          name={category.name}
-          icon={category.icon}
-          technologies={category.technologies}
-          description={category.description}
-        />
-      ))}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-x-12 lg:gap-y-12 w-full max-w-[1200px] mx-auto justify-items-center">
+      {
+        techStack.map((category, idx) => (
+          <div class={idx >= techStack.length - 2 ? "lg:col-span-2 lg:justify-self-center w-full flex justify-center" : "w-full flex justify-center"}>
+            <TechStackCard
+              name={category.name}
+              icon={category.icon}
+              technologies={category.technologies}
+              description={category.description}
+            />
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
-
-<style>
-  .stack-section {
-    width: 100%;
-  }
-
-  /* Mobile: 2 columns */
-  .stack-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    justify-items: center;
-  }
-
-  /* Tablet: 3 columns */
-  @media (min-width: 768px) {
-    .stack-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem;
-    }
-  }
-
-  /* Desktop: 4 columns for first 8, then 2 centered */
-  @media (min-width: 1024px) {
-    .stack-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 3rem 2rem;
-    }
-    
-    /* Last 2 items centered */
-    .stack-grid > :nth-last-child(2),
-    .stack-grid > :nth-last-child(1) {
-      grid-column: span 2;
-      justify-self: center;
-    }
-  }
-</style>
+<!-- Tailwind utilities used for responsive grid and spacing. -->
