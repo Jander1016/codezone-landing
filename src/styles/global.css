@@ -2,6 +2,7 @@
 @import "tailwindcss";
 
 :root {
+  --font-sans: 'Funnel Display', sans-serif;
   --primary-blue: #121D46;
   --secondary-blue: #0e3261;
   --light-gray: #FCFCFC;
