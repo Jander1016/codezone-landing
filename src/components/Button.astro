@@ -2,12 +2,15 @@
 interface Props {
   variant?: "outline" | "solid";
   size?: "small" | "medium" | "large";
-  href: string;
+  // Optional href: if present renders an anchor, otherwise renders a button
+  href?: string;
+  // button type when rendered as <button>
+  type?: "button" | "submit" | "reset";
   icon?: string;
   className?: string;
 }
 
-const { variant = "solid", size = "medium", href, icon, className } = Astro.props;
+const { variant = "solid", size = "medium", href, type = "button", icon, className } = Astro.props;
 
 const sizes = {
   small: "px-4 py-2 text-sm",
@@ -16,11 +19,19 @@ const sizes = {
 };
 ---
 
-<a href={href} class:list={["btn", `btn-${variant}`, sizes[size], className]}>
-  <slot />
-  {icon && <img src={`./${icon}`} alt="icon" class="ml-2" loading="lazy" />}
-  <slot name="icon" />
-</a>
+{href ? (
+  <a href={href} class:list={["btn", `btn-${variant}`, sizes[size], className]}>
+    <slot />
+    {icon && <img src={`./${icon}`} alt="icon" class="ml-2" loading="lazy" />}
+    <slot name="icon" />
+  </a>
+) : (
+  <button type={type} class:list={["btn", `btn-${variant}`, sizes[size], className]}>
+    <slot />
+    {icon && <img src={`./${icon}`} alt="icon" class="ml-2" loading="lazy" />}
+    <slot name="icon" />
+  </button>
+)}
 
 <style>
   .btn {
