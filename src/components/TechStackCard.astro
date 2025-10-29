@@ -97,7 +97,8 @@ const { name, icon, technologies, description } = Astro.props;
 
   .tech-list,
   .tech-description {
-    font-size: 0.8125rem;
-    line-height: 1.5;
+    /* font-size overridden by global paragraph baseline (see src/styles/global.css)
+       original: font-size: 0.8125rem; */
+    /* line-height: 1.5; */
   }
 </style>

@@ -1,10 +1,14 @@
-<div
+---
+const idSeparator = Astro.props.id || "separator";
+---
+  <div
+    id={idSeparator}
     class="w-full relative flex justify-center items-end pointer-events-none select-none"
   >
     <img
       src="/separador-desktop.svg"
       alt="Separador decorativo"
-      class="max-w-[1532px]h-[120px] md:h-[136px] object-cover object-bottom"
+      class="max-w-[1532px] w-full object-cover object-bottom"
       loading="lazy"
     />
   </div>

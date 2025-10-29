@@ -1,4 +1,3 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap'); */
 @import "tailwindcss";
 
 :root {
@@ -9,61 +8,79 @@
   --cyan-300: #53EAFD;
   --fuchsia-600: #C800DE;
   --neutral-50: #FAFAFA;
+  --width-max-content: 1528px;
 }
+
+/* Make in-page anchor navigation smooth across the site */
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+p {
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0% !important;
+}
+
+@media (min-width: 1280px) {
+  p {
+    font-size: 16px !important;
+    letter-spacing: 0% !important;
+  }
+}
+
 
 /* funnel-display-300 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap;
   font-family: 'Funnel Display';
   font-style: normal;
   font-weight: 300;
-  src: url('../../fonts/funnel-display-v3-latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('../../fonts/funnel-display-v3-latin-300.woff2') format('woff2');
 }
-/* funnel-display-regular - latin */
+
+/* funnel-display-400 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap;
   font-family: 'Funnel Display';
   font-style: normal;
   font-weight: 400;
-  src: url('../../fonts/funnel-display-v3-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('../../fonts/funnel-display-v3-latin-regular.woff2') format('woff2');
 }
+
 /* funnel-display-500 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap;
   font-family: 'Funnel Display';
   font-style: normal;
   font-weight: 500;
-  src: url('../../fonts/funnel-display-v3-latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('../../fonts/funnel-display-v3-latin-500.woff2') format('woff2');
 }
+
 /* funnel-display-600 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap;
   font-family: 'Funnel Display';
   font-style: normal;
   font-weight: 600;
-  src: url('../../fonts/funnel-display-v3-latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('../../fonts/funnel-display-v3-latin-600.woff2') format('woff2');
 }
+
 /* funnel-display-700 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap;
   font-family: 'Funnel Display';
   font-style: normal;
   font-weight: 700;
-  src: url('../../fonts/funnel-display-v3-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('../../fonts/funnel-display-v3-latin-700.woff2') format('woff2');
 }
+
 /* funnel-display-800 - latin */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: swap;
   font-family: 'Funnel Display';
   font-style: normal;
   font-weight: 800;
-  src: url('../../fonts/funnel-display-v3-latin-800.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  src: url('../../fonts/funnel-display-v3-latin-800.woff2') format('woff2');
 }
-
-
-/* ensure images don't overflow
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-} */
