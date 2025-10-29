@@ -14,7 +14,7 @@ import Button from "../components/Button.astro";
     > -->
       <article class="flex-1 text-center md:text-left md:pr-6">
         <h2
-          class="hero-title text-4xl md:text-5xl xl:text-[90px] font-medium"
+          class="hero-title text-4xl md:text-5xl lg:text-6xl xl:text-[90px] font-medium"
         >
           <span class="hero-title-first block">Hacemos realidad</span>
           <span class="hero-title-second">tu idea digital</span>
@@ -35,9 +35,12 @@ import Button from "../components/Button.astro";
         <div class="animation-circles-container">
           <div class="capa-stack">
             <img
-              class="logo-glow-fx"
+              class="logo-glow-fx animate-logo-pulse"
               src="codezone-logo-header.svg"
               alt="Imagen del logo de iniciales Codezone"
+              fetchpriority="high"
+              loading="eager"
+
             />
           </div>
           <div class="capa-stack">
@@ -45,6 +48,8 @@ import Button from "../components/Button.astro";
               class="neon-circle-img"
               src="neon-circles.svg"
               alt="Imagen de círculos de neón"
+              fetchpriority="high"
+              loading="eager"
             />
           </div>
         </div>
