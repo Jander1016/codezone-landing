@@ -1,6 +1,5 @@
 ---
 import ProcessCard from "../components/ProcessCard.astro";
-import GradientText from "../components/GradientText.astro";
 import { processSteps } from "../data/process";
 ---
 
@@ -15,7 +14,7 @@ import { processSteps } from "../data/process";
     </h2>
 
 
-    <div class="process-steps space-y-16 max-w-5xl mx-auto p-8">
+    <div class="process-steps space-y-28 mx-0 px-0">
       {processSteps.map((step, index) => (
         <ProcessCard
           number={step.number}
@@ -28,40 +27,6 @@ import { processSteps } from "../data/process";
     </div>
   </div>
 </section>
-
-<script>
-  // Scroll-triggered fade-in animations
-  function initProcessAnimations() {
-    const processCards = document.querySelectorAll('.process-card');
-    
-    const observerOptions = {
-      threshold: 0.2,
-      rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.classList.add('fade-in-visible');
-          }, index * 150);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-
-    processCards.forEach(card => {
-      observer.observe(card);
-    });
-  }
-
-  // Initialize on page load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProcessAnimations);
-  } else {
-    initProcessAnimations();
-  }
-</script>
 
 <style>
   .process-section {

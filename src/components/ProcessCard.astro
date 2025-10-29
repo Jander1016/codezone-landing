@@ -1,56 +1,56 @@
 ---
-import type { ProcessCardProps } from '../types/components';
+import type { ProcessCardProps } from "../types/components";
 
 interface Props extends ProcessCardProps {}
 
-const { 
-  number, 
-  title, 
-  description, 
-  image, 
-  isEven = false 
-} = Astro.props;
+const { number, title, description, image, isEven = false } = Astro.props;
 ---
 
-<article class:list={['process-card', { 'process-card-reverse': isEven }]}>
+<article class:list={["process-card", { "process-card-reverse": isEven }]}>
   <div class="process-content">
-    <h3 class="text-2xl text-cyan-300 font-medium">
+    <h3 class="text-4xl text-cyan-300 font-medium">
       {title}
     </h3>
     <p class="process-description">
       {description}
     </p>
   </div>
-  
-  <div class="process-image-wrapper">
-    <div class="process-badge linear-gradient-primary text-3xl text-cyan-300">
+  <div class="process-image-wrapper outer-glow-fx relative max-w-[630px] w-full sm:mx-0">
+    <div
+      class="process-badge absolute -top-6 -left-10 p-4 rounded-4xl z-10 font-medium linear-gradient-primary text-5xl text-cyan-300 flex items-center justify-center w-20 h-15"
+    >
       {number}
     </div>
-    <img 
-      src={image} 
-      alt={title} 
-      class="process-image" 
-      loading="lazy"
-      width="400"
-      height="300"
-    />
+    <div class="card-image overflow-hidden rounded-2xl">
+      <img
+        src={image}
+        alt={title}
+        class="process-image"
+        loading="lazy"
+        width="590"
+        height="190"
+      />
+    </div>
   </div>
 </article>
 
 <style>
-  .process-card {
+  .process-card{
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 600ms ease-out, transform 600ms ease-out;
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 
-  .process-card.fade-in-visible {
-    opacity: 1;
-    transform: translateY(0);
+  .process-image-wrapper {
+    order: 1;
+  }
+
+  .process-content {
+    order: 2;
   }
 
   .process-content {
@@ -60,48 +60,57 @@ const {
     text-align: center;
   }
 
-  .process-badge {
-    position: absolute;
-    top: -20px;
-    left: -40px;
-    width: 64px;
-    height: 46px;
-    border-radius: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: 700;
-    z-index: 10;
-  }
-
- 
   .process-image-wrapper {
     width: 100%;
-    max-width: 500px;
+    max-width: 630px;
     position: relative;
   }
-
-  .process-image {
+  .card-image {
     width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 6;
-    border-radius: 32px;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 20px;
+    display: block;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    display: block;
+    transition: all 600ms ease-in-out;
   }
 
-  .process-image-wrapper:hover .process-image {
-    transform: scale(1.05);
-    transition: transform 300ms ease-in-out;
+  .process-image-wrapper:hover .card-image img {
+    transform: scale(1.15);
   }
 
-   .linear-gradient-primary {
-    background-image: linear-gradient(180deg, rgba(2, 6, 24, 1) 0%, rgba(18, 29, 70, 1) 50%),
+  .linear-gradient-primary {
+    background-image: linear-gradient(
+        180deg,
+        rgba(2, 6, 24, 1) 0%,
+        rgba(18, 29, 70, 1) 50%
+      ),
       linear-gradient(45deg, var(--fuchsia-600), var(--cyan-300));
     background-clip: padding-box, border-box;
     background-origin: border-box;
     border: 2px solid transparent;
+  }
+  /* EFECTO HOVER EN CARD - PRESERVED */
+  .outer-glow-fx {
+    /* -webkit-box-shadow: 0px 0px 0px 0px rgba(83, 233, 253, 0.75);
+    -moz-box-shadow: 0px 0px 0px 0px rgba(83, 233, 253, 0.75); */
+    box-shadow: 0px 0px 0px 0px #02061866;
+    transition: all 600ms ease-in-out;
+  }
+
+  .outer-glow-fx:hover {
+    /* -webkit-box-shadow: 0px 0px 20px 0px rgba(83, 233, 253, 0.6);
+    -moz-box-shadow: 0px 0px 20px 0px rgba(83, 233, 253, 0.6);*/
+    /* box-shadow: 0px 0px 20px 0px rgba(83, 233, 253, 0.6);  */
+    box-shadow: 0px 15px 25px 0px #02061866;
+    border-color: rgba(83, 233, 253, 0.3);
+    transition: all 300ms ease-in-out;
   }
 
   /* Desktop alternating layout */
@@ -110,6 +119,12 @@ const {
       flex-direction: row;
       align-items: center;
       gap: 4rem;
+    }
+
+    /* Reset order on desktop so row-reverse works as intended */
+    .process-image-wrapper,
+    .process-content {
+      order: 0;
     }
 
     .process-card-reverse {
@@ -121,9 +136,9 @@ const {
       text-align: left;
     }
 
-    .process-card-reverse .process-content {
+    /* .process-card-reverse .process-content {
       text-align: right;
-    }
+    } */
 
     .process-description {
       margin: 0;
@@ -140,6 +155,22 @@ const {
     .process-card-reverse .process-badge {
       left: auto;
       right: -20px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .process-badge {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .process-card {
+      margin-inline: auto;
+      padding-inline: 0;
+    }
+
+    .process-content {
+      text-align: left;
     }
   }
 </style>
