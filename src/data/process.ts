@@ -20,31 +20,31 @@ export const processSteps: ProcessStepData[] = [
   {
     number: 2,
     title: 'Definir',
-    description: 'Escuchamos y comprendemos a las personas que dan vida al negocio, profundizando en su contexto, retos y necesidades reales.',
+    description: 'Sintetizamos la información recogida y priorizamos los retos a abordar, conectando los objetivos estratégicos con la identidad única del proyecto, asegurando que cada decisión potencie su carácter diferencial.',
     image: '/03-codezone-definir.webp'
   },
   {
     number: 3,
     title: 'Idear',
-    description: 'Generamos múltiples soluciones creativas y viables que respondan a los desafíos identificados.',
+    description: 'Diseñamos soluciones técnicas alineadas con el negocio, concebidas desde un enfoque creativo y complementadas con propuestas de valor cuya incorporación estará sujeta a la aprobación del cliente.',
     image: '/05-codezone-idear.webp'
   },
   {
     number: 4,
     title: 'Prototipar',
-    description: 'Creamos prototipos tangibles para visualizar y validar las ideas antes de la implementación.',
+    description: 'Elaboramos prototipos y maquetas visuales de las soluciones técnicas que permiten a clientes y usuarios validar, de forma anticipada, que el desarrollo del proyecto se mantiene alineado con lo previamente definido.',
     image: '/02-codezone-prototipar.webp'
   },
   {
     number: 5,
-    title: 'Desarrollar',
-    description: 'Implementamos la solución con metodologías ágiles, asegurando calidad y adaptabilidad.',
+    title: 'Desarrollar y testear',
+    description: 'Convertimos esos prototipos en productos digitales (paso a paso con SCRUM), presentando avances en cada fase para que el cliente los valide y podamos retroalimentarnos de su feedback, perfeccionando al mismo tiempo la experiencia de usuario.',
     image: '/04-codezone-desarrollar.webp'
   },
   {
     number: 6,
     title: 'Acompañar',
-    description: 'Brindamos soporte continuo y evolución del producto según las necesidades del negocio.',
+    description: 'Tras la entrega, acompañamos a nuestros clientes en la evolución de su negocio, respondiendo a nuevas necesidades y cambios estratégicos, con la vocación de convertirnos en un equipo de confianza a largo plazo.',
     image: '/06-codezone-acompañar.webp'
   }
 ];
