@@ -39,17 +39,17 @@ import { services } from "../data/services";
 
   <!-- Responsive Services Grid -->
   <div
-    class={`services-grid grid grid-cols-1 md:place-items-center md:grid-cols-2 xl:grid-cols-3  gap-4 2xl:flex-row justify-center w-full mx-auto`}
+    class={`services-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 justify-center w-full mx-auto`}
   >
     {
       services.map((service, index) => (
          <div
           class={
               index === 2
-                ? "flex h-full md:col-span-2 md:mx-auto md:max-w-[480px] md:max-h-416 xl:col-span-1 xl:mx-0"
+                ? "flex h-full md:col-span-2 md:mx-auto md:max-w-[480px] xl:col-span-1 xl:mx-0"
                 : index === 1
                 ? "flex h-full shift-up-10"
-                : "flex h-full "
+                : "flex h-full w-full"
           }
         >
           <ServiceCard
@@ -85,6 +85,13 @@ import { services } from "../data/services";
     .shift-up-10 {
       transform: translateY(15%);
       z-index: 10;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .services-section {
+      margin: 0;
+      padding: 0;
     }
   }
 
