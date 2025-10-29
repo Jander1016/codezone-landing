@@ -1,233 +1,346 @@
 ---
-/**
- * MobileMenu Component
- * Full-screen mobile navigation overlay with smooth transitions
- * Includes focus trap for keyboard navigation accessibility
- */
-import type { NavItem } from '../types/components';
+import type { NavItem } from "../types/components";
+import Button from "./Button.astro";
 
 interface Props {
   navItems: NavItem[];
+  logoSrc?: string;
+  ctaText?: string;
+  ctaHref?: string;
 }
 
-const { navItems } = Astro.props;
+const {
+  navItems,
+  logoSrc = "/codezone-logo-color.svg",
+} = Astro.props as Props;
 ---
 
-<div id="mobile-menu" class="mobile-menu" aria-hidden="true">
-  <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
-  <nav class="mobile-menu-content" role="navigation" aria-label="Mobile navigation">
-    <button
-      id="mobile-menu-close"
-      class="mobile-menu-close"
-      aria-label="Cerrar menú"
-      type="button"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="32"
-        height="32"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
-    
-    <ul class="mobile-menu-list">
-      {navItems.map((item) => (
-        <li>
-          <a
-            href={item.href}
-            class="mobile-menu-link"
-            aria-current={item.isActive ? 'page' : undefined}
-          >
-            {item.label}
-          </a>
-        </li>
-      ))}
+<button
+  id="mobilemenu-burger"
+  class="mobilemenu-burger"
+  aria-label="Abrir menú"
+  aria-expanded="false"
+  type="button"
+>
+  <div
+    id="mobilemenu-burger-icon"
+    class="mobilemenu-burger-icon"
+    aria-hidden="true"
+  >
+    <span class="line"></span>
+    <span class="line"></span>
+    <span class="line"></span>
+  </div>
+</button>
+
+<div id="mobilemenu-overlay" class="mobilemenu-overlay" aria-hidden="true">
+  <div class="overlay-top">
+    <a class="overlay-brand" href="#hero">
+      <img src={logoSrc} alt="Codezone" width="140" height="20" />
+    </a>
+  </div>
+
+  <div id="mobilemenu-items" class="mobilemenu-items">
+    <ul class="mobilemenu-list">
+      {
+        navItems.map((item, i) => (
+          <li>
+            <a href={item.href} class="mobilemenu-item" data-index={i}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
     </ul>
-  </nav>
+
+    <div class="py-8">
+      <Button
+        href="#contact-separator"
+        variant="outline"
+        size="small"
+        icon="icon-arrow.svg"
+        className="mobilemenu-cta"
+      >
+        Contacto
+      </Button>
+    </div>
+  </div>
 </div>
 
+<!-- serialize nav items so client script can use the authoritative data source -->
+<script type="application/json" id="mobilemenu-data">{JSON.stringify(navItems)}</script>
+
 <script>
-  // Mobile menu functionality
-  function initMobileMenu() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    const mobileMenuClose = document.getElementById('mobile-menu-close');
-    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    
-    if (!mobileMenu || !mobileMenuClose || !mobileMenuOverlay) return;
+  /* @ts-nocheck */
+  document.addEventListener("DOMContentLoaded", () => {
+    const burgerBtn = document.getElementById("mobilemenu-burger");
+    const burgerIcon = document.getElementById("mobilemenu-burger-icon");
+    const overlay = document.getElementById("mobilemenu-overlay");
+    // only select the mobile menu items and the CTA inside the menu
+    const menuItems = document.querySelectorAll('.mobilemenu-item, .mobilemenu-cta');
 
-    // Focus trap elements
-    const focusableElements = mobileMenu.querySelectorAll(
-      'a[href], button:not([disabled])'
-    );
-    const firstFocusable = focusableElements[0] as HTMLElement;
-    const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
+    let isMenuOpen = false;
+    const overlayTransitionDuration = 500; // should match CSS
+    const itemAnimationDuration = 75;
 
-    function openMenu() {
-      mobileMenu?.classList.add('mobile-menu-open');
-      mobileMenu?.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      firstFocusable?.focus();
+    function animateMenuItems(isOpening: boolean) {
+      const elements = Array.from(menuItems);
+      if (!isOpening) elements.reverse();
+
+      elements.forEach((item, index) => {
+        const delay = index * itemAnimationDuration;
+        setTimeout(() => {
+          const el = item as HTMLElement;
+          if (isOpening) {
+            el.style.transform = "translateY(0px)";
+            el.style.opacity = "1";
+          } else {
+            el.style.transform = "translateY(10px)";
+            el.style.opacity = "0";
+          }
+        }, delay);
+      });
     }
 
-    function closeMenu() {
-      mobileMenu?.classList.remove('mobile-menu-open');
-      mobileMenu?.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = 'auto';
-      mobileMenuToggle?.focus();
-    }
+    function toggleMenu() {
+      isMenuOpen = !isMenuOpen;
+      if (burgerIcon) burgerIcon.classList.toggle("active", isMenuOpen);
+      if (burgerBtn)
+        burgerBtn.setAttribute("aria-expanded", String(isMenuOpen));
 
-    // Close button click
-    mobileMenuClose.addEventListener('click', closeMenu);
-
-    // Overlay click to close
-    mobileMenuOverlay.addEventListener('click', closeMenu);
-
-    // Close on menu link click
-    const menuLinks = mobileMenu.querySelectorAll('.mobile-menu-link');
-    menuLinks.forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
-
-    // Escape key to close
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && mobileMenu?.classList.contains('mobile-menu-open')) {
-        closeMenu();
-      }
-    });
-
-    // Focus trap
-    mobileMenu.addEventListener('keydown', (e) => {
-      if (e.key !== 'Tab') return;
-
-      if (e.shiftKey) {
-        if (document.activeElement === firstFocusable) {
-          e.preventDefault();
-          lastFocusable?.focus();
-        }
+      if (isMenuOpen) {
+        overlay?.classList.add("visible");
+        document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          animateMenuItems(true);
+        }, overlayTransitionDuration);
       } else {
-        if (document.activeElement === lastFocusable) {
-          e.preventDefault();
-          firstFocusable?.focus();
-        }
+        animateMenuItems(false);
+        const totalItemDuration = menuItems.length * itemAnimationDuration;
+        setTimeout(() => {
+          overlay?.classList.remove("visible");
+          document.body.style.overflow = "";
+        }, totalItemDuration + 100);
       }
+    }
+
+    if (burgerBtn) burgerBtn.addEventListener("click", toggleMenu);
+
+    // parse nav data serialized server-side so we use the canonical source
+    const navDataEl = document.getElementById('mobilemenu-data');
+    let navData = [];
+    try {
+      if (navDataEl && navDataEl.textContent) navData = JSON.parse(navDataEl.textContent);
+    } catch (err) {
+      navData = [];
+    }
+
+    // function setActiveByHref(href: string | null) {
+    //   const scope = Array.from(document.querySelectorAll('a.nav-link, #mobilemenu-items a'));
+    //   scope.forEach(a => a.removeAttribute('aria-current'));
+    //   if (!href) return;
+    //   const matches = Array.from(document.querySelectorAll(`a.nav-link[href="${href}"], #mobilemenu-items a[href="${href}"]`));
+    //   matches.forEach(m => m.setAttribute('aria-current', 'page'));
+    // }
+
+    // When a menu item is clicked: smooth-scroll to target, set active link, then close menu
+    menuItems.forEach((item) => {
+      item.addEventListener("click", (ev) => {
+        const el = ev.currentTarget;
+        if (!(el instanceof Element)) return;
+        // Prefer the canonical nav data via data-index when available
+        const idx = el.getAttribute('data-index');
+        let href = (el.getAttribute && el.getAttribute('href')) || '';
+        if (idx !== null && navData[idx]) {
+          href = navData[idx].href || href;
+        }
+
+        if (href && href.startsWith('#')) {
+          ev.preventDefault();
+          // contact clears active state
+          // set active link in header (uses canonical nav data)
+          try {
+            // @ts-ignore
+            if (window.setActiveNavHref) window.setActiveNavHref(href);
+          } catch (err) {
+            /* ignore */
+          }
+
+          const target = document.getElementById(href.slice(1));
+
+          if (isMenuOpen) {
+            // close with animation, then scroll once overlay is hidden
+            toggleMenu();
+            const totalItemDuration = menuItems.length * itemAnimationDuration;
+            setTimeout(() => {
+              if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, totalItemDuration + 120);
+          } else {
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } else {
+          // non-anchor or external link: just close menu (navigation will follow naturally)
+          if (isMenuOpen) toggleMenu();
+        }
+      });
     });
-
-    // Expose open function globally for hamburger button
-    (window as any).openMobileMenu = openMenu;
-  }
-
-  // Initialize on page load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileMenu);
-  } else {
-    initMobileMenu();
-  }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isMenuOpen) toggleMenu();
+    });
+  });
 </script>
 
 <style>
-  .mobile-menu {
+  /* Keep the burger fixed in the viewport so it doesn't disappear when the page scrolls or sections change */
+  .mobilemenu-burger {
     position: fixed;
-    top: 0;
-    left: 0;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    z-index: 9999;
+  }
+
+  .mobilemenu-burger-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+    width: 24px;
+    height: 18px;
+    transition: transform 0.3s;
+  }
+
+  .mobilemenu-burger-icon .line {
+    height: 2px;
+    background: currentColor;
+    transition:
+      transform 0.3s,
+      opacity 0.3s;
+  }
+
+  .line:nth-child(1) {
     width: 100%;
-    height: 100vh;
-    z-index: 50;
+  }
+
+  .line:nth-child(2) {
+    width: 80%;
+  }
+
+  .line:nth-child(3) {
+    width: 60%;
+  }
+
+  .mobilemenu-burger-icon.active {
+    width: 80%;
+  }
+
+  .mobilemenu-burger-icon.active .line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    width: 80%;
+  }
+  .mobilemenu-burger-icon.active .line:nth-child(2) {
     opacity: 0;
-    pointer-events: none;
-    transition: opacity 300ms ease-in-out;
+    width: 80%;
+  }
+  .mobilemenu-burger-icon.active .line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    width: 80%;
   }
 
-  .mobile-menu-open {
-    opacity: 1;
-    pointer-events: auto;
+  .mobilemenu-overlay {
+    position: fixed;
+    inset: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: 9998;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.5s cubic-bezier(0.86, 0, 0.07, 1);
+    background: rgba(10, 14, 39, 0.98);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .mobilemenu-overlay.visible {
+    transform: scaleY(1);
   }
 
-  .mobile-menu-overlay {
+  .overlay-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background: rgba(10, 14, 39, 0.95);
-    backdrop-filter: blur(10px);
+    z-index: 66;
+  }
+  .overlay-brand img {
+    display: block;
+    width: 140px;
+    height: auto;
+  }
+  .overlay-close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
   }
 
-  .mobile-menu-content {
-    position: relative;
-    width: 100%;
-    height: 100%;
+  .mobilemenu-items {
+    margin-top: 6.25rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     padding: 2rem;
   }
-
-  .mobile-menu-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
-    border: none;
-    color: #53eafd;
-    cursor: pointer;
-    padding: 0.5rem;
-    transition: transform 300ms ease, color 300ms ease;
-  }
-
-  .mobile-menu-close:hover {
-    transform: rotate(90deg);
-    color: #c800de;
-  }
-
-  .mobile-menu-list {
+  .mobilemenu-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: center;
   }
-
-  .mobile-menu-link {
-    font-size: 1.5rem;
-    font-weight: 500;
+  .mobilemenu-item {
     color: #fcfcfc;
+    font-size: 1.25rem;
     text-decoration: none;
-    padding: 1rem 2rem;
-    min-height: 44px;
-    min-width: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 300ms ease;
-    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      transform 0.3s,
+      opacity 0.3s;
+  }
+  .mobilemenu-cta {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    color: var(--cyan-300, #53eafd);
+    background: transparent;
+    border: 2px solid var(--fuchsia-600, #c800de);
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      transform 0.3s,
+      opacity 0.3s;
+  }
+  .item-visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
   }
 
-  .mobile-menu-link:hover,
-  .mobile-menu-link:focus {
-    color: #53eafd;
-    outline: 2px solid #53eafd;
-    outline-offset: 4px;
-    border-radius: 8px;
-  }
-
-  .mobile-menu-link[aria-current="page"] {
-    color: #c800de;
-  }
-
-  @media (min-width: 768px) {
-    .mobile-menu {
+  @media (min-width: 1024px) {
+    .mobilemenu-burger,
+    .mobilemenu-overlay {
       display: none;
     }
   }

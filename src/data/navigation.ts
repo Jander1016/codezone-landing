@@ -12,17 +12,17 @@ export interface NavItem {
 export const mainNavigation: NavItem[] = [
   {
     label: 'Tecnología a medida',
-    href: '#services',
+    href: '#services-separator',
     isActive: false
   },
   {
     label: 'Cómo lo hacemos',
-    href: '#process',
+    href: '#process-separator',
     isActive: false
   },
   {
     label: 'Nuestro stack tecnológico',
-    href: '#stack',
+    href: '#stack-separator',
     isActive: false
   }
 ];

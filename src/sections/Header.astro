@@ -1,96 +1,179 @@
 ---
 import Button from "../components/Button.astro";
-import MobileMenu from "../components/MobileMenu.astro";
 import { mainNavigation } from "../data/navigation";
+import MobileMenu from "../components/MobileMenu.astro";
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm" style="--header-height:72px">
-  <div class="container max-w-[1528px] mx-auto mt-2 px-4 bg-primary-blue/90 rounded-full flex justify-between items-center p-2 shadow-lg linear-gradient-primary">
-    <a class="brand" href="/">
+<header
+  class="fixed top-0 px-2 left-0 right-0 z-50 backdrop-blur-sm"
+  style="--header-height:72px"
+>
+  <div
+    class="container max-w-[1528px] h-18 p-4 mx-auto mt-4 px-4 bg-primary-blue/90 rounded-full flex justify-between items-center shadow-lg linear-gradient-primary xl:p-4"
+  >
+    <a class="brand" href="#hero">
       <img
         src="/codezone-logo-color.svg"
         alt="Logo CodeZone"
-        width="180"
-        height="26"
+        width="180px"
+        height="26px"
+        loading="eager"
       />
     </a>
 
     <!-- Desktop Navigation -->
-    <nav class="desktop-nav text-neutral-50 text-lg font-medium" aria-label="Main navigation">
+    <nav
+      class="desktop-nav text-neutral-50 text-lg font-medium"
+      aria-label="Main navigation"
+    >
       <ul class="flex gap-6">
-        {mainNavigation.map((item) => (
-          <li>
-            <a 
-              href={item.href} 
-              class="hover:text-cyan-300 transition-colors"
-              aria-current={item.isActive ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
+        {
+          mainNavigation.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class={`nav-link hover:text-cyan-300 transition-colors`}
+                aria-current={item.isActive ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
 
-    <!-- Desktop CTA Button -->
     <div class="desktop-cta">
-      <Button href="#contact" variant="outline" size="small" icon="icon-arrow.svg">Contacto</Button>
+      <Button
+        href="#contact"
+        variant="outline"
+        size="small"
+        icon="icon-arrow.svg">Contacto</Button>
     </div>
-
-    <!-- Mobile Menu Toggle -->
-    <button
-      id="mobile-menu-toggle"
-      class="mobile-menu-toggle"
-      aria-label="Abrir menú de navegación"
-      aria-expanded="false"
-      type="button"
-      onclick="window.openMobileMenu?.()"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
-    </button>
-    </div>
+    <!-- Mobile menu component (encapsulated, responsive) -->
+    <MobileMenu navItems={mainNavigation} />
+  </div>
 </header>
 
-<!-- Mobile Menu Component -->
-<MobileMenu navItems={mainNavigation} />
+<script>
+  /* @ts-nocheck */
+  function initNavActiveLinks() {
+    const links = Array.from(
+      document.querySelectorAll('a[href^="#"].nav-link, #mobilemenu-items a'),
+    );
+
+    if (!links.length) return;
+
+    // Map href -> link element (may be multiple: desktop + mobile)
+    const linkMap = new Map();
+    links.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
+      if (!linkMap.has(href)) linkMap.set(href, []);
+      linkMap.get(href).push(link);
+
+      // click handler: smooth scroll and set active
+      link.addEventListener("click", (e) => {
+        if (href.startsWith("#")) {
+          e.preventDefault();
+          const id = href.slice(1);
+          const target = document.getElementById(id);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+          if (href === "#contact-separator") {
+            setActiveByHref(null);
+          } else {
+            setActiveByHref(href);
+          }
+        }
+      });
+    });
+
+    /**
+     * @param {string|null} href
+     */
+    // @ts-ignore: allow dynamic typing for DOM helper
+    function setActiveByHref(href) {
+      // remove from all
+      for (const l of links) {
+        /** @type {HTMLElement} */ (l).removeAttribute("aria-current");
+      }
+      if (!href) return; // clear active when no href provided
+      const same = linkMap.get(href) || [];
+      for (const l of same) {
+        /** @type {HTMLElement} */ (l).setAttribute("aria-current", "page");
+      }
+    }
+
+    // IntersectionObserver to update active link on scroll
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px 0px -60% 0px",
+      threshold: 0,
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          if (!id) return;
+          // Do not mark the contact section as active
+          if (id === "contact-separator") return;
+          const href = `#${id}`;
+          setActiveByHref(href);
+        }
+      });
+    }, observerOptions);
+
+    // Observe targets that match the hrefs
+    linkMap.forEach((_v, href) => {
+      if (!href || !href.startsWith("#")) return;
+      const id = href.slice(1);
+      const target = document.getElementById(id);
+      if (target) observer.observe(target);
+    });
+
+    // Expose helper globally so other components (mobile menu) can set active link
+    try {
+      // @ts-ignore
+      window.setActiveNavHref = setActiveByHref;
+    } catch (err) {
+      // ignore
+    }
+
+    // Global click handler to catch clicks on other anchors to #contact (e.g. .btn)
+    document.addEventListener("click", (e) => {
+      const maybeElement = e.target;
+      const anchor =
+        maybeElement instanceof Element
+          ? maybeElement.closest('a[href="#contact-separator"]')
+          : null;
+      if (anchor) {
+        setTimeout(() => setActiveByHref(null), 0);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initNavActiveLinks);
+  } else {
+    initNavActiveLinks();
+  }
+</script>
 
 <style>
   .linear-gradient-primary {
-    background-image: linear-gradient(180deg, rgba(2, 6, 24, 1) 0%, rgba(18, 29, 70, 1) 50%),
+    background-image: linear-gradient(
+        180deg,
+        rgba(2, 6, 24, 1) 0%,
+        rgba(18, 29, 70, 1) 50%
+      ),
       linear-gradient(45deg, var(--fuchsia-600), var(--cyan-300));
     background-clip: padding-box, border-box;
     background-origin: border-box;
     border: 2px solid transparent;
   }
 
-  /* Mobile-first defaults: show mobile toggle, hide desktop nav/cta */
-  .mobile-menu-toggle {
-    display: block;
-    background: transparent;
-    border: none;
-    color: #53eafd;
-    cursor: pointer;
-    padding: 0.5rem;
-    transition: color 300ms ease;
-  }
-
-  .mobile-menu-toggle:hover {
-    color: #c800de;
-  }
 
   .desktop-nav,
   .desktop-cta {
@@ -102,15 +185,20 @@ import { mainNavigation } from "../data/navigation";
     height: auto;
   }
 
-  /* Desktop and up: show desktop navigation and CTA, hide mobile toggle */
-  @media (min-width: 768px) {
+  .nav-link[aria-current="page"] {
+    color: #53eafd;
+  }
+
+  .desktop-nav a,
+  .desktop-cta .btn {
+    font-size: 18px;
+    transition: color 200ms ease;
+  }
+
+  @media (min-width: 1024px) {
     .desktop-nav,
     .desktop-cta {
       display: block;
-    }
-
-    .mobile-menu-toggle {
-      display: none;
     }
 
     .brand img {
