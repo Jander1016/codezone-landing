@@ -17,42 +17,34 @@ import ContactForm from "../sections/ContactForm.astro";
 ---
 
 <Layout>
-	<!-- Header and Hero with preserved animations -->
-	<!-- Header moved out of GradientOverlay so position:fixed works correctly -->
 	<Header />
 	<GradientOverlay position={"top"}>
 		<Hero />
 	</GradientOverlay>
 
-	<Separator />
+	<Separator id="services-separator" />
 
-	<!-- Services Section with preserved card animations -->
 	<GradientOverlay2>
 		<Services />
 	</GradientOverlay2>
 
-	<Separator />
+	<Separator id="process-separator" />
 
-	<!-- Process Section with scroll animations -->
-	<GradientOverlay position="center">
+	<GradientOverlay>
 		<Process />
 	</GradientOverlay>
 
-	<Separator />
+	<Separator id="stack-separator" />
 
-	<!-- Tech Stack Section -->
 	<GradientOverlay2>
 		<Stack />
 	</GradientOverlay2>
 
-	<Separator />
+	<Separator id="contact-separator" />
 
-	<!-- Contact Form Section -->
 	<GradientOverlay>
 		<ContactForm />
 	</GradientOverlay>
-
-	<Separator />
 	
 	<GradientOverlay2 position="bottom">
 		<Footer />
