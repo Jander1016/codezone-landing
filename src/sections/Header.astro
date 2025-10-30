@@ -9,7 +9,7 @@ import MobileMenu from "../components/MobileMenu.astro";
   style="--header-height:72px"
 >
   <div
-    class="container max-w-[1528px] h-18 p-4 mx-auto mt-4 px-4 bg-primary-blue/90 rounded-full flex justify-between items-center shadow-lg linear-gradient-primary xl:p-4"
+    class="container max-w-[1528px] h-18 mx-auto mt-4 px-4 flex justify-between items-center shadow-lg rounded-full glass-gradient-border backdrop-blur-md bg-transparent xl:p-4"
   >
     <a class="brand" href="#hero">
       <img
@@ -26,13 +26,13 @@ import MobileMenu from "../components/MobileMenu.astro";
       class="desktop-nav text-neutral-50 text-lg font-medium"
       aria-label="Main navigation"
     >
-      <ul class="flex gap-6">
+      <ul class="flex gap-6 blur-menu">
         {
           mainNavigation.map((item) => (
             <li>
               <a
                 href={item.href}
-                class={`nav-link hover:text-cyan-300 transition-colors`}
+                class={`nav-link hover:text-cyan-300  backdrop-blur-none duration-600 ease`}
                 aria-current={item.isActive ? "page" : undefined}
               >
                 {item.label}
@@ -45,10 +45,11 @@ import MobileMenu from "../components/MobileMenu.astro";
 
     <div class="desktop-cta">
       <Button
-        href="#contact"
+        href="#contact-separator"
         variant="outline"
         size="small"
-        icon="icon-arrow.svg">Contacto</Button>
+        icon="icon-arrow.svg">Contacto</Button
+      >
     </div>
     <!-- Mobile menu component (encapsulated, responsive) -->
     <MobileMenu navItems={mainNavigation} />
@@ -162,7 +163,7 @@ import MobileMenu from "../components/MobileMenu.astro";
 </script>
 
 <style>
-  .linear-gradient-primary {
+  /* .linear-gradient-primary {
     background-image: linear-gradient(
         180deg,
         rgba(2, 6, 24, 1) 0%,
@@ -171,9 +172,30 @@ import MobileMenu from "../components/MobileMenu.astro";
       linear-gradient(45deg, var(--fuchsia-600), var(--cyan-300));
     background-clip: padding-box, border-box;
     background-origin: border-box;
+
     border: 2px solid transparent;
+  } */
+
+  .glass-gradient-border {
+    position: relative;
+    z-index: 0;
   }
 
+  .glass-gradient-border::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    padding: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(45deg, var(--fuchsia-600), var(--cyan-300));
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
 
   .desktop-nav,
   .desktop-cta {
@@ -193,6 +215,21 @@ import MobileMenu from "../components/MobileMenu.astro";
   .desktop-cta .btn {
     font-size: 18px;
     transition: color 200ms ease;
+  }
+
+  .nav-link {
+    filter: blur(0);
+    transition: all 0.6s ease;
+  }
+
+  .blur-menu:has(.nav-link:hover) .nav-link:not(:hover) {
+    opacity: 0.3;
+    filter: blur(2px);
+  }
+
+  .nav-link:hover {
+    color: #53eafd;
+    filter: blur(0);
   }
 
   @media (min-width: 1024px) {
