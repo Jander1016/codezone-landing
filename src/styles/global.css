@@ -8,8 +8,12 @@
   --cyan-300: #53EAFD;
   --fuchsia-600: #C800DE;
   --neutral-50: #FAFAFA;
-  --cz-dark-base:#020618;
+  --cz-dark-base: #020618;
   --cz-default-gradient: linear-gradient(90deg, #C800DE 0%, #53EAFD 100%);
+  --cz-border-gradient: linear-gradient(90deg,
+      #c800de 10%,
+      #53eafd 50%,
+      #c800de 90%);
   --width-max-content: 1528px;
 }
 
@@ -19,19 +23,32 @@ html {
   scrollbar-width: none;
 }
 
-p,a {
+p,
+a {
   font-size: 18px !important;
   line-height: 1.5 !important;
   letter-spacing: 0% !important;
 
 }
 
-p, span,h1, h2, h3, h4, h5, h6, li, a, button {
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+a,
+button {
   text-wrap: pretty !important;
 }
 
 @media (max-width: 1280px) {
-  p,a {
+
+  p,
+  a {
     font-size: 16px !important;
     letter-spacing: 0% !important;
   }
