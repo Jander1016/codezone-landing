@@ -9,6 +9,7 @@
   --fuchsia-600: #C800DE;
   --neutral-50: #FAFAFA;
   --cz-dark-base:#020618;
+  --cz-default-gradient: linear-gradient(90deg, #C800DE 0%, #53EAFD 100%);
   --width-max-content: 1528px;
 }
 
