@@ -8,6 +8,7 @@
   --cyan-300: #53EAFD;
   --fuchsia-600: #C800DE;
   --neutral-50: #FAFAFA;
+  --cz-dark-base:#020618;
   --width-max-content: 1528px;
 }
 
@@ -17,14 +18,19 @@ html {
   scrollbar-width: none;
 }
 
-p {
+p,a {
   font-size: 18px !important;
   line-height: 1.5 !important;
   letter-spacing: 0% !important;
+
+}
+
+p, span,h1, h2, h3, h4, h5, h6, li, a, button {
+  text-wrap: pretty !important;
 }
 
 @media (max-width: 1280px) {
-  p {
+  p,a {
     font-size: 16px !important;
     letter-spacing: 0% !important;
   }
