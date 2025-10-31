@@ -199,7 +199,7 @@ const {
     height: 44px;
     display: flex;
     align-items: center;
-    /* background: transparent; */
+    justify-content: center;
     border: none;
     z-index: 9999;
   }
@@ -255,15 +255,19 @@ const {
     position: fixed;
     inset: 0;
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     z-index: 9998;
     transform: scaleY(0);
     transform-origin: top;
     transition: transform 0.5s cubic-bezier(0.86, 0, 0.07, 1);
-    background: rgba(10, 14, 39, 0.98);
+    background: var(--primary-blue);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    top: -20px;
+    left: -10px;
+    right: 0;
+    bottom: 0;
   }
   .mobilemenu-overlay.visible {
     transform: scaleY(1);

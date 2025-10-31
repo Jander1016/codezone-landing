@@ -37,10 +37,8 @@ const { name, icon, technologies, description } = Astro.props;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    /* padding: 1.5rem 1rem; */
     background: transparent;
     transition: transform 300ms ease-in-out;
-    max-width: 250px;
     width: 100%;
   }
 
@@ -97,8 +95,6 @@ const { name, icon, technologies, description } = Astro.props;
 
   .tech-list,
   .tech-description {
-    /* font-size overridden by global paragraph baseline (see src/styles/global.css)
-       original: font-size: 0.8125rem; */
-    /* line-height: 1.5; */
+    font-size: 14px !important;
   }
 </style>
