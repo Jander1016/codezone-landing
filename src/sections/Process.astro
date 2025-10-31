@@ -4,17 +4,17 @@ import { processSteps } from "../data/process";
 ---
 
 <section id="process" class="process-section">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
-    <h2 class="text-3xl font-semibold text-center text-cyan-400 mb-2">
+  <div class="max-w-332 mx-auto px-1 lg:px-6">
+    <h2 class="text-lg lg:text-2xl font-medium text-center text-cyan-400 mb-2">
       Design Thinking + Scrum
     </h2>
-  
-    <h2 class="text-4xl md:text-5xl font-medium text-center mb-12">
+
+    <h2 class="text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-12 md:mb-14 lg:mb-16">
       ¿Cómo lo hacemos?
     </h2>
 
 
-    <div class="process-steps space-y-20 mx-0 px-0">
+    <div class="flex flex-col process-steps space-y-20 md:space-y-24 lg:space-y-28 mx-0 px-0">
       {processSteps.map((step, index) => (
         <ProcessCard
           number={step.number}
