@@ -45,7 +45,12 @@ const {
       {
         navItems.map((item, i) => (
           <li>
-            <a href={item.href} class="mobilemenu-item" data-index={i}>
+            <a
+              href={item.href}
+              class="mobilemenu-item"
+              data-index={i}
+              aria-current={item.isActive ? "page" : undefined}
+            >
               {item.label}
             </a>
           </li>
@@ -79,9 +84,11 @@ const {
     // only select the mobile menu items and the CTA inside the menu
     const menuItems = document.querySelectorAll('.mobilemenu-item, .mobilemenu-cta');
 
-    let isMenuOpen = false;
-    const overlayTransitionDuration = 500; // should match CSS
-    const itemAnimationDuration = 75;
+  let isMenuOpen = false;
+  // increase overlay duration for a smoother open/close and keep it in sync with CSS
+  const overlayTransitionDuration = 700; // ms - should match CSS
+  // slightly larger stagger for a softer feel
+  const itemAnimationDuration = 110;
 
     function animateMenuItems(isOpening: boolean) {
       const elements = Array.from(menuItems);
@@ -135,13 +142,13 @@ const {
       navData = [];
     }
 
-    // function setActiveByHref(href: string | null) {
-    //   const scope = Array.from(document.querySelectorAll('a.nav-link, #mobilemenu-items a'));
-    //   scope.forEach(a => a.removeAttribute('aria-current'));
-    //   if (!href) return;
-    //   const matches = Array.from(document.querySelectorAll(`a.nav-link[href="${href}"], #mobilemenu-items a[href="${href}"]`));
-    //   matches.forEach(m => m.setAttribute('aria-current', 'page'));
-    // }
+    function setActiveByHref(href: string | null) {
+      const scope = Array.from(document.querySelectorAll('a.nav-link, #mobilemenu-items a'));
+      scope.forEach(a => a.removeAttribute('aria-current'));
+      if (!href) return;
+      const matches = Array.from(document.querySelectorAll(`a.nav-link[href="${href}"], #mobilemenu-items a[href="${href}"]`));
+      matches.forEach(m => m.setAttribute('aria-current', 'page'));
+    }
 
     // When a menu item is clicked: smooth-scroll to target, set active link, then close menu
     menuItems.forEach((item) => {
@@ -211,15 +218,15 @@ const {
     align-items: end;
     width: 24px;
     height: 18px;
-    transition: transform 0.3s;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .mobilemenu-burger-icon .line {
     height: 2px;
     background: currentColor;
     transition:
-      transform 0.3s,
-      opacity 0.3s;
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .line:nth-child(1) {
@@ -259,7 +266,8 @@ const {
     z-index: 9998;
     transform: scaleY(0);
     transform-origin: top;
-    transition: transform 0.5s cubic-bezier(0.86, 0, 0.07, 1);
+  /* smoother curve and longer duration to feel less abrupt */
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     background: var(--primary-blue);
     display: flex;
     flex-direction: column;
@@ -319,8 +327,13 @@ const {
     opacity: 0;
     transform: translateY(10px);
     transition:
-      transform 0.3s,
-      opacity 0.3s;
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  .mobilemenu-item[aria-current="page"] {
+    color: var(--cyan-300, #53eafd);
+    font-weight: 600;
   }
   .mobilemenu-cta {
     margin-top: 1.5rem;
@@ -333,8 +346,8 @@ const {
     opacity: 0;
     transform: translateY(10px);
     transition:
-      transform 0.3s,
-      opacity 0.3s;
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .item-visible {
     opacity: 1 !important;
