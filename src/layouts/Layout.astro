@@ -1,4 +1,7 @@
 ---
+import GradientOverlay from "../components/GradientOverlay.astro";
+import Footer from "../sections/Footer.astro";
+import Header from "../sections/Header.astro";
 import "../styles/global.css";
 ---
 
@@ -7,8 +10,12 @@ import "../styles/global.css";
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/svg+xml" href="/codezone-logo-header.svg" />
 		<title>CodeZone</title>
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href="/codezone-logo-header.svg"
+		/>
 		<meta
 			name="keywords"
 			content="code, projects, experiments, coding, development"
@@ -21,7 +28,18 @@ import "../styles/global.css";
 		/>
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://yourwebsite.com" />
-		<meta property="og:image" content="https://yourwebsite.com/og-image.jpg" />
+		<meta
+			property="og:image"
+			content="https://yourwebsite.com/og-image.jpg"
+		/>
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="CodeZone" />
+		<meta name="twitter:site" content="@yourtwitterhandle" />
+		<meta
+			name="twitter:description"
+			content="Desarrollo de páginas web, software a medida e integración de sistemas(APIs)."
+		/>
 	</head>
 	<body>
 		<!-- Preloader overlay (uses GSAP via /src/scripts/preloader.ts) -->
@@ -38,7 +56,17 @@ import "../styles/global.css";
 			class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
 		>
 			<div class="relative z-2">
+				<Header />
 				<slot />
+				<GradientOverlay
+					position="bottom"
+					size="small"
+					color="fuchsia"
+					opacity="medium"
+					blur="high"
+				>
+					<Footer />
+				</GradientOverlay>
 			</div>
 		</div>
 
@@ -68,32 +96,57 @@ import "../styles/global.css";
 		/* background-size: 340px, cover; */
 	}
 
-/* Preloader styles (minimal, adapted from provided example) */
-.preloader-overlay {
-	position: fixed;
-	inset: 0;
-	width: 100%;
-	height: 100vh;
-	background: #080c1d;
-	z-index: 9999;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	overflow: hidden;
-}
-.loading-content {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	color: #f0f8ff;
-	z-index: 10001;
-}
-.preloader-logo img { width: 125px; height: auto; margin-bottom: 12px; }
-.loading-text { color: #53EAFD; margin-bottom: 12px; }
-.progress-bar-container { width: 300px; height: 4px; background: rgba(83,234,253,0.12); border-radius: 4px; overflow: hidden; }
-.progress-bar { height: 100%; width: 0%; background: #53EAFD; box-shadow: 0 0 15px 2px #53EAFD; transition: width 0.25s linear; }
+	/* Preloader styles (minimal, adapted from provided example) */
+	.preloader-overlay {
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		height: 100vh;
+		background: #080c1d;
+		z-index: 9999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+	}
+	.loading-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		color: #f0f8ff;
+		z-index: 10001;
+	}
+	.preloader-logo img {
+		width: 125px;
+		height: auto;
+		margin-bottom: 12px;
+	}
+	.loading-text {
+		color: #53eafd;
+		margin-bottom: 12px;
+	}
+	.progress-bar-container {
+		width: 300px;
+		height: 4px;
+		background: rgba(83, 234, 253, 0.12);
+		border-radius: 4px;
+		overflow: hidden;
+	}
+	.progress-bar {
+		height: 100%;
+		width: 0%;
+		background: #53eafd;
+		box-shadow: 0 0 15px 2px #53eafd;
+		transition: width 0.25s linear;
+	}
 
-/* initial hidden state for animated elements (kept for compatibility with scripts) */
-.topnav, .hero-title, .hero-subtitle, .btn-cta, .hero-image, .separator { opacity: 0; }
-
+	/* initial hidden state for animated elements (kept for compatibility with scripts) */
+	.topnav,
+	.hero-title,
+	.hero-subtitle,
+	.btn-cta,
+	.hero-image,
+	.separator {
+		opacity: 0;
+	}
 </style>
