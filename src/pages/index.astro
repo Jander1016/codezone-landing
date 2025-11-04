@@ -4,7 +4,6 @@
  * Integrates all sections with preserved animations
  */
 import GradientOverlay from "../components/GradientOverlay.astro";
-import GradientOverlay2 from "../components/GradientOverlay2.astro";
 import Separator from "../components/Separator.astro";
 import Layout from "../layouts/Layout.astro";
 import Footer from "../sections/Footer.astro";
@@ -16,37 +15,43 @@ import Stack from "../sections/Stack.astro";
 import ContactForm from "../sections/ContactForm.astro";
 ---
 
-<Layout>
-	<Header />
-	<!-- <GradientOverlay position={"top"}> -->
+<Layout class="overflow-hiden">
+	<!-- Hero: Personaliza aquí -->
+	<GradientOverlay position="top" size="medium" color="cyan" opacity="medium" blur="high">
+		<Header />
 		<Hero />
-	<!-- </GradientOverlay> -->
+	</GradientOverlay>
 
 	<Separator id="services-separator" />
 
-	<!-- <GradientOverlay2> -->
+	<!-- Services: Personaliza aquí -->
+	<GradientOverlay position="center" size="medium" color="fuchsia" opacity="medium" blur="high">
 		<Services />
-	<!-- </GradientOverlay2> -->
+	</GradientOverlay>
 
 	<Separator id="process-separator" />
 
-	<!-- <GradientOverlay> -->
+	<!-- Process: Personaliza aquí -->
+	<GradientOverlay position="center" size="medium" color="cyan" opacity="medium" blur="high">
 		<Process />
-	<!-- </GradientOverlay> -->
+	</GradientOverlay>
 
 	<Separator id="stack-separator" />
 
-	<!-- <GradientOverlay2> -->
+	<!-- Stack: Personaliza aquí -->
+	<GradientOverlay position="center" size="medium" color="fuchsia" opacity="low" blur="high">
 		<Stack />
-	<!-- </GradientOverlay2> -->
+	</GradientOverlay>
 
 	<Separator id="contact-separator" />
 
-	<!-- <GradientOverlay> -->
+	<!-- Contact: Personaliza aquí -->
+	<GradientOverlay position="center" size="small" color="cyan" opacity="medium" blur="high">
 		<ContactForm />
-	<!-- </GradientOverlay> -->
-	
-	<!-- <GradientOverlay2 position="bottom"> -->
+	</GradientOverlay>
+
+	<!-- Footer: Personaliza aquí -->
+	<GradientOverlay position="bottom" size="small" color="fuchsia" opacity="medium" blur="high">
 		<Footer />
-	<!-- </GradientOverlay2> -->
+	</GradientOverlay>
 </Layout>

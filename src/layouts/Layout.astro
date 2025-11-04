@@ -7,7 +7,7 @@ import "../styles/global.css";
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="/codezone-logo-header.svg" />
 		<title>CodeZone</title>
 		<meta
 			name="keywords"
@@ -24,6 +24,15 @@ import "../styles/global.css";
 		<meta property="og:image" content="https://yourwebsite.com/og-image.jpg" />
 	</head>
 	<body>
+		<!-- Preloader overlay (uses GSAP via /src/scripts/preloader.ts) -->
+		<!-- <div id="preloader" class="preloader-overlay">
+			<div class="loading-content">
+				<div class="preloader-logo"><img src="/codezone-logo-header.svg" alt="CodeZone" /></div>
+				<p class="loading-text">Cargando CodeZone</p>
+				<div class="progress-bar-container"><div id="progressBar" class="progress-bar"></div></div>
+			</div>
+		</div> -->
+
 		<div
 			id="background-mask"
 			class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
@@ -32,6 +41,8 @@ import "../styles/global.css";
 				<slot />
 			</div>
 		</div>
+
+		<!-- <script type="module" src="/src/scripts/preloader.ts"></script> -->
 	</body>
 </html>
 
@@ -39,24 +50,50 @@ import "../styles/global.css";
 	body {
 		background: #000;
 		font-family: "Funnel Display", system-ui, sans-serif;
-		/* font-optical-sizing: auto;
-		font-weight: 300;
-		font-style: normal; */
+		/* font-optical-sizing: auto; */
 		letter-spacing: 0.5px;
 		color: var(--neutral-50);
 		margin: 0;
 		font-size: 18px;
-		/* font-size: clamp(1rem, 0.9591rem + 0.1818vw, 1.25rem); */
 		/* width: 100%;
 		height: 100%; */
-		background: url(/grid-100x100.svg), var(--primary-blue);
+		/* background: url(/grid-100x100.svg), var(--primary-blue); */
 	}
 
 	#background-mask {
 		width: 100%;
 		min-height: 100%;
 		margin: 0px;
-		/* background: url(/grid-100x100.svg), var(--primary-blue); */
+		background: url(/grid-100x100.svg), var(--primary-blue);
 		/* background-size: 340px, cover; */
 	}
+
+/* Preloader styles (minimal, adapted from provided example) */
+.preloader-overlay {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100vh;
+	background: #080c1d;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+.loading-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	color: #f0f8ff;
+	z-index: 10001;
+}
+.preloader-logo img { width: 125px; height: auto; margin-bottom: 12px; }
+.loading-text { color: #53EAFD; margin-bottom: 12px; }
+.progress-bar-container { width: 300px; height: 4px; background: rgba(83,234,253,0.12); border-radius: 4px; overflow: hidden; }
+.progress-bar { height: 100%; width: 0%; background: #53EAFD; box-shadow: 0 0 15px 2px #53EAFD; transition: width 0.25s linear; }
+
+/* initial hidden state for animated elements (kept for compatibility with scripts) */
+.topnav, .hero-title, .hero-subtitle, .btn-cta, .hero-image, .separator { opacity: 0; }
+
 </style>
