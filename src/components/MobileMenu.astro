@@ -116,17 +116,43 @@ const {
         burgerBtn.setAttribute("aria-expanded", String(isMenuOpen));
 
       if (isMenuOpen) {
-        overlay?.classList.add("visible");
+        if (overlay) {
+          overlay.classList.add("visible");
+          overlay.setAttribute('aria-hidden', 'false');
+          overlay.setAttribute('role', 'dialog');
+          overlay.setAttribute('aria-modal', 'true');
+          try { (overlay as any).inert = false; } catch (e) { /* ignore if not supported */ }
+        }
         document.body.style.overflow = "hidden";
         setTimeout(() => {
           animateMenuItems(true);
+          // focus first menu item for keyboard users
+          const first = document.querySelector('.mobilemenu-item, .mobilemenu-cta') as HTMLElement | null;
+          if (first) first.focus();
         }, overlayTransitionDuration);
       } else {
         animateMenuItems(false);
         const totalItemDuration = menuItems.length * itemAnimationDuration;
         setTimeout(() => {
-          overlay?.classList.remove("visible");
+          if (overlay) {
+            overlay.classList.remove("visible");
+            overlay.setAttribute('aria-hidden', 'true');
+            try { (overlay as any).inert = true; } catch (e) { /* ignore */ }
+            overlay.removeAttribute('role');
+            overlay.removeAttribute('aria-modal');
+          }
           document.body.style.overflow = "";
+          // if focus remained inside the overlay, move it back to the burger button
+          try {
+            const active = document.activeElement as Element | null;
+            if (active && overlay && overlay.contains(active)) {
+              if (burgerBtn) {
+                (burgerBtn as HTMLElement).focus();
+              } else {
+                (document.body as HTMLElement).focus();
+              }
+            }
+          } catch (e) { /* ignore focus handling errors */ }
         }, totalItemDuration + 100);
       }
     }
