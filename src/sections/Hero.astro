@@ -14,24 +14,26 @@ import Button from "../components/Button.astro";
       <article class="flex-1 text-center md:text-left md:pr-6">
         <h2
           class="hero-title text-4xl md:text-5xl lg:text-6xl xl:text-[90px] font-medium"
+          data-animate="hero-title"
         >
           <span class="hero-title-first block">Hacemos realidad</span>
           <span class="hero-title-second">tu idea digital</span>
         </h2>
         <h1
           class="hero-subtitle text-lg font-medium text-cyan-300 py-4 mx-auto md:mx-0 md:text-2xl lg:text-3xl xl:text-[40px]"
+          data-animate="hero-subtitle"
         >
           Desarrollo de páginas web, software a medida e integración de sistemas
           (APIs)
         </h1>
-        <div class="py-6">
+        <div class="hero-cta py-6" data-animate="hero-cta">
           <Button href="#contact-separator" variant="solid" size="large"
             >Hablemos de tu proyecto</Button
           >
         </div>
       </article>
       <article class="right-content">
-        <div class="animation-circles-container py-4 md:py-2">
+        <div class="animation-circles-container py-4 md:py-2" data-animate="hero-image">
           <div class="capa-stack">
             <img
               class="logo-glow-fx animate-logo-pulse"
@@ -173,3 +175,113 @@ import Button from "../components/Button.astro";
   }
 
 </style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { maskTextReveal } from '../utils/animations/text-animations';
+  import { animateFromWithBlur, animateScaleUp } from '../utils/animations/animation-helpers';
+  import { conditionalAnimate } from '../utils/accessibility';
+
+  function initHeroAnimations() {
+    // Crear timeline
+    const tl = gsap.timeline({ paused: true });
+
+    // 1. Topnav desciende desde arriba
+    const topnav = document.querySelector('.topnav');
+    if (topnav) {
+      tl.from(topnav, {
+        y: -100,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out'
+      });
+    }
+
+    // 2. h2 (hero-title) con maskTextReveal palabra por palabra
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      const titleTimeline = maskTextReveal(heroTitle, {
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power3.out'
+      });
+      tl.add(titleTimeline, '-=0.3');
+    }
+
+    // 3. h1 (hero-subtitle) desde izquierda con blur
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    if (heroSubtitle) {
+      tl.add(
+        animateFromWithBlur(heroSubtitle, 'left', {
+          duration: 0.6,
+          ease: 'power3.out'
+        }),
+        '-=0.4'
+      );
+    }
+
+    // 4. CTA desde izquierda con blur
+    const heroCta = document.querySelector('.hero-cta');
+    if (heroCta) {
+      tl.add(
+        animateFromWithBlur(heroCta, 'left', {
+          duration: 0.6,
+          ease: 'power3.out'
+        }),
+        '-=0.4'
+      );
+    }
+
+    // 5. Imagen círculos con scaleUp
+    const heroImage = document.querySelector('.animation-circles-container');
+    if (heroImage) {
+      tl.add(
+        animateScaleUp(heroImage, {
+          duration: 1.0,
+          ease: 'back.out(1.7)'
+        }),
+        '-=0.5'
+      );
+    }
+
+    // 6. Separador desde abajo (si existe)
+    const separator = document.querySelector('#services-separator');
+    if (separator) {
+      tl.from(separator, {
+        scaleY: 0,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        transformOrigin: 'top'
+      }, '-=0.3');
+    }
+
+    // Función para iniciar animaciones
+    function startAnimations() {
+      conditionalAnimate(
+        () => tl.play(),
+        () => {
+          // Fallback: no hacer nada, dejar contenido visible
+        }
+      );
+    }
+
+    // Escuchar evento del preloader
+    document.addEventListener('preloader:complete', startAnimations);
+
+    // Fallback: si no hay preloader, iniciar después de un pequeño delay
+    setTimeout(() => {
+      const preloader = document.getElementById('preloader');
+      if (!preloader) {
+        startAnimations();
+      }
+    }, 100);
+  }
+
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroAnimations);
+  } else {
+    initHeroAnimations();
+  }
+</script>

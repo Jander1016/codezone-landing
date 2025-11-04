@@ -13,9 +13,13 @@ import Process from "../sections/Process.astro";
 import Services from "../sections/Services.astro";
 import Stack from "../sections/Stack.astro";
 import ContactForm from "../sections/ContactForm.astro";
+import Preloader from "../components/Preloader.astro";
 ---
 
 <Layout class="overflow-hiden">
+	<!-- Preloader -->
+	<Preloader duration={2000} variant="spinner" />
+
 	<!-- Hero: Personaliza aquí -->
 	<GradientOverlay position="top" size="medium" color="cyan" opacity="medium" blur="high">
 		

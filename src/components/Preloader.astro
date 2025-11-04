@@ -1,0 +1,125 @@
+---
+interface Props {
+  duration?: number;
+  variant?: 'spinner' | 'logo';
+}
+
+const { duration = 2000, variant = 'spinner' } = Astro.props;
+---
+
+<div id="preloader" class="preloader" data-duration={duration}>
+  <div class="preloader-content">
+    {variant === 'logo' && (
+      <div class="preloader-logo">
+        <img src="/logo.svg" alt="Loading" />
+      </div>
+    )}
+    <div class="preloader-spinner"></div>
+  </div>
+</div>
+
+<style>
+  .preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--color-background, #0a0a0a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .preloader-logo {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preloader-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .preloader-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--color-primary, #00ff88);
+    border-radius: 50%;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  function initPreloader() {
+    const preloader = document.getElementById('preloader');
+    
+    if (!preloader) return;
+
+    const duration = parseInt(preloader.dataset.duration || '2000') / 1000;
+    const logo = preloader.querySelector('.preloader-logo');
+    const spinner = preloader.querySelector('.preloader-spinner');
+
+    // Crear timeline de animación
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // Disparar evento de completado
+        document.dispatchEvent(new CustomEvent('preloader:complete'));
+        
+        // Remover del DOM después de un pequeño delay
+        setTimeout(() => {
+          if (preloader && preloader.parentNode) {
+            preloader.remove();
+          }
+        }, 100);
+      }
+    });
+
+    // Secuencia de animación
+    if (logo) {
+      tl.from(logo, {
+        opacity: 0,
+        scale: 0.5,
+        duration: duration * 0.25,
+        ease: 'power2.out'
+      });
+    }
+
+    if (spinner) {
+      tl.to(spinner, {
+        rotation: 360,
+        duration: duration * 0.5,
+        ease: 'linear',
+        repeat: 0
+      }, logo ? '-=0.1' : 0);
+    }
+
+    // Fade out completo
+    tl.to(preloader, {
+      opacity: 0,
+      duration: duration * 0.25,
+      ease: 'power2.inOut'
+    });
+  }
+
+  // Ejecutar cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPreloader);
+  } else {
+    initPreloader();
+  }
+</script>
