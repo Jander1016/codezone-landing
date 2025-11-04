@@ -29,7 +29,7 @@
 
 html {
   scroll-behavior: smooth;
-  scrollbar-width: none;
+  /* scrollbar-width: none; */
 }
 
 p,

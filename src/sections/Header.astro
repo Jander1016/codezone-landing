@@ -26,21 +26,23 @@ import MobileMenu from "../components/MobileMenu.astro";
       class="desktop-nav text-neutral-50 text-lg font-medium"
       aria-label="Main navigation"
     >
-      <ul class="flex gap-6 blur-menu">
-        {
-          mainNavigation.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                class={`nav-link hover:text-cyan-300 backdrop-blur-none duration-300 ease-in-out`}
-                aria-current={item.isActive ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+        <ul class="flex gap-6 blur-menu">
+          {
+            mainNavigation.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class={`nav-link hover:text-cyan-300 backdrop-blur-none px-2 py-1 rounded-md ${
+                    item.isActive ? "text-cyan-300" : ""
+                  }`}
+                  aria-current={item.isActive ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
     </nav>
 
     <div class="desktop-cta">
@@ -57,198 +59,146 @@ import MobileMenu from "../components/MobileMenu.astro";
 </header>
 
 <script>
-  /* @ts-nocheck */
   function initNavActiveLinks() {
-    const links = Array.from(
-      document.querySelectorAll('a[href^="#"].nav-link, #mobilemenu-items a'),
-    );
+    try {
+      const links = Array.from(
+        document.querySelectorAll('a[href^="#"].nav-link, #mobilemenu-items a'),
+      );
 
-    if (!links.length) return;
+      if (!links.length) return;
 
-    // Map href -> link element (may be multiple: desktop + mobile)
-    const linkMap = new Map();
-    links.forEach((link) => {
-      const href = link.getAttribute("href");
-      if (!href) return;
-      if (!linkMap.has(href)) linkMap.set(href, []);
-      linkMap.get(href).push(link);
+      // Map href -> link element (may be multiple: desktop + mobile)
+      const linkMap = new Map();
+      links.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (!href) return;
+        if (!linkMap.has(href)) linkMap.set(href, []);
+        linkMap.get(href).push(link);
 
-      // click handler: smooth scroll and set active
-      link.addEventListener("click", (e) => {
-        if (href.startsWith("#")) {
-          e.preventDefault();
-          const id = href.slice(1);
-          const target = document.getElementById(id);
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-          if (href === "#contact-separator") {
-            setActiveByHref(null);
-          } else {
-            setActiveByHref(href);
-          }
-          // ensure no hash remains in the URL after navigation
-          try {
+        // click handler: smooth scroll and set active
+        link.addEventListener("click", (e) => {
+          if (href.startsWith("#")) {
+            e.preventDefault();
+            const id = href.slice(1);
+            const target = document.getElementById(id);
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            if (href === "#contact-separator") {
+              setActiveByHref(null);
+            } else {
+              setActiveByHref(href);
+            }
+            // ensure no hash remains in the URL after navigation
             removeHashFromUrl();
-          } catch (err) {
-            /* ignore */
           }
-        }
+        });
       });
-    });
 
-    // Utility: remove any hash from the URL without reloading the page
-    function removeHashFromUrl() {
-      try {
+      function removeHashFromUrl() {
         if (window.location.hash) {
           history.replaceState(null, '', window.location.pathname + window.location.search);
         }
-      } catch (err) {
-        // ignore
       }
-    }
 
-    /**
-     * @param {string|null} href
-     */
-    // @ts-ignore: allow dynamic typing for DOM helper
-    function setActiveByHref(href) {
-      // remove from all
-      for (const l of links) {
-        /** @type {HTMLElement} */ (l).removeAttribute("aria-current");
-      }
-      if (!href) return; // clear active when no href provided
-      const same = linkMap.get(href) || [];
-      for (const l of same) {
-        /** @type {HTMLElement} */ (l).setAttribute("aria-current", "page");
-      }
-    }
-
-    // IntersectionObserver to update active link on scroll
-    const observerOptions = {
-      root: null,
-      rootMargin: "0px 0px -60% 0px",
-      threshold: 0,
-    };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          if (!id) return;
-          // Do not mark the contact section as active
-          if (id === "contact-separator") return;
-          const href = `#${id}`;
-          setActiveByHref(href);
+      // @ts-ignore: allow dynamic typing for DOM helper
+      function setActiveByHref(href) {
+        // remove from all
+        for (const l of links) {
+          /** @type {HTMLElement} */ (l).removeAttribute("aria-current");
         }
+        if (!href) return; // clear active when no href provided
+        const same = linkMap.get(href) || [];
+        for (const l of same) {
+          /** @type {HTMLElement} */ (l).setAttribute("aria-current", "page");
+        }
+      }
+
+      const observerOptions = {
+        root: null,
+        rootMargin: "0px 0px -60% 0px",
+        threshold: 0,
+      };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            if (!id) return;
+            // Do not mark the contact section as active
+            if (id === "contact-separator") return;
+            const href = `#${id}`;
+            setActiveByHref(href);
+          }
+        });
+      }, observerOptions);
+
+      linkMap.forEach((_v, href) => {
+        if (!href || !href.startsWith("#")) return;
+        const id = href.slice(1);
+        const target = document.getElementById(id);
+        if (target) observer.observe(target);
       });
-    }, observerOptions);
 
-    // Observe targets that match the hrefs
-    linkMap.forEach((_v, href) => {
-      if (!href || !href.startsWith("#")) return;
-      const id = href.slice(1);
-      const target = document.getElementById(id);
-      if (target) observer.observe(target);
-    });
-
-    // Expose helper globally so other components (mobile menu) can set active link
-    try {
       // @ts-ignore
       window.setActiveNavHref = setActiveByHref;
-    } catch (err) {
-      // ignore
-    }
 
-    // Also listen for a custom event so other components can request active changes
-    try {
       window.addEventListener('codezone:setActiveNavHref', (ev) => {
-        try {
-          // @ts-ignore: event detail typing
-          setActiveByHref(ev.detail);
-        } catch (e) {
-          /* ignore */
-        }
+        // @ts-ignore: event detail typing
+        setActiveByHref(ev.detail);
       });
-    } catch (err) {
-      /* ignore */
-    }
 
-    // Make logo scroll to #hero without adding the hash to the URL
-    const brandAnchor = document.querySelector('a.brand[href="#hero"]');
-    if (brandAnchor) {
-      brandAnchor.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = document.getElementById('hero');
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        // Clear any active nav state (remove cyan) when clicking the brand/logo
-        try {
+      const brandAnchor = document.querySelector('a.brand[href="#hero"]');
+      if (brandAnchor) {
+        brandAnchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById('hero');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
           setActiveByHref(null);
-        } catch (err) {
-          /* ignore */
-        }
 
-        // Ensure URL does not get a hash (in case it was added previously)
-        try {
           removeHashFromUrl();
-        } catch (err) {
-          /* ignore */
-        }
-      });
-    }
-
-    // Global click handler to catch clicks on other anchors to #contact (e.g. .btn)
-    document.addEventListener("click", (e) => {
-      const maybeElement = e.target;
-      const anchor =
-        maybeElement instanceof Element
-          ? maybeElement.closest('a[href="#contact-separator"]')
-          : null;
-      if (anchor) {
-        setTimeout(() => setActiveByHref(null), 0);
+        });
       }
-       try {
-          removeHashFromUrl();
-        } catch (err) {
-          /* ignore */
-        }
-    });
 
-    // Listen for hash changes (e.g., user pastes URL with #... or navigates via fragment)
-    // Scroll to target if present, set active nav, then remove hash from URL to keep it clean.
-    window.addEventListener('hashchange', () => {
-      try {
+      document.addEventListener("click", (e) => {
+        const maybeElement = e.target;
+        const anchor =
+          maybeElement instanceof Element
+            ? maybeElement.closest('a[href="#contact-separator"]')
+            : null;
+        if (anchor) {
+          setTimeout(() => setActiveByHref(null), 0);
+        }
+        removeHashFromUrl();
+      });
+
+      window.addEventListener('hashchange', () => {
         const h = window.location.hash || '';
         if (!h) return;
         const id = h.slice(1);
         if (!id) {
-          try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (err) {}
+          history.replaceState(null, '', window.location.pathname + window.location.search);
           return;
         }
         const target = document.getElementById(id);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           if (h !== '#contact-separator') {
-            try { setActiveByHref(h); } catch (err) {}
+            setActiveByHref(h);
           }
         }
-        try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch (err) {}
-      } catch (err) {
-        /* ignore */
-      }
-    });
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      });
 
-    // When the user navigates history (back/forward), ensure any hash is removed
-    window.addEventListener('popstate', () => {
-      try {
+      window.addEventListener('popstate', () => {
         if (window.location.hash) {
           history.replaceState(null, '', window.location.pathname + window.location.search);
         }
-      } catch (err) {
-        /* ignore */
-      }
-    });
+      });
+    } catch (err) {
+      /* ignore errors in nav initialization */
+    }
   }
 
   if (document.readyState === "loading") {
@@ -256,6 +206,7 @@ import MobileMenu from "../components/MobileMenu.astro";
   } else {
     initNavActiveLinks();
   }
+ 
 </script>
 
 <style>
@@ -297,17 +248,15 @@ import MobileMenu from "../components/MobileMenu.astro";
   .desktop-nav a,
   .desktop-cta .btn {
     font-size: 18px;
-    transition: color 400ms ease-in-out;
+    transition: all 400ms ease-in-out;
   }
 
   .nav-link {
     filter: blur(0);
-    /* transition only the properties we change for a smoother effect */
-    transition: color 400ms ease-in-out, filter 400ms ease-in-out, opacity 400ms ease-in-out;
+    transition: all 400ms ease-in-out, filter 400ms ease-in-out, opacity 400ms ease-in-out;
   }
 
   .blur-menu:has(.nav-link:hover) .nav-link:not(:hover) {
-    /* reduce the harshness of the blur and make faded items less transparent */
     opacity: 0.6;
     filter: blur(1.2px);
   }
