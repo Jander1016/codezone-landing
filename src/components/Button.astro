@@ -104,13 +104,23 @@ const sizes = {
     }
   }
 
-  @media screen 
-    and (max-width: 480px) {
+  @media screen and (max-width: 480px) {
     .btn {
-      width: 100%;
+      width: auto;
       justify-content: center;
     }
     
+    /* Mantener padding mínimo 16x12 y máximo 16x18 en mobile */
+    .btn-outline,
+    .btn-solid {
+      padding: 12px 16px;
+      min-width: fit-content;
+    }
+    
+    /* Para botones large en mobile, usar padding máximo */
+    .btn.px-8 {
+      padding: 12px 18px;
+    }
   }
 
 </style>

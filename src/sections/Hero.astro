@@ -186,10 +186,10 @@ import Button from "../components/Button.astro";
     // Crear timeline
     const tl = gsap.timeline({ paused: true });
 
-    // 1. Topnav desciende desde arriba
-    const topnav = document.querySelector('.topnav');
-    if (topnav) {
-      tl.from(topnav, {
+    // 1. Header/Navbar entra desde arriba (todo el header)
+    const header = document.querySelector('header');
+    if (header) {
+      tl.from(header, {
         y: -100,
         opacity: 0,
         duration: 0.6,
@@ -197,7 +197,19 @@ import Button from "../components/Button.astro";
       });
     }
 
-    // 2. h2 (hero-title) con maskTextReveal palabra por palabra
+    // 2. animation-circles-container con scaleUp (mantiene entrada actual)
+    const heroImage = document.querySelector('.animation-circles-container');
+    if (heroImage) {
+      tl.add(
+        animateScaleUp(heroImage, {
+          duration: 1.0,
+          ease: 'back.out(1.7)'
+        }),
+        '-=0.3'
+      );
+    }
+
+    // 3. h2 (hero-title) con maskTextReveal palabra por palabra
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
       const titleTimeline = maskTextReveal(heroTitle, {
@@ -205,10 +217,10 @@ import Button from "../components/Button.astro";
         stagger: 0.1,
         ease: 'power3.out'
       });
-      tl.add(titleTimeline, '-=0.3');
+      tl.add(titleTimeline, '-=0.5');
     }
 
-    // 3. h1 (hero-subtitle) desde izquierda con blur
+    // 4. h1 (hero-subtitle) desde izquierda con blur
     const heroSubtitle = document.querySelector('.hero-subtitle');
     if (heroSubtitle) {
       tl.add(
@@ -220,7 +232,7 @@ import Button from "../components/Button.astro";
       );
     }
 
-    // 4. CTA desde izquierda con blur
+    // 5. CTA desde izquierda con blur
     const heroCta = document.querySelector('.hero-cta');
     if (heroCta) {
       tl.add(
@@ -232,27 +244,14 @@ import Button from "../components/Button.astro";
       );
     }
 
-    // 5. Imagen círculos con scaleUp
-    const heroImage = document.querySelector('.animation-circles-container');
-    if (heroImage) {
-      tl.add(
-        animateScaleUp(heroImage, {
-          duration: 1.0,
-          ease: 'back.out(1.7)'
-        }),
-        '-=0.5'
-      );
-    }
-
-    // 6. Separador desde abajo (si existe)
+    // 6. Separador desde abajo hacia su posición
     const separator = document.querySelector('#services-separator');
     if (separator) {
       tl.from(separator, {
-        scaleY: 0,
+        y: 50,
         opacity: 0,
         duration: 0.6,
-        ease: 'power3.out',
-        transformOrigin: 'top'
+        ease: 'power3.out'
       }, '-=0.3');
     }
 
