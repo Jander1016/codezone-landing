@@ -6,7 +6,7 @@ import "../styles/global.css";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,6 +21,7 @@ import "../styles/global.css";
 			content="Código, proyectos, software, aplicaciones, codificación, desarrollo"
 		/>
 		<meta name="author" content="CodeZone" />
+
 		<meta property="og:title" content="CodeZone" />
 		<meta
 			property="og:description"
@@ -42,87 +43,75 @@ import "../styles/global.css";
 		/>
 	</head>
 	<body>
-		<!-- Preloader overlay (uses GSAP via /src/scripts/preloader.ts) -->
-		<!-- <div id="preloader" class="preloader-overlay">
-			<div class="loading-content">
-				<div class="preloader-logo"><img src="/codezone-logo-header.svg" alt="CodeZone" /></div>
-				<p class="loading-text">Cargando CodeZone</p>
-				<div class="progress-bar-container"><div id="progressBar" class="progress-bar"></div></div>
-			</div>
-		</div> -->
+		<Header />
 
-		<!-- ScrollSmoother wrapper -->
-		<div
-			id="background-mask smooth-wrapper"
-			class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
-		>
-			<div class="smooth-content relative z-2">
-				<Header />
-				<slot />
-				<GradientOverlay
-					position="bottom"
-					size="small"
-					color="fuchsia"
-					opacity="medium"
-					blur="high"
+		<div id="smooth-wrapper">
+			<div id="smooth-content">
+				<div
+					id="background-mask"
+					class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
 				>
-					<Footer />
-				</GradientOverlay>
+					<div class="relative z-2">
+						<slot />
+						<GradientOverlay
+							position="bottom"
+							size="small"
+							color="fuchsia"
+							opacity="medium"
+							blur="high"
+						>
+							<Footer />
+						</GradientOverlay>
+					</div>
+				</div>
 			</div>
 		</div>
-
-		<!-- <script type="module" src="/src/scripts/preloader.ts"></script> -->
-
-		<script>
-			import { gsap } from "gsap";
-			import { ScrollTrigger } from "gsap/ScrollTrigger";
-			import { ScrollSmoother } from "gsap/ScrollSmoother";
-
-			gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-
-			// Inicializar ScrollSmoother
-			function initScrollSmoother() {
-				// Verificar que los elementos existen
-				const wrapper = document.querySelector("#smooth-wrapper");
-				const content = document.querySelector("#smooth-content");
-
-				if (!wrapper || !content) {
-					console.warn(
-						"ScrollSmoother: wrapper or content not found",
-					);
-					return;
-				}
-
-				// Crear ScrollSmoother
-				const smoother = ScrollSmoother.create({
-					wrapper: "#smooth-wrapper",
-					content: "#smooth-content",
-					smooth: 1.5, // Suavidad del scroll (1-2 recomendado)
-					effects: true, // Habilitar data-speed effects
-					smoothTouch: 0.1, // Suavidad en touch devices (más bajo = menos suave)
-					normalizeScroll: true, // Normalizar scroll en diferentes navegadores
-					ignoreMobileResize: true, // Ignorar resize en mobile para mejor performance
-				});
-
-				// Guardar referencia global para acceso desde otros scripts
-				(window as any).smoother = smoother;
-
-				console.log("ScrollSmoother initialized");
-			}
-
-			// Inicializar cuando el DOM esté listo
-			if (document.readyState === "loading") {
-				document.addEventListener(
-					"DOMContentLoaded",
-					initScrollSmoother,
-				);
-			} else {
-				initScrollSmoother();
-			}
-		</script>
 	</body>
 </html>
+<script>
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+	import { ScrollSmoother } from "gsap/ScrollSmoother";
 
+	gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+	// Inicializar ScrollSmoother
+	function initScrollSmoother() {
+		// Verificar que los elementos existen
+		const wrapper = document.querySelector("#smooth-wrapper");
+		const content = document.querySelector("#smooth-content");
+
+		if (!wrapper || !content) {
+			console.warn("ScrollSmoother: wrapper or content not found");
+			return;
+		}
+
+		// Crear ScrollSmoother
+		const smoother = ScrollSmoother.create({
+			wrapper: "#smooth-wrapper",
+			content: "#smooth-content",
+			smooth: 2, // Suavidad del scroll (1-2 recomendado)
+			effects: true, // Habilitar data-speed effects
+			smoothTouch: 0.1, // Suavidad en touch devices (más bajo = menos suave)
+			normalizeScroll: true, // Normalizar scroll en diferentes navegadores
+			ignoreMobileResize: true, // Ignorar resize en mobile para mejor performance
+		});
+
+		// Guardar referencia global para acceso desde otros scripts
+		(window as any).smoother = smoother;
+	}
+
+	// Inicializar cuando el DOM esté listo
+	if (document.readyState === "loading") {
+		document.addEventListener(
+			// "DOMContentLoaded",
+			"load",
+			initScrollSmoother,
+		);
+	} else {
+		initScrollSmoother();
+	}
+</script>
 <style>
 	body {
 		background: #000;
@@ -146,20 +135,25 @@ import "../styles/global.css";
 		left: 0;
 		right: 0;
 		bottom: 0;
+		z-index: 1;
 	}
 
 	#smooth-content {
 		overflow: visible;
 		width: 100%;
-		/* Set a height to enable scrolling */
 		will-change: transform;
 	}
 
 	#background-mask {
 		width: 100%;
-		min-height: 100%;
+		min-height: 100vh;
 		margin: 0px;
-		/* background-size: 340px, cover; */
+	}
+
+	/* Header debe quedar por encima del ScrollSmoother */
+	header {
+		position: fixed;
+		z-index: 50;
 	}
 
 	/* Preloader styles (minimal, adapted from provided example) */
