@@ -66,7 +66,7 @@ export function maskTextReveal(
   // Reemplazar el contenido con spans para cada palabra
   // Usamos un wrapper con overflow hidden y padding para evitar cortar descendentes
   el.innerHTML = words
-    .map(word => `<span class="word-mask-wrapper" style="display: inline-block; overflow: hidden; padding-bottom: 0.15em;"><span class="word-mask-inner" style="display: inline-block; padding-bottom: 0.15em;">${word}</span></span>`)
+    .map(word => `<span class="word-mask-wrapper" style="display: inline-block; overflow: hidden;"><span class="word-mask-inner" style="display: inline-block; padding-bottom: 0.15em;">${word}</span></span>`)
     .join(' ');
 
   // Crear y configurar la animación
