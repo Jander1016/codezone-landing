@@ -24,12 +24,14 @@ import { services } from "../data/services";
       Tech Your Vibes
     </GradientText>
     <div class="flex flex-col mt-9 max-w-[504px] min-w-[342px] w-full px-4">
-      <p class="text-sm text-pretty text-neutral-100 text-center mb-8">
+      <p
+        class="paragraph-1 text-sm text-pretty text-neutral-100 text-center mb-8"
+      >
         En Codezone convertimos lo que tu negocio busca y necesita en tecnología
         a medida, respetando su esencia y maximizando su valor.
       </p>
       <p
-        class="text-sm text-pretty text-neutral-100 text-center mb-8"
+        class="paragraph-2 text-sm text-pretty text-neutral-100 text-center mb-8"
       >
         Ayudamos a marcas y empresas a crear productos inspiradores, confiables
         y rentables.
@@ -39,18 +41,19 @@ import { services } from "../data/services";
 
   <!-- Responsive Services Grid -->
   <div
-    class={`services-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 justify-center w-full mx-auto`}
+    class={`services-grid services-cards-container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 justify-center w-full mx-auto`}
   >
     {
       services.map((service, index) => (
-         <div
+        <div
           class={
-              index === 2
-                ? "flex h-full md:col-span-2 md:mx-auto md:max-w-[480px] xl:col-span-1 xl:mx-0"
-                : index === 1
-                ? "flex h-full shift-up-10"
-                : "flex h-full w-full"
+            index === 2
+              ? "service-card flex h-full md:col-span-2 md:mx-auto md:max-w-[480px] xl:col-span-1 xl:mx-0"
+              : index === 1
+                ? "service-card flex h-full shift-up-10"
+                : "service-card flex h-full w-full"
           }
+          data-card-index={index}
         >
           <ServiceCard
             title={service.title}
@@ -65,15 +68,199 @@ import { services } from "../data/services";
   </div>
 </section>
 
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { maskTextReveal } from "../utils/animations/text-animations";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initServicesAnimations() {
+    const servicesSection = document.querySelector("#services");
+    if (!servicesSection) return;
+
+    const logo = servicesSection.querySelector("img");
+    const claim = servicesSection.querySelector("h2");
+    const p1 = servicesSection.querySelector(".paragraph-1");
+    const p2 = servicesSection.querySelector(".paragraph-2");
+    const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
+
+    // Detectar tamaño de pantalla
+    const isMobile = () => window.innerWidth <= 768;
+    const isTablet = () => window.innerWidth > 768 && window.innerWidth <= 1279;
+
+    // 1. Logo - Animación sin scrub
+    if (logo) {
+      gsap.from(logo, {
+        y: 60,
+        opacity: 0,
+        filter: "blur(12px)",
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: logo,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // 2. Claim h2 con maskTextReveal - Sin scrub
+    if (claim) {
+      const titleTimeline = maskTextReveal(claim, {
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power2.out",
+      });
+
+      ScrollTrigger.create({
+        trigger: claim,
+        start: "top 80%",
+        animation: titleTimeline,
+        toggleActions: "play none none none",
+      });
+    }
+
+    // 3. Párrafo 1 - Sin scrub
+    if (p1) {
+      gsap.from(p1, {
+        y: 40,
+        opacity: 0,
+        filter: "blur(10px)",
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: p1,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // 4. Párrafo 2 - Sin scrub
+    if (p2) {
+      gsap.from(p2, {
+        y: 40,
+        opacity: 0,
+        filter: "blur(10px)",
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: p2,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // 5. Cards - Animación según tamaño de pantalla
+    if (cards.length > 0) {
+      if (isMobile() || isTablet()) {
+        // MOBILE/TABLET: Cards entran una por una con stagger notorio
+        cards.forEach((card, index) => {
+          gsap.from(card, {
+            y: 100,
+            opacity: 0,
+            rotate: index % 2 === 0 ? 10 : -10,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 90%",
+              end: "top 60%",
+              scrub: 1,
+              toggleActions: "play none none reverse",
+            },
+          });
+        });
+      } else {
+        // DESKTOP: Animación según el HTML que compartiste
+        const card1 = cards[0];
+        const card2 = cards[1];
+        const card3 = cards[2];
+
+        // Cards de los extremos (1 y 3) con ScrollTrigger individual
+        if (card1) {
+          gsap.from(card1, {
+            y: 120,
+            opacity: 0,
+            rotate: 10,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card1,
+              start: "top 85%",
+              end: "top 55%",
+              scrub: 1,
+              toggleActions: "play none none reverse",
+            },
+          });
+        }
+
+        if (card3) {
+          gsap.from(card3, {
+            y: 120,
+            opacity: 0,
+            rotate: -10,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card3,
+              start: "top 85%",
+              end: "top 55%",
+              scrub: 1,
+              toggleActions: "play none none reverse",
+            },
+          });
+        }
+
+        // Card del centro (2) sin rotación
+        if (card2) {
+          gsap.from(card2, {
+            y: 120,
+            opacity: 0,
+            rotate: 0,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card2,
+              start: "top 85%",
+              end: "top 55%",
+              scrub: 1,
+              toggleActions: "play none none reverse",
+            },
+          });
+        }
+      }
+    }
+  }
+
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initServicesAnimations);
+  } else {
+    initServicesAnimations();
+  }
+
+  // Refresh ScrollTrigger en resize para recalcular posiciones
+  let resizeTimer: number;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+  });
+</script>
+
 <style>
   .services-section {
     /* width: 100%; */
     /* padding: 4rem 4rem; */
   }
-  
+
   .service-card-center {
-      grid-column: auto;
-    }
+    grid-column: auto;
+  }
 
   /* Make grid rows equal height so cards stretch to the same size */
   .services-grid {
@@ -95,4 +282,15 @@ import { services } from "../data/services";
     }
   }
 
+  /* Accessibility: Show content immediately if prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .services-section img,
+    .services-section h2,
+    .services-section p,
+    .service-card {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+  }
 </style>
