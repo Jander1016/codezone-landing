@@ -83,7 +83,21 @@ import MobileMenu from "../components/MobileMenu.astro";
             const id = href.slice(1);
             const target = document.getElementById(id);
             if (target) {
-              target.scrollIntoView({ behavior: "smooth", block: "start" });
+              // Usar ScrollSmoother si está disponible, sino scrollIntoView
+              const smoother = (window as any).smoother;
+              if (smoother) {
+                smoother.scrollTo(target, true, "top");
+              } else {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+              
+              // Disparar evento personalizado para activar animaciones de la sección
+              setTimeout(() => {
+                const event = new CustomEvent('trigger-section-animations', {
+                  detail: { sectionId: id }
+                });
+                document.dispatchEvent(event);
+              }, 500); // Delay para que el scroll llegue primero
             }
             if (href === "#contact-separator") {
               setActiveByHref(null);
@@ -154,7 +168,13 @@ import MobileMenu from "../components/MobileMenu.astro";
           e.preventDefault();
           const target = document.getElementById('hero');
           if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Usar ScrollSmoother si está disponible, sino scrollIntoView
+            const smoother = (window as any).smoother;
+            if (smoother) {
+              smoother.scrollTo(target, true, "top");
+            } else {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
           }
           setActiveByHref(null);
 
