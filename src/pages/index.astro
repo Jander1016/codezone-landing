@@ -20,14 +20,15 @@ import Preloader from "../components/Preloader.astro";
 		<Hero />
 	</GradientOverlay>
 
-	<Separator id="services-separator" />
+	<!-- <Separator id="services-separator" /> -->
+	<Separator wormDuration={0.08} loopInterval={5} idSeparator="services-separator" />
 
 	<!-- Services: Personaliza aquí -->
 	<GradientOverlay position="center" size="medium" color="fuchsia" opacity="medium" blur="high">
 		<Services />
 	</GradientOverlay>
 
-	<Separator id="process-separator" />
+	<Separator loopInterval={5} idSeparator="process-separator" />
 
 	<!-- Process: Personaliza aquí -->
 	<GradientOverlay position="center" size="medium" color="cyan" opacity="medium" blur="high">

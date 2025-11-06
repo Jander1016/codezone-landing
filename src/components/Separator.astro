@@ -1,14 +1,235 @@
 ---
-const idSeparator = Astro.props.id || "separator";
+/**
+ * Separator2 Component - Animated SVG Separator with Worm Effect
+ *
+ * Props:
+ * @param {string} id - Unique identifier for the separator (default: auto-generated)
+ * @param {number} fadeDuration - Duration of fade-in animation in seconds (default: 3.5)
+ * @param {number} wormDuration - Duration of single worm effect in seconds (default: 1.5)
+ * @param {number} loopInterval - Time between worm effects in seconds (default: 120 = 2 minutes)
+ * @param {string} className - Additional CSS classes
+ */
+
+interface Props {
+    idSeparator?: string;
+    id?: string;
+    fadeDuration?: number;
+    wormDuration?: number;
+    loopInterval?: number;
+    className?: string;
+}
+
+const {
+    id = `sep-${Math.random().toString(36).substring(2, 11)}`,
+    fadeDuration = 3.5,
+    wormDuration = 0.08,
+    loopInterval = 120,
+    className = "",
+    idSeparator = id,
+} = Astro.props;
+
+// Generate unique IDs for filters and gradients to avoid conflicts
+const wiggleId = `wiggle-${id}`;
+const turbulenceId = `turbulence-${id}`;
+const filterId = `filter-${id}`;
+const gradient1Id = `gradient1-${id}`;
+const gradient2Id = `gradient2-${id}`;
 ---
-  <div
+
+<div
     id={idSeparator}
-    class="w-full  pb-0 pt-20 relative flex justify-center items-end pointer-events-none select-none"
-  >
-    <img
-      src="/separador-desktop.svg"
-      alt="Separador decorativo"
-      class="max-w-[1528px] w-full object-cover object-bottom"
-      loading="lazy"
-    />
-  </div>
+    class={`cz-separator w-full pb-0 pt-20 relative flex justify-center items-end pointer-events-none select-none ${className}`}
+>
+    <svg
+        id={id}
+        class="separator-svg"
+        width="1558"
+        height="136"
+        viewBox="0 0 1558 136"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        data-fade-duration={fadeDuration}
+        data-worm-duration={wormDuration}
+        data-loop-interval={loopInterval}
+    >
+        <defs>
+            <!-- Worm effect filter -->
+            <filter id={wiggleId} x="-20%" y="-50%" width="140%" height="200%">
+                <feTurbulence
+                    id={turbulenceId}
+                    type="fractalNoise"
+                    baseFrequency="0.03"
+                    numOctaves="2"
+                    seed="2">
+                </feTurbulence>
+                <feDisplacementMap
+                    in="SourceGraphic"
+                    scale="12"
+                    xChannelSelector="R"
+                    yChannelSelector="G"
+                >
+                </feDisplacementMap>
+            </filter>
+
+            <!-- Blur filter -->
+            <filter
+                id={filterId}
+                x="0"
+                y="0"
+                width="1558"
+                height="135.5"
+                filterUnits="userSpaceOnUse"
+                color-interpolation-filters="sRGB"
+            >
+                <feFlood flood-opacity="0" result="BackgroundImageFix"
+                ></feFlood>
+                <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"></feBlend>
+                <feGaussianBlur
+                    stdDeviation="7.5"
+                    result="effect1_foregroundBlur"></feGaussianBlur>
+            </filter>
+
+            <!-- Gradient 1 -->
+            <linearGradient
+                id={gradient1Id}
+                x1="15"
+                y1="122.008"
+                x2="1543"
+                y2="122.865"
+                gradientUnits="userSpaceOnUse"
+            >
+                <stop stop-color="#53EAFD" stop-opacity="0"></stop>
+                <stop offset="0.519231" stop-color="#C800DE"></stop>
+                <stop offset="1" stop-color="#53EAFD" stop-opacity="0"></stop>
+            </linearGradient>
+
+            <!-- Gradient 2 -->
+            <linearGradient
+                id={gradient2Id}
+                x1="11"
+                y1="122.008"
+                x2="1539"
+                y2="122.865"
+                gradientUnits="userSpaceOnUse"
+            >
+                <stop stop-color="#53EAFD" stop-opacity="0"></stop>
+                <stop offset="0.519231" stop-color="#C800DE"></stop>
+                <stop offset="1" stop-color="#53EAFD" stop-opacity="0"></stop>
+            </linearGradient>
+        </defs>
+
+        <!-- Blurred path -->
+        <g filter={`url(#${filterId})`}>
+            <path
+                d="M15 120.5C39.2879 112.006 63.8407 105.26 89.0449 98.7686C314.466 43.2613 546.945 26.713 778.365 26.0002C778.743 26.0001 779.121 26 779.499 26C1010.61 26.6106 1241.32 56.0971 1467.82 103.34C1493.07 108.727 1518.31 114.344 1543 120.5C1518.5 113.634 1493.4 107.336 1468.28 101.302C1242.91 48.2332 1011.71 15.6211 779.499 15C779.12 15 778.741 15.0001 778.362 15.0002C546.32 15.6932 312.823 35.3696 88.5021 96.7503C63.4334 103.888 39.0421 111.315 15 120.5Z"
+                fill={`url(#${gradient1Id})`}></path>
+        </g>
+
+        <!-- Main path -->
+        <path
+            d="M11 120.5C11 120.5 269.822 20.5 775.499 20.5C1170.46 20.5 1539 120.5 1539 120.5"
+            stroke={`url(#${gradient2Id})`}
+            stroke-width="2"></path>
+    </svg>
+</div>
+
+<style>
+    .separator-svg path,
+    .separator-svg g path,
+    .separator-svg line {
+        will-change: filter, opacity;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+
+    function initSeparatorAnimation() {
+        // Get all separator SVGs
+        const separators = document.querySelectorAll(".separator-svg");
+
+        separators.forEach((sep) => {
+            // Buscar el turbulence dentro del SVG
+            const turb = sep.querySelector('[id^="turbulence-"]');
+
+            // Get animation parameters from data attributes
+            const fadeDuration = parseFloat(
+                sep.getAttribute("data-fade-duration") || "3.5",
+            );
+            const wormDuration = parseFloat(
+                sep.getAttribute("data-worm-duration") || "1.5",
+            );
+            const loopInterval = parseFloat(
+                sep.getAttribute("data-loop-interval") || "120",
+            );
+
+            if (!turb) {
+                console.warn(`Turbulence element not found in separator`);
+                // Fallback: just fade in without worm effect
+                gsap.to(sep, {
+                    opacity: 1,
+                    duration: fadeDuration,
+                    ease: "power2.out",
+                });
+                return;
+            }
+
+            // Obtener el ID del wiggle filter
+            const wiggleFilter = sep.querySelector('[id^="wiggle-"]');
+            const wiggleId = wiggleFilter ? wiggleFilter.id : null;
+
+            // Fade in animation
+            gsap.to(sep, {
+                opacity: 1,
+                duration: fadeDuration,
+                ease: "power2.out",
+            });
+
+            // Función para ejecutar el efecto worm
+            function playWormEffect() {
+                // Aplicar el filtro
+                if (wiggleId) {
+                    gsap.set(sep, { filter: `url(#${wiggleId})` });
+                }
+
+                // Animar el seed para crear movimiento horizontal suave
+                gsap.to(
+                    turb,
+                    {
+                        attr: { baseFrequency: 0.09 },
+                        duration: wormDuration,
+                        yoyo: true,
+                        repeat: 12,
+                        ease: "sine.inOut",
+                        onComplete: () => {
+                            // Remover el filtro al finalizar
+                            gsap.set(sep, { filter: "none" });
+                            // Reset baseFrequency
+                            gsap.set(turb, { attr: { baseFrequency: 0 } });
+                        },
+                    },
+                );
+            }
+
+            // Ejecutar el efecto inmediatamente después del fade-in
+            gsap.delayedCall(fadeDuration, playWormEffect);
+
+            // Configurar el bucle continuo
+            gsap.delayedCall(fadeDuration + loopInterval, function loop() {
+                playWormEffect();
+                gsap.delayedCall(loopInterval, loop);
+            });
+        });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initSeparatorAnimation);
+    } else {
+        initSeparatorAnimation();
+    }
+</script>

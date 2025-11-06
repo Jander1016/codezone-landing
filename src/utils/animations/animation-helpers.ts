@@ -93,7 +93,7 @@ export function animateScaleUp(
   options?: gsap.TweenVars
 ): gsap.core.Tween {
   return gsap.from(element, {
-    scale: 0.3,
+    scale: 0.9,
     opacity: 0,
     duration: ANIMATION_CONFIG.durations.slow,
     ease: ANIMATION_CONFIG.easings.bounce,
