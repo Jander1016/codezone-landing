@@ -1,0 +1,837 @@
+---
+interface Props {
+  duration?: number;
+  showMessages?: boolean;
+  messages?: string[];
+  logoC?: string;
+  logoZ?: string;
+  symbolsPath?: string;
+}
+
+const {
+  duration = 3000,
+  showMessages = false,
+  messages = [
+    "Cargando experiencia...",
+    "Preparando innovación...",
+    "Conectando ideas..."
+  ],
+  logoC = "/c.svg",
+  logoZ = "/z.svg",
+  symbolsPath = "/symbols/"
+} = Astro.props;
+---
+
+<div 
+  id="electric-preloader"
+  data-duration={duration}
+  data-show-messages={showMessages}
+  data-messages={JSON.stringify(messages)}
+  data-logo-c={logoC}
+  data-logo-z={logoZ}
+  data-symbols-path={symbolsPath}
+  aria-hidden="true"
+  role="presentation"
+>
+  <canvas id="electric-grid-canvas" aria-hidden="true"></canvas>
+  
+  <div id="floating-symbols" aria-hidden="true"></div>
+  
+  <div class="logo-wrapper" aria-hidden="true">
+    <img src={logoC} alt="" class="logo-glyph logo-c" aria-hidden="true" />
+    <img src={logoZ} alt="" class="logo-glyph logo-z" aria-hidden="true" />
+  </div>
+  
+  {showMessages && (
+    <div class="messages-wrapper" aria-hidden="true"></div>
+  )}
+</div>
+
+{showMessages && (
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@600&display=swap" rel="stylesheet" />
+)}
+
+<style>
+  #electric-preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background-color: var(--color-background, #000);
+    overflow: hidden;
+  }
+
+  #electric-grid-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    will-change: contents;
+  }
+
+  #floating-symbols {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #floating-symbols :global(.floating-symbol) {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    will-change: transform, opacity;
+  }
+
+  #floating-symbols :global(.floating-symbol.lit) {
+    opacity: 0.8;
+  }
+
+  .logo-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    pointer-events: none;
+  }
+
+  .logo-glyph {
+    width: 80px;
+    height: 80px;
+    opacity: 0.6;
+    will-change: opacity;
+  }
+
+  .messages-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 140px;
+    z-index: 4;
+    font-family: 'Funnel Display', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(0, 255, 255);
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 
+      0 0 10px rgba(0, 255, 255, 0.8),
+      0 0 20px rgba(0, 255, 255, 0.6),
+      0 0 30px rgba(0, 255, 255, 0.4);
+    white-space: nowrap;
+    will-change: opacity, transform;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .logo-glyph {
+      width: 60px;
+      height: 60px;
+    }
+
+    .messages-wrapper {
+      font-size: 1.2rem;
+      margin-top: 100px;
+      padding: 0 1rem;
+      white-space: normal;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .logo-glyph {
+      width: 50px;
+      height: 50px;
+    }
+
+    .messages-wrapper {
+      font-size: 1rem;
+      margin-top: 80px;
+    }
+  }
+
+  /* Accessibility: Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    #electric-preloader {
+      animation: none !important;
+    }
+    
+    #floating-symbols :global(.floating-symbol),
+    .logo-glyph,
+    .messages-wrapper {
+      animation: none !important;
+      transition: none !important;
+    }
+    
+    #electric-grid-canvas {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  // Configuration constants
+  const CONFIG = {
+    SYMBOLS: [
+      'formas-01.svg', 'formas-02.svg', 'formas-04.svg',
+      'formas-06.svg', 'formas-10.svg', 'formas-11.svg'
+    ],
+    PARTICLES_PER_AREA: 40000,
+    PARTICLE_SIZE: [40, 100],
+    PARTICLE_VELOCITY: [-40, 40],
+    PARTICLE_ROTATION: [-20, 20],
+    LOGO_EXCLUSION: {
+      width: 300,
+      height: 300
+    },
+    ELECTRIC_RGB: [0, 255, 255],
+    ELECTRIC_ALPHA: [0.25, 0.6],
+    BOLT_SPAWN_CHANCE: 0.02,
+    BOLT_LIFETIME: [200, 600],
+    NOISE_INTENSITY: 25,
+    LIGHTNING_SEGMENTS: 10
+  };
+
+  // Particle interface
+  interface Particle {
+    el: HTMLImageElement;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    vx: number;
+    vy: number;
+    ang: number;
+    vang: number;
+    lit: boolean;
+  }
+
+  // Bolt interface
+  interface Bolt {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    life: number;
+  }
+
+  // State management
+  const state = {
+    width: 0,
+    height: 0,
+    particles: [] as Particle[],
+    bolts: [] as Bolt[],
+    logoExclude: { x: 0, y: 0, w: 0, h: 0 },
+    lastFrame: 0,
+    animationId: null as number | null,
+    isComplete: false,
+    // Performance monitoring
+    frameCount: 0,
+    fpsLastTime: 0,
+    fps: 0
+  };
+
+  // Utility: Random number in range
+  function random(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+  }
+
+  // Utility: Random integer in range
+  function randomInt(min: number, max: number): number {
+    return Math.floor(random(min, max + 1));
+  }
+
+  // Get preloader element and data attributes
+  const preloaderEl = document.getElementById('electric-preloader');
+  if (!preloaderEl) {
+    console.error('ElectricPreloader: Root element not found');
+  }
+
+  const symbolsPath = preloaderEl?.dataset.symbolsPath || '/symbols/';
+  const floatingSymbolsContainer = document.getElementById('floating-symbols');
+  const canvas = document.getElementById('electric-grid-canvas') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+
+  // Task 3.1: Create particle with random properties
+  function createParticle(): Particle | null {
+    if (!floatingSymbolsContainer) return null;
+
+    // Random size between 40-100px
+    const size = random(CONFIG.PARTICLE_SIZE[0], CONFIG.PARTICLE_SIZE[1]);
+    
+    // Random position within viewport
+    const x = random(0, state.width - size);
+    const y = random(0, state.height - size);
+    
+    // Random velocity between -40 to 40 px/s
+    const vx = random(CONFIG.PARTICLE_VELOCITY[0], CONFIG.PARTICLE_VELOCITY[1]);
+    const vy = random(CONFIG.PARTICLE_VELOCITY[0], CONFIG.PARTICLE_VELOCITY[1]);
+    
+    // Random rotation 0-360 degrees
+    const ang = random(0, 360);
+    
+    // Random angular velocity -20 to 20 deg/s
+    const vang = random(CONFIG.PARTICLE_ROTATION[0], CONFIG.PARTICLE_ROTATION[1]);
+    
+    // Create DOM img element
+    const img = document.createElement('img');
+    const symbolIndex = randomInt(0, CONFIG.SYMBOLS.length - 1);
+    const symbolPath = `${symbolsPath}${CONFIG.SYMBOLS[symbolIndex]}`;
+    img.src = symbolPath;
+    img.className = 'floating-symbol';
+    img.style.width = `${size}px`;
+    img.style.height = `${size}px`;
+    img.setAttribute('aria-hidden', 'true');
+    
+    // Error handling for missing SVG assets
+    img.onerror = () => {
+      console.warn(`ElectricPreloader: Failed to load symbol: ${symbolPath}`);
+    };
+    
+    // Append to container
+    floatingSymbolsContainer.appendChild(img);
+    
+    return {
+      el: img,
+      x,
+      y,
+      w: size,
+      h: size,
+      vx,
+      vy,
+      ang,
+      vang,
+      lit: false
+    };
+  }
+
+  // Task 3.2: Update particle physics and movement
+  function updateParticle(particle: Particle, deltaTime: number): void {
+    // Apply velocity to position using delta time (convert to seconds)
+    const dt = deltaTime / 1000;
+    particle.x += particle.vx * dt;
+    particle.y += particle.vy * dt;
+    
+    // Edge collision detection and velocity reversal
+    if (particle.x <= 0 || particle.x + particle.w >= state.width) {
+      particle.vx *= -1;
+      // Clamp position to prevent particles from getting stuck
+      particle.x = Math.max(0, Math.min(particle.x, state.width - particle.w));
+    }
+    
+    if (particle.y <= 0 || particle.y + particle.h >= state.height) {
+      particle.vy *= -1;
+      // Clamp position to prevent particles from getting stuck
+      particle.y = Math.max(0, Math.min(particle.y, state.height - particle.h));
+    }
+    
+    // Apply rotation using angular velocity
+    particle.ang += particle.vang * dt;
+    
+    // Update DOM element transform with translate3d and rotate
+    particle.el.style.transform = `translate3d(${particle.x}px, ${particle.y}px, 0) rotate(${particle.ang}deg)`;
+    
+    // Handle particle opacity changes when lit by electric bolts
+    if (particle.lit) {
+      particle.el.classList.add('lit');
+      particle.lit = false; // Reset for next frame
+    } else {
+      particle.el.classList.remove('lit');
+    }
+  }
+
+  // Task 3.3: Calculate required particle count based on viewport area
+  function calculateParticleCount(): number {
+    const area = state.width * state.height;
+    return Math.floor(area / CONFIG.PARTICLES_PER_AREA);
+  }
+
+  // Task 3.3: Update logo exclusion zone position
+  function updateLogoExclusionZone(): void {
+    state.logoExclude = {
+      x: (state.width - CONFIG.LOGO_EXCLUSION.width) / 2,
+      y: (state.height - CONFIG.LOGO_EXCLUSION.height) / 2,
+      w: CONFIG.LOGO_EXCLUSION.width,
+      h: CONFIG.LOGO_EXCLUSION.height
+    };
+  }
+
+  // Task 3.3: Resize handler that recalculates dimensions and particle count
+  function handleResize(): void {
+    // Recalculate canvas dimensions
+    state.width = window.innerWidth;
+    state.height = window.innerHeight;
+    
+    // Update canvas size
+    if (canvas) {
+      canvas.width = state.width;
+      canvas.height = state.height;
+    }
+    
+    // Update logo exclusion zone position
+    updateLogoExclusionZone();
+    
+    // Calculate required particle count
+    const requiredCount = calculateParticleCount();
+    const currentCount = state.particles.length;
+    
+    if (requiredCount > currentCount) {
+      // Add particles when viewport grows
+      const particlesToAdd = requiredCount - currentCount;
+      for (let i = 0; i < particlesToAdd; i++) {
+        const particle = createParticle();
+        if (particle) {
+          state.particles.push(particle);
+        }
+      }
+    } else if (requiredCount < currentCount) {
+      // Remove particles and their DOM elements when viewport shrinks
+      const particlesToRemove = currentCount - requiredCount;
+      for (let i = 0; i < particlesToRemove; i++) {
+        const particle = state.particles.pop();
+        if (particle && particle.el.parentNode) {
+          particle.el.parentNode.removeChild(particle.el);
+        }
+      }
+    }
+  }
+
+  // Task 4.1: Check if line segment intersects logo exclusion zone
+  function intersectsLogo(x1: number, y1: number, x2: number, y2: number): boolean {
+    const { x: rx, y: ry, w: rw, h: rh } = state.logoExclude;
+    
+    // Check if line segment bounding box intersects with rectangle
+    const minX = Math.min(x1, x2);
+    const maxX = Math.max(x1, x2);
+    const minY = Math.min(y1, y2);
+    const maxY = Math.max(y1, y2);
+    
+    return minX < rx + rw && maxX > rx && minY < ry + rh && maxY > ry;
+  }
+
+  // Task 4.1: Create bolt between two random particles
+  function addBolt(): void {
+    if (state.particles.length < 2) return;
+    
+    // Select two random particles
+    const maxAttempts = 10;
+    let attempts = 0;
+    let particle1: Particle | null = null;
+    let particle2: Particle | null = null;
+    
+    while (attempts < maxAttempts) {
+      const idx1 = randomInt(0, state.particles.length - 1);
+      let idx2 = randomInt(0, state.particles.length - 1);
+      
+      // Ensure different particles
+      while (idx2 === idx1) {
+        idx2 = randomInt(0, state.particles.length - 1);
+      }
+      
+      particle1 = state.particles[idx1];
+      particle2 = state.particles[idx2];
+      
+      // Get particle centers
+      const x1 = particle1.x + particle1.w / 2;
+      const y1 = particle1.y + particle1.h / 2;
+      const x2 = particle2.x + particle2.w / 2;
+      const y2 = particle2.y + particle2.h / 2;
+      
+      // Check if bolt would intersect logo zone
+      if (!intersectsLogo(x1, y1, x2, y2)) {
+        // Generate random bolt lifetime (200-600ms)
+        const lifetime = random(CONFIG.BOLT_LIFETIME[0], CONFIG.BOLT_LIFETIME[1]);
+        
+        // Mark connected particles as "lit" for visual feedback
+        particle1.lit = true;
+        particle2.lit = true;
+        
+        // Add bolt object to bolts array
+        state.bolts.push({
+          x1,
+          y1,
+          x2,
+          y2,
+          life: lifetime
+        });
+        
+        return;
+      }
+      
+      attempts++;
+    }
+  }
+
+  // Task 4.2: Draw lightning bolt with noise displacement
+  function drawLightning(bolt: Bolt): void {
+    if (!ctx) return;
+    
+    const { x1, y1, x2, y2, life } = bolt;
+    const segments = CONFIG.LIGHTNING_SEGMENTS;
+    
+    // Calculate bolt alpha based on remaining lifetime
+    const maxLife = CONFIG.BOLT_LIFETIME[1];
+    const lifeFraction = life / maxLife;
+    const alpha = CONFIG.ELECTRIC_ALPHA[0] + 
+                  (CONFIG.ELECTRIC_ALPHA[1] - CONFIG.ELECTRIC_ALPHA[0]) * lifeFraction;
+    
+    // Set canvas composite mode to "lighter" for glow effect
+    ctx.globalCompositeOperation = 'lighter';
+    
+    // Use cyan color with calculated alpha
+    ctx.strokeStyle = `rgba(${CONFIG.ELECTRIC_RGB[0]}, ${CONFIG.ELECTRIC_RGB[1]}, ${CONFIG.ELECTRIC_RGB[2]}, ${alpha})`;
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    
+    // Begin path
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    
+    // Draw 10-segment path with noise displacement
+    for (let i = 1; i <= segments; i++) {
+      const t = i / segments;
+      
+      // Linear interpolation between start and end
+      let x = x1 + (x2 - x1) * t;
+      let y = y1 + (y2 - y1) * t;
+      
+      // Apply noise displacement (±25px) to intermediate segments
+      if (i > 0 && i < segments) {
+        x += random(-CONFIG.NOISE_INTENSITY, CONFIG.NOISE_INTENSITY);
+        y += random(-CONFIG.NOISE_INTENSITY, CONFIG.NOISE_INTENSITY);
+      }
+      
+      ctx.lineTo(x, y);
+    }
+    
+    ctx.stroke();
+    
+    // Reset composite mode
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  // Task 4.3: Draw electric grid (render all bolts)
+  function drawElectricGrid(deltaTime: number): void {
+    if (!ctx || !canvas) return;
+    
+    // Clear canvas each frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Implement random bolt spawning (2% chance per frame)
+    if (Math.random() < CONFIG.BOLT_SPAWN_CHANCE) {
+      addBolt();
+    }
+    
+    // Iterate through active bolts and render each
+    for (let i = state.bolts.length - 1; i >= 0; i--) {
+      const bolt = state.bolts[i];
+      
+      // Draw the bolt
+      drawLightning(bolt);
+      
+      // Decrease bolt lifetime by delta time
+      bolt.life -= deltaTime;
+      
+      // Remove expired bolts from array
+      if (bolt.life <= 0) {
+        state.bolts.splice(i, 1);
+      }
+    }
+  }
+
+  // Performance monitoring (development mode only)
+  function updatePerformanceMetrics(timestamp: number): void {
+    // Only run in development mode
+    if (import.meta.env.DEV) {
+      state.frameCount++;
+      
+      // Calculate FPS every second
+      if (timestamp - state.fpsLastTime >= 1000) {
+        state.fps = Math.round((state.frameCount * 1000) / (timestamp - state.fpsLastTime));
+        console.log(`ElectricPreloader FPS: ${state.fps} | Particles: ${state.particles.length} | Bolts: ${state.bolts.length}`);
+        
+        state.frameCount = 0;
+        state.fpsLastTime = timestamp;
+      }
+    }
+  }
+
+  // Animation loop
+  function step(timestamp: number): void {
+    if (state.isComplete) return;
+    
+    // Calculate delta time
+    const deltaTime = state.lastFrame ? timestamp - state.lastFrame : 16;
+    state.lastFrame = timestamp;
+    
+    // Update performance metrics in development mode
+    updatePerformanceMetrics(timestamp);
+    
+    // Update all particles
+    for (const particle of state.particles) {
+      updateParticle(particle, deltaTime);
+    }
+    
+    // Draw electric grid
+    drawElectricGrid(deltaTime);
+    
+    // Request next frame
+    state.animationId = requestAnimationFrame(step);
+  }
+
+  // Check if user prefers reduced motion
+  function prefersReducedMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  // Task 5.1: Logo fade-in animation with GSAP
+  function animateLogo(): void {
+    const logoGlyphs = document.querySelectorAll('.logo-glyph');
+    
+    if (logoGlyphs.length === 0) {
+      console.warn('ElectricPreloader: Logo glyphs not found');
+      return;
+    }
+    
+    // Add error handling for logo images
+    logoGlyphs.forEach((glyph) => {
+      const img = glyph as HTMLImageElement;
+      img.onerror = () => {
+        console.warn(`ElectricPreloader: Failed to load logo image: ${img.src}`);
+      };
+    });
+    
+    // Respect reduced motion preference
+    if (prefersReducedMotion()) {
+      gsap.set(logoGlyphs, { opacity: 1 });
+      return;
+    }
+    
+    // Set initial logo state to 60% opacity
+    gsap.set(logoGlyphs, { opacity: 0.6 });
+    
+    // Create GSAP animation to 100% opacity over 1.6 seconds
+    // Use "power2.out" easing for smooth appearance
+    // Add 0.3s delay before animation starts
+    gsap.to(logoGlyphs, {
+      opacity: 1,
+      duration: 1.6,
+      ease: 'power2.out',
+      delay: 0.3
+    });
+  }
+
+  // Task 6.1: Message cycling logic with GSAP
+  function initMessageCycling(): void {
+    const showMessages = preloaderEl?.dataset.showMessages === 'true';
+    if (!showMessages) return;
+
+    const messagesWrapper = document.querySelector('.messages-wrapper') as HTMLElement | null;
+    if (!messagesWrapper) {
+      console.warn('ElectricPreloader: Messages wrapper not found');
+      return;
+    }
+
+    // Parse messages from data attribute
+    const messagesData = preloaderEl?.dataset.messages;
+    const messages = messagesData ? JSON.parse(messagesData) : [];
+    
+    if (messages.length === 0) {
+      console.warn('ElectricPreloader: No messages provided');
+      return;
+    }
+
+    let currentIndex = 0;
+
+    // Create showNext function that cycles through messages array
+    function showNext(): void {
+      if (!messagesWrapper) return;
+      
+      const message = messages[currentIndex];
+      messagesWrapper.textContent = message;
+
+      // Respect reduced motion preference
+      if (prefersReducedMotion()) {
+        gsap.set(messagesWrapper, { opacity: 1, scale: 1, y: 0 });
+        // Still cycle messages but without animation
+        setTimeout(() => {
+          currentIndex = (currentIndex + 1) % messages.length;
+          showNext();
+        }, 3500);
+        return;
+      }
+
+      // Create GSAP timeline for fade in (1s) → display (3.5s) → fade out (1s)
+      const timeline = gsap.timeline({
+        onComplete: () => {
+          // Loop back to first message after last one completes
+          currentIndex = (currentIndex + 1) % messages.length;
+          showNext();
+        }
+      });
+
+      // Set initial state
+      gsap.set(messagesWrapper, {
+        opacity: 0,
+        scale: 0.9,
+        y: 10
+      });
+
+      // Fade in: animate opacity, scale, and y-position for smooth transitions
+      timeline.to(messagesWrapper, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power2.out'
+      });
+
+      // Display: hold for 3.5 seconds
+      timeline.to(messagesWrapper, {
+        duration: 3.5
+      });
+
+      // Fade out: animate opacity, scale, and y-position
+      timeline.to(messagesWrapper, {
+        opacity: 0,
+        scale: 0.9,
+        y: -10,
+        duration: 1,
+        ease: 'power2.in'
+      });
+    }
+
+    // Start the message cycling
+    showNext();
+  }
+
+  // Task 7.3: Implement exit animation and cleanup
+  function exitPreloader(): void {
+    if (!preloaderEl) return;
+    
+    // Get duration from data attribute
+    const duration = parseInt(preloaderEl.dataset.duration || '3000', 10);
+    
+    // Create GSAP timeline for preloader fade out
+    // Schedule fade out to start at (duration - 500ms)
+    const fadeOutDelay = (duration - 500) / 1000; // Convert to seconds
+    
+    const exitTimeline = gsap.timeline({
+      delay: fadeOutDelay,
+      onComplete: () => {
+        // Dispatch "preloader:complete" custom event on timeline complete
+        const completeEvent = new CustomEvent('preloader:complete');
+        window.dispatchEvent(completeEvent);
+        
+        // Remove preloader from DOM after 100ms delay
+        setTimeout(() => {
+          // Cancel animation frame
+          if (state.animationId !== null) {
+            cancelAnimationFrame(state.animationId);
+            state.animationId = null;
+          }
+          
+          // Clean up event listeners
+          window.removeEventListener('resize', handleResize);
+          
+          // Mark as complete to stop animation loop
+          state.isComplete = true;
+          
+          // Remove from DOM
+          if (preloaderEl.parentNode) {
+            preloaderEl.parentNode.removeChild(preloaderEl);
+          }
+        }, 100);
+      }
+    });
+    
+    // Fade out entire preloader container
+    exitTimeline.to(preloaderEl, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.inOut'
+    });
+  }
+
+  // Task 7.2: Implement component initialization
+  function initElectricPreloader(): void {
+    // Check if preloader element exists in DOM
+    if (!preloaderEl) {
+      console.error('ElectricPreloader: Root element not found');
+      return;
+    }
+    
+    if (!floatingSymbolsContainer) {
+      console.error('ElectricPreloader: Floating symbols container not found');
+      return;
+    }
+    
+    if (!canvas || !ctx) {
+      console.error('ElectricPreloader: Canvas or context not available');
+      return;
+    }
+    
+    // Initialize canvas dimensions and context
+    state.width = window.innerWidth;
+    state.height = window.innerHeight;
+    canvas.width = state.width;
+    canvas.height = state.height;
+    
+    // Update logo exclusion zone
+    updateLogoExclusionZone();
+    
+    // Check if user prefers reduced motion
+    const reducedMotion = prefersReducedMotion();
+    
+    if (!reducedMotion) {
+      // Create initial particles based on viewport size
+      const particleCount = calculateParticleCount();
+      for (let i = 0; i < particleCount; i++) {
+        const particle = createParticle();
+        if (particle) {
+          state.particles.push(particle);
+        }
+      }
+      
+      // Add resize listener
+      window.addEventListener('resize', handleResize);
+      
+      // Start animation loop
+      state.animationId = requestAnimationFrame(step);
+      
+      console.log(`ElectricPreloader: Initialized with ${state.particles.length} particles`);
+    } else {
+      console.log('ElectricPreloader: Reduced motion mode - animations disabled');
+    }
+    
+    // Trigger logo fade-in animation (respects reduced motion internally)
+    animateLogo();
+    
+    // Start message cycling if enabled (respects reduced motion internally)
+    initMessageCycling();
+    
+    // Schedule exit animation
+    exitPreloader();
+  }
+
+  // Initialize when DOM is ready
+  initElectricPreloader();
+</script>
