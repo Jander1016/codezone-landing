@@ -88,18 +88,19 @@ import { services } from "../data/services";
     // Detectar tamaño de pantalla
     const isMobile = () => window.innerWidth <= 768;
     const isTablet = () => window.innerWidth > 768 && window.innerWidth <= 1279;
+    const isDesktop = () => window.innerWidth >= 1280;
 
-    // 1. Logo - Animación sin scrub
+    // 1. Logo - Sin scrub, se anima cuando está más dentro del viewport
     if (logo) {
       gsap.from(logo, {
         y: 60,
         opacity: 0,
-        filter: "blur(12px)",
+        filter: "blur(10px)",
         duration: 0.8,
         ease: "power2.out",
         scrollTrigger: {
           trigger: logo,
-          start: "top 85%",
+          start: "top 70%",
           toggleActions: "play none none none",
         },
       });
@@ -108,14 +109,14 @@ import { services } from "../data/services";
     // 2. Claim h2 con maskTextReveal - Sin scrub
     if (claim) {
       const titleTimeline = maskTextReveal(claim, {
-        duration: 0.8,
-        stagger: 0.12,
-        ease: "power2.out",
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
       });
 
       ScrollTrigger.create({
         trigger: claim,
-        start: "top 80%",
+        start: "top 75%",
         animation: titleTimeline,
         toggleActions: "play none none none",
       });
@@ -126,12 +127,12 @@ import { services } from "../data/services";
       gsap.from(p1, {
         y: 40,
         opacity: 0,
-        filter: "blur(10px)",
+        filter: "blur(8px)",
         duration: 0.7,
         ease: "power2.out",
         scrollTrigger: {
           trigger: p1,
-          start: "top 85%",
+          start: "top 80%",
           toggleActions: "play none none none",
         },
       });
@@ -142,12 +143,12 @@ import { services } from "../data/services";
       gsap.from(p2, {
         y: 40,
         opacity: 0,
-        filter: "blur(10px)",
+        filter: "blur(8px)",
         duration: 0.7,
         ease: "power2.out",
         scrollTrigger: {
           trigger: p2,
-          start: "top 85%",
+          start: "top 80%",
           toggleActions: "play none none none",
         },
       });
@@ -156,25 +157,23 @@ import { services } from "../data/services";
     // 5. Cards - Animación según tamaño de pantalla
     if (cards.length > 0) {
       if (isMobile() || isTablet()) {
-        // MOBILE/TABLET: Cards entran una por una con stagger notorio
+        // MOBILE/TABLET: Cards entran una por una SIN scrub
         cards.forEach((card, index) => {
           gsap.from(card, {
             y: 100,
             opacity: 0,
             rotate: index % 2 === 0 ? 10 : -10,
-            duration: 1,
+            duration: 0.8,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
               start: "top 90%",
-              end: "top 60%",
-              scrub: 1,
-              toggleActions: "play none none reverse",
+              toggleActions: "play none none none",
             },
           });
         });
       } else {
-        // DESKTOP: Animación según el HTML que compartiste
+        // DESKTOP: Animación con scrub progresivo suave
         const card1 = cards[0];
         const card2 = cards[1];
         const card3 = cards[2];
@@ -192,7 +191,7 @@ import { services } from "../data/services";
               start: "top 85%",
               end: "top 55%",
               scrub: 1,
-              toggleActions: "play none none reverse",
+              toggleActions: "play none none none",
             },
           });
         }
@@ -209,7 +208,7 @@ import { services } from "../data/services";
               start: "top 85%",
               end: "top 55%",
               scrub: 1,
-              toggleActions: "play none none reverse",
+              toggleActions: "play none none none",
             },
           });
         }
@@ -227,7 +226,7 @@ import { services } from "../data/services";
               start: "top 85%",
               end: "top 55%",
               scrub: 1,
-              toggleActions: "play none none reverse",
+              toggleActions: "play none none none",
             },
           });
         }
