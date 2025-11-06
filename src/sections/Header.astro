@@ -68,6 +68,9 @@ import MobileMenu from "../components/MobileMenu.astro";
 
       if (!links.length) return;
 
+      // Flag para deshabilitar observer durante scroll programático
+      let isProgrammaticScroll = false;
+
       // Map href -> link element (may be multiple: desktop + mobile)
       const linkMap = new Map();
       links.forEach((link) => {
@@ -83,13 +86,31 @@ import MobileMenu from "../components/MobileMenu.astro";
             const id = href.slice(1);
             const target = document.getElementById(id);
             if (target) {
+              // Deshabilitar observer durante scroll programático
+              isProgrammaticScroll = true;
+              
+              console.log('Click detected, scrolling to:', id);
+              
               // Usar ScrollSmoother si está disponible, sino scrollIntoView
               const smoother = (window as any).smoother;
               if (smoother) {
-                smoother.scrollTo(target, true, "top");
+                console.log('Using ScrollSmoother');
+                try {
+                  smoother.scrollTo(target, true, "top top");
+                } catch (err) {
+                  console.warn('ScrollSmoother error, using fallback:', err);
+                  target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
               } else {
+                console.log('ScrollSmoother not available, using scrollIntoView');
                 target.scrollIntoView({ behavior: "smooth", block: "start" });
               }
+              
+              // Re-habilitar observer después del scroll (2 segundos para scroll suave)
+              setTimeout(() => {
+                isProgrammaticScroll = false;
+                console.log('Observer re-enabled');
+              }, 2000);
               
               // Disparar evento personalizado para activar animaciones de la sección
               setTimeout(() => {
@@ -97,7 +118,7 @@ import MobileMenu from "../components/MobileMenu.astro";
                   detail: { sectionId: id }
                 });
                 document.dispatchEvent(event);
-              }, 500); // Delay para que el scroll llegue primero
+              }, 500);
             }
             if (href === "#contact-separator") {
               setActiveByHref(null);
@@ -136,6 +157,9 @@ import MobileMenu from "../components/MobileMenu.astro";
       };
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
+          // Ignorar cambios durante scroll programático
+          if (isProgrammaticScroll) return;
+          
           if (entry.isIntersecting) {
             const id = entry.target.id;
             if (!id) return;

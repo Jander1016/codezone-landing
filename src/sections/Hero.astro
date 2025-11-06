@@ -189,11 +189,18 @@ import Button from "../components/Button.astro";
     // 1. Header/Navbar entra desde arriba (todo el header)
     const header = document.querySelector('header');
     if (header) {
-      tl.from(header, {
-        y: -100,
-        opacity: 0,
+      // Set initial state
+      gsap.set(header, { y: -100, opacity: 0 });
+      // Animate to visible state
+      tl.to(header, {
+        y: 0,
+        opacity: 1,
         duration: 0.6,
-        ease: 'power3.out'
+        ease: 'power3.out',
+        onStart: () => {
+          // Habilitar pointer events cuando la animación comienza
+          header.classList.add('is-visible');
+        }
       });
     }
 
@@ -266,11 +273,11 @@ import Button from "../components/Button.astro";
     }
 
     // Escuchar evento del preloader
-    document.addEventListener('preloader:complete', startAnimations);
+    window.addEventListener('preloader:complete', startAnimations);
 
     // Fallback: si no hay preloader, iniciar después de un pequeño delay
     setTimeout(() => {
-      const preloader = document.getElementById('preloader');
+      const preloader = document.getElementById('electric-preloader');
       if (!preloader) {
         startAnimations();
       }

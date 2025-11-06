@@ -2,12 +2,14 @@
 
 :root {
   --font-sans: 'Funnel Display', sans-serif;
-  --primary-blue: #121D46;
+  --primary-blue-dark: #121D46;
+  --primary-blue: #000c23;
   --secondary-blue: #0e3261;
   --light-gray: #FCFCFC;
   --cyan-300: #53EAFD;
   --fuchsia-600: #C800DE;
-  --neutral-50: #FAFAFA;
+  --neutral-100: #FAFAFA;
+  --neutral-50: #F5F5F5;
   --cz-dark-base: #020618;
   --cz-default-gradient: linear-gradient(90deg, #C800DE 0%, #53EAFD 100%);
   --cz-border-gradient: linear-gradient(90deg,
