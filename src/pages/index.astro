@@ -7,12 +7,12 @@ import Process from "../sections/Process.astro";
 import Services from "../sections/Services.astro";
 import Stack from "../sections/Stack.astro";
 import ContactForm from "../sections/ContactForm.astro";
-import Preloader from "../components/Preloader.astro";
+import ElectricPreloader from "../components/ElectricPreloader.astro";
 ---
 
 <Layout class="overflow-hiden">
 	<!-- Preloader -->
-	<Preloader duration={2000} variant="spinner" />
+	<ElectricPreloader duration={2000} showMessages={true} />
 
 	<!-- Hero: Personaliza aquí -->
 	<GradientOverlay position="top" size="medium" color="cyan" opacity="medium" blur="high">
@@ -24,7 +24,7 @@ import Preloader from "../components/Preloader.astro";
 	<Separator wormDuration={0.08} loopInterval={5} idSeparator="services-separator" />
 
 	<!-- Services: Personaliza aquí -->
-	<GradientOverlay position="center" size="medium" color="fuchsia" opacity="medium" blur="high">
+	<GradientOverlay position="center" size="small" color="fuchsia" opacity="medium" blur="high">
 		<Services />
 	</GradientOverlay>
 
@@ -38,7 +38,7 @@ import Preloader from "../components/Preloader.astro";
 	<Separator id="stack-separator" />
 
 	<!-- Stack: Personaliza aquí -->
-	<GradientOverlay position="center" size="medium" color="fuchsia" opacity="low" blur="high">
+	<GradientOverlay position="center" size="small" color="fuchsia" opacity="low" blur="high">
 		<Stack />
 	</GradientOverlay>
 
@@ -48,7 +48,5 @@ import Preloader from "../components/Preloader.astro";
 	<GradientOverlay position="center" size="small" color="cyan" opacity="medium" blur="high">
 		<ContactForm />
 	</GradientOverlay>
-
-	<!-- Footer: Personaliza aquí -->
 	
 </Layout>

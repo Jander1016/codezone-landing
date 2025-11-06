@@ -50,22 +50,22 @@ import "../styles/global.css";
 		<Header />
 
 		<div id="smooth-wrapper">
-			<div id="smooth-content">
+			<div id="smooth-content" class="overflow-hidden">
 				<div
 					id="background-mask"
 					class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
 				>
 					<div class="relative z-2">
 						<slot />
-						<GradientOverlay
+						<!-- <GradientOverlay
 							position="bottom"
 							size="small"
 							color="fuchsia"
-							opacity="medium"
+							opacity="low"
 							blur="high"
-						>
+						> -->
 							<Footer />
-						</GradientOverlay>
+						<!-- </GradientOverlay> -->
 					</div>
 				</div>
 			</div>
@@ -105,15 +105,31 @@ import "../styles/global.css";
 		(window as any).smoother = smoother;
 	}
 
+	// Esperar al evento del preloader antes de inicializar ScrollSmoother
+	function waitForPreloader() {
+		// Escuchar evento del preloader
+		window.addEventListener('preloader:complete', () => {
+			// Inicializar ScrollSmoother inmediatamente después del preloader
+			// para que esté disponible cuando el usuario interactúe
+			setTimeout(() => {
+				initScrollSmoother();
+			}, 50);
+		});
+
+		// Fallback: si no hay preloader después de 200ms, inicializar de todos modos
+		setTimeout(() => {
+			const preloader = document.getElementById('electric-preloader');
+			if (!preloader) {
+				initScrollSmoother();
+			}
+		}, 200);
+	}
+
 	// Inicializar cuando el DOM esté listo
 	if (document.readyState === "loading") {
-		document.addEventListener(
-			// "DOMContentLoaded",
-			"load",
-			initScrollSmoother,
-		);
+		document.addEventListener("DOMContentLoaded", waitForPreloader);
 	} else {
-		initScrollSmoother();
+		waitForPreloader();
 	}
 </script>
 <style>
@@ -158,6 +174,13 @@ import "../styles/global.css";
 	header {
 		position: fixed;
 		z-index: 50;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	/* Habilitar clicks cuando el header es visible */
+	header.is-visible {
+		pointer-events: auto;
 	}
 
 	/* Preloader styles (minimal, adapted from provided example) */
