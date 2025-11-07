@@ -1,18 +1,27 @@
 ---
-import type { NavItem } from "../types/components";
-import Button from "./Button.astro";
+/**
+ * MobileMenu Component
+ * 
+ * Full-screen mobile navigation menu with:
+ * - Hamburger toggle button
+ * - Overlay with backdrop blur
+ * - Slide-in animation
+ * - Accessibility features (ARIA, keyboard navigation)
+ * - Auto-close on link click and ESC key
+ */
+
+import type { NavItem } from '../data/navigation';
+import Button from './Button.astro';
 
 interface Props {
   navItems: NavItem[];
   logoSrc?: string;
-  ctaText?: string;
-  ctaHref?: string;
 }
 
-const {
+const { 
   navItems,
-  logoSrc = "/codezone-logo-color.svg",
-} = Astro.props as Props;
+  logoSrc = "/codezone-logo-color.svg"
+} = Astro.props;
 ---
 
 <button
@@ -20,6 +29,7 @@ const {
   class="mobilemenu-burger"
   aria-label="Abrir menú"
   aria-expanded="false"
+  aria-controls="mobilemenu-overlay"
   type="button"
 >
   <div
@@ -33,32 +43,43 @@ const {
   </div>
 </button>
 
-<div id="mobilemenu-overlay" class="mobilemenu-overlay" aria-hidden="true">
-  <div class="overlay-top">
-    <a class="overlay-brand" href="#hero">
-      <img src={logoSrc} alt="Codezone" width="180" height="26" />
+<div 
+  id="mobilemenu-overlay" 
+  class="mobilemenu-overlay" 
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menú de navegación móvil"
+>
+  <!-- Logo CodeZone - Fixed position top left -->
+  <div class="mobilemenu-header">
+    <a class="mobilemenu-logo" href="#hero">
+      <img src={logoSrc} alt="Codezone" width="140" height="26" />
     </a>
   </div>
 
+  <!-- Menu items centered -->
   <div id="mobilemenu-items" class="mobilemenu-items">
+    <!-- Navigation Links -->
     <ul class="mobilemenu-list">
-      {
-        navItems.map((item, i) => (
-          <li>
-            <a
-              href={item.href}
-              class="mobilemenu-item"
-              data-index={i}
-              aria-current={item.isActive ? "page" : undefined}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
+      {navItems.map((item, i) => (
+        <li>
+          <a
+            href={item.href}
+            class="mobilemenu-item"
+            data-nav-link
+            data-index={i}
+            data-section={item.href.startsWith('#') ? item.href.slice(1) : item.href}
+            aria-current={item.isActive ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
     </ul>
 
-    <div class="py-8">
+    <!-- Contact CTA -->
+    <div class="mobilemenu-cta-wrapper">
       <Button
         href="#contact-separator"
         variant="outline"
@@ -73,7 +94,9 @@ const {
 </div>
 
 <!-- serialize nav items so client script can use the authoritative data source -->
-<script type="application/json" id="mobilemenu-data">{JSON.stringify(navItems)}</script>
+<script type="application/json" id="mobilemenu-data">
+  {JSON.stringify(navItems)}
+</script>
 
 <script>
   /* @ts-nocheck */
@@ -81,19 +104,25 @@ const {
     const burgerBtn = document.getElementById("mobilemenu-burger");
     const burgerIcon = document.getElementById("mobilemenu-burger-icon");
     const overlay = document.getElementById("mobilemenu-overlay");
-    // only select the mobile menu items and the CTA inside the menu
+    const logo = document.querySelector('.mobilemenu-logo');
+    
+    // Select animated items: menu items and CTA (logo stays fixed, no animation)
     const menuItems = document.querySelectorAll('.mobilemenu-item, .mobilemenu-cta');
+    const allAnimatedItems = Array.from(menuItems);
+    
+    let isMenuOpen = false;
 
-  let isMenuOpen = false;
-  // increase overlay duration for a smoother open/close and keep it in sync with CSS
-  const overlayTransitionDuration = 700; // ms - should match CSS
-  // slightly larger stagger for a softer feel
-  const itemAnimationDuration = 110;
+    // Overlay and animation timing
+    const overlayTransitionDuration = 700; // ms - should match CSS
+    const itemAnimationDuration = 110;
 
+    /**
+     * Animate menu items with staggered effect
+     */
     function animateMenuItems(isOpening: boolean) {
-      const elements = Array.from(menuItems);
+      const elements = Array.from(allAnimatedItems);
       if (!isOpening) elements.reverse();
-
+      
       elements.forEach((item, index) => {
         const delay = index * itemAnimationDuration;
         setTimeout(() => {
@@ -109,40 +138,72 @@ const {
       });
     }
 
+    /**
+     * Update active state for navigation links in mobile menu
+     */
+    function updateMobileActiveState() {
+      const mobileLinks = document.querySelectorAll('.mobilemenu-item');
+      
+      mobileLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        const section = link.getAttribute('data-section');
+        
+        // Check if this link should be active based on current scroll position
+        if (section && section !== 'contact-separator') {
+          const targetElement = document.getElementById(section);
+          if (targetElement) {
+            const rect = targetElement.getBoundingClientRect();
+            const isInView = rect.top <= window.innerHeight * 0.3 && rect.bottom >= 100;
+            
+            if (isInView) {
+              link.setAttribute('aria-current', 'page');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          }
+        }
+      });
+    }
+
+    /**
+     * Toggle menu open/close
+     */
     function toggleMenu() {
       isMenuOpen = !isMenuOpen;
+      
       if (burgerIcon) burgerIcon.classList.toggle("active", isMenuOpen);
-      if (burgerBtn)
-        burgerBtn.setAttribute("aria-expanded", String(isMenuOpen));
-
+      if (burgerBtn) burgerBtn.setAttribute("aria-expanded", String(isMenuOpen));
+      
       if (isMenuOpen) {
         if (overlay) {
           overlay.classList.add("visible");
           overlay.setAttribute('aria-hidden', 'false');
-          overlay.setAttribute('role', 'dialog');
-          overlay.setAttribute('aria-modal', 'true');
           try { (overlay as any).inert = false; } catch (e) { /* ignore if not supported */ }
         }
         document.body.style.overflow = "hidden";
+        
+        // Update active state when opening menu
+        updateMobileActiveState();
+        
         setTimeout(() => {
           animateMenuItems(true);
           // focus first menu item for keyboard users
-          const first = document.querySelector('.mobilemenu-item, .mobilemenu-cta') as HTMLElement | null;
+          const first = document.querySelector('.mobilemenu-item') as HTMLElement | null;
           if (first) first.focus();
         }, overlayTransitionDuration);
       } else {
         animateMenuItems(false);
-        const totalItemDuration = menuItems.length * itemAnimationDuration;
+        const totalItemDuration = allAnimatedItems.length * itemAnimationDuration;
+        
         setTimeout(() => {
           if (overlay) {
             overlay.classList.remove("visible");
             overlay.setAttribute('aria-hidden', 'true');
             try { (overlay as any).inert = true; } catch (e) { /* ignore */ }
-            overlay.removeAttribute('role');
-            overlay.removeAttribute('aria-modal');
           }
           document.body.style.overflow = "";
-          // if focus remained inside the overlay, move it back to the burger button
+          
+          // Return focus to burger button
           try {
             const active = document.activeElement as Element | null;
             if (active && overlay && overlay.contains(active)) {
@@ -159,7 +220,7 @@ const {
 
     if (burgerBtn) burgerBtn.addEventListener("click", toggleMenu);
 
-    // parse nav data serialized server-side so we use the canonical source
+    // Parse nav data serialized server-side
     const navDataEl = document.getElementById('mobilemenu-data');
     let navData = [];
     try {
@@ -168,20 +229,28 @@ const {
       navData = [];
     }
 
+    /**
+     * Set active state for all navigation links (desktop + mobile)
+     */
     function setActiveByHref(href: string | null) {
-      const scope = Array.from(document.querySelectorAll('a.nav-link, #mobilemenu-items a'));
-      scope.forEach(a => a.removeAttribute('aria-current'));
+      const allNavLinks = document.querySelectorAll('a.nav-link, .mobilemenu-item');
+      
+      allNavLinks.forEach(link => {
+        link.removeAttribute('aria-current');
+      });
+      
       if (!href) return;
-      const matches = Array.from(document.querySelectorAll(`a.nav-link[href="${href}"], #mobilemenu-items a[href="${href}"]`));
+      
+      const matches = document.querySelectorAll(`a.nav-link[href="${href}"], .mobilemenu-item[href="${href}"]`);
       matches.forEach(m => m.setAttribute('aria-current', 'page'));
     }
 
-    // When a menu item is clicked: smooth-scroll to target, set active link, then close menu
+    // Handle menu item clicks
     menuItems.forEach((item) => {
       item.addEventListener("click", (ev) => {
         const el = ev.currentTarget;
         if (!(el instanceof Element)) return;
-        // Prefer the canonical nav data via data-index when available
+        
         const idx = el.getAttribute('data-index');
         let href = (el.getAttribute && el.getAttribute('href')) || '';
         if (idx !== null && navData[idx]) {
@@ -190,22 +259,23 @@ const {
 
         if (href && href.startsWith('#')) {
           ev.preventDefault();
-          // contact clears active state
-          // set active link in header (uses canonical nav data)
+          
+          // Update active state: contact clears it, others set it
+          const detail = href === '#contact-separator' ? null : href;
+          setActiveByHref(detail);
+          
+          // Dispatch event for header to sync
           try {
-            // Dispatch custom event so header can react and set active nav (null clears it)
-            const detail = href === '#contact-separator' ? null : href;
             window.dispatchEvent(new CustomEvent('codezone:setActiveNavHref', { detail }));
           } catch (err) {
             /* ignore */
           }
 
           const target = document.getElementById(href.slice(1));
-
+          
           if (isMenuOpen) {
-            // close with animation, then scroll once overlay is hidden
             toggleMenu();
-            const totalItemDuration = menuItems.length * itemAnimationDuration;
+            const totalItemDuration = allAnimatedItems.length * itemAnimationDuration;
             setTimeout(() => {
               if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, totalItemDuration + 120);
@@ -213,28 +283,32 @@ const {
             if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         } else {
-          // non-anchor or external link: just close menu (navigation will follow naturally)
           if (isMenuOpen) toggleMenu();
         }
       });
     });
 
-    // When clicking the overlay brand (logo) inside the mobile menu, close the menu,
-    // scroll to hero and clear active nav (remove cyan) so behavior matches desktop.
-    const overlayBrand = document.querySelector('.overlay-brand[href="#hero"]');
-    if (overlayBrand) {
-      overlayBrand.addEventListener('click', (e) => {
+    // Handle logo click
+    if (logo) {
+      logo.addEventListener('click', (e) => {
         e.preventDefault();
         const target = document.getElementById('hero');
+        
+        // Clear active state when clicking logo
+        setActiveByHref(null);
+        
         if (isMenuOpen) toggleMenu();
-        const delay = isMenuOpen ? (menuItems.length * itemAnimationDuration + 120) : 0;
+        
+        const delay = isMenuOpen ? (allAnimatedItems.length * itemAnimationDuration + 120) : 0;
         setTimeout(() => {
           if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
           try {
             window.dispatchEvent(new CustomEvent('codezone:setActiveNavHref', { detail: null }));
           } catch (err) {
             /* ignore */
           }
+          
           try {
             history.replaceState(null, '', window.location.pathname + window.location.search);
           } catch (err) {
@@ -243,14 +317,81 @@ const {
         }, delay);
       });
     }
+
+    // Listen for active nav updates from header
+    window.addEventListener('codezone:setActiveNavHref', (ev) => {
+      // @ts-ignore
+      setActiveByHref(ev.detail);
+    });
+
+    // ESC key to close
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isMenuOpen) toggleMenu();
+      if (e.key === "Escape" && isMenuOpen) {
+        e.preventDefault();
+        toggleMenu();
+      }
+    });
+    
+    /**
+     * Focus trap management for mobile menu
+     * Ensures focus stays within menu when open, but can always escape with ESC
+     */
+    function setupFocusTrap() {
+      if (!overlay) return;
+      
+      const focusableElements = overlay.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      
+      if (focusableElements.length === 0) return;
+      
+      const firstFocusable = focusableElements[0] as HTMLElement;
+      const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
+      
+      // Handle Tab key to create focus loop
+      overlay.addEventListener('keydown', (e) => {
+        if (!isMenuOpen) return;
+        
+        if (e.key === 'Tab') {
+          // Shift + Tab (backwards)
+          if (e.shiftKey) {
+            if (document.activeElement === firstFocusable) {
+              e.preventDefault();
+              lastFocusable.focus();
+            }
+          } 
+          // Tab (forwards)
+          else {
+            if (document.activeElement === lastFocusable) {
+              e.preventDefault();
+              firstFocusable.focus();
+            }
+          }
+        }
+      });
+    }
+    
+    setupFocusTrap();
+    
+    /**
+     * Handle Enter and Space keys on menu items for better keyboard support
+     */
+    menuItems.forEach((item) => {
+      item.addEventListener('keydown', (e) => {
+        const keyEvent = e as KeyboardEvent;
+        
+        // Space key should activate links (Enter already works by default)
+        if (keyEvent.key === ' ' || keyEvent.key === 'Spacebar') {
+          keyEvent.preventDefault();
+          (item as HTMLElement).click();
+        }
+      });
     });
   });
 </script>
 
 <style>
-  /* Keep the burger fixed in the viewport so it doesn't disappear when the page scrolls or sections change */
+  /* Hamburger button - fixed position */
   .mobilemenu-burger {
     position: fixed;
     right: 12px;
@@ -260,7 +401,16 @@ const {
     align-items: center;
     justify-content: center;
     border: none;
-    z-index: 9999;
+    background: transparent;
+    cursor: pointer;
+    z-index: var(--z-mobile-burger);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobilemenu-burger:focus-visible {
+    outline: 2px solid var(--cyan-300);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
   }
 
   .mobilemenu-burger-icon {
@@ -293,6 +443,7 @@ const {
     width: 60%;
   }
 
+  /* Animated hamburger when menu is open */
   .mobilemenu-burger-icon.active {
     width: 80%;
   }
@@ -301,25 +452,27 @@ const {
     transform: translateY(8px) rotate(45deg);
     width: 80%;
   }
+
   .mobilemenu-burger-icon.active .line:nth-child(2) {
     opacity: 0;
     width: 80%;
   }
+
   .mobilemenu-burger-icon.active .line:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
     width: 80%;
   }
 
+  /* Full-screen overlay */
   .mobilemenu-overlay {
     position: fixed;
     inset: 0;
     height: 100vh;
     width: 100vw;
-    z-index: 9998;
+    z-index: var(--z-mobile-menu);
     transform: scaleY(0);
     transform-origin: top;
-  /* smoother curve and longer duration to feel less abrupt */
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     background: var(--primary-blue);
     display: flex;
     flex-direction: column;
@@ -329,87 +482,128 @@ const {
     right: 0;
     bottom: 0;
   }
+
   .mobilemenu-overlay.visible {
     transform: scaleY(1);
   }
 
-  .overlay-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.25rem;
+  /* Logo header - fixed position top left, same as closed state */
+  .mobilemenu-header {
     position: absolute;
     top: 25px;
     left: 0;
     width: 100%;
-    z-index: 66;
+    padding: 1rem 1.25rem;
+    z-index: var(--z-base);
   }
-  .overlay-brand img {
+
+  .mobilemenu-logo {
+    display: inline-block;
+    line-height: 0;
+    cursor: pointer;
+  }
+
+  .mobilemenu-logo:focus-visible {
+    outline: 2px solid var(--cyan-300);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  .mobilemenu-logo img {
     display: block;
     width: 140px;
     height: auto;
   }
-  .overlay-close {
-    background: transparent;
-    border: none;
-    font-size: 1.25rem;
-    cursor: pointer;
-  }
 
+  /* Menu items container - positioned from top */
   .mobilemenu-items {
-    margin-top: 6.25rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 1rem 1.5rem;
+    gap: 1rem;
+    margin-top: 0;
+    padding-top: 120px;
   }
+
+  /* Navigation list */
   .mobilemenu-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: center;
   }
+
+  /* Menu items */
   .mobilemenu-item {
     color: #fcfcfc;
-    font-size: 1.25rem;
+    font-size: 1.75rem;
+    font-weight: 300;
     text-decoration: none;
     opacity: 0;
     transform: translateY(10px);
     transition:
       transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.3s ease;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.02em;
   }
-  
+
+  .mobilemenu-item:hover,
+  .mobilemenu-item:focus-visible {
+    color: var(--cyan-300, #53eafd);
+  }
+
   .mobilemenu-item[aria-current="page"] {
     color: var(--cyan-300, #53eafd);
     font-weight: 600;
   }
+
+  .mobilemenu-item:focus-visible {
+    outline: 2px solid var(--cyan-300);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* CTA wrapper and button */
+  .mobilemenu-cta-wrapper {
+    margin-top: 2rem;
+  }
+
   .mobilemenu-cta {
-    margin-top: 1.5rem;
-    padding: 0.75rem 1.25rem;
-    border-radius: 999px;
-    color: var(--cyan-300, #53eafd);
-    background: transparent;
-    border: 2px solid var(--fuchsia-600, #c800de);
-    text-decoration: none;
     opacity: 0;
     transform: translateY(10px);
     transition:
       transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
       opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .item-visible {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-  }
 
+  /* Hide on desktop */
   @media (min-width: 1024px) {
     .mobilemenu-burger,
     .mobilemenu-overlay {
       display: none;
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .mobilemenu-burger-icon,
+    .mobilemenu-overlay,
+    .mobilemenu-logo,
+    .mobilemenu-item,
+    .mobilemenu-cta {
+      transition: none;
     }
   }
 </style>

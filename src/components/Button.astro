@@ -8,9 +8,11 @@ interface Props {
   type?: "button" | "submit" | "reset";
   icon?: string;
   className?: string;
+  ariaLabel?: string;
+  disabled?: boolean;
 }
 
-const { variant = "solid", size = "medium", href, type = "button", icon, className } = Astro.props;
+const { variant = "solid", size = "medium", href, type = "button", icon, className, ariaLabel, disabled = false } = Astro.props;
 
 const sizes = {
   small: "px-4 py-2 text-sm",
@@ -20,15 +22,26 @@ const sizes = {
 ---
 
 {href ? (
-  <a href={href} class:list={["btn", `btn-${variant}`, sizes[size], className]}>
+  <a 
+    href={href} 
+    class:list={["btn", `btn-${variant}`, sizes[size], className]}
+    aria-label={ariaLabel}
+    aria-disabled={disabled ? "true" : undefined}
+    tabindex={disabled ? -1 : undefined}
+  >
     <slot />
-    {icon && <img src={`./${icon}`} alt="icon" class="ml-2" loading="lazy" />}
+    {icon && <img src={`./${icon}`} alt="icono de flecha a la derecha" class="ml-2" loading="lazy" decoding="async" />}
     <slot name="icon" />
   </a>
 ) : (
-  <button type={type} class:list={["btn", `btn-${variant}`, sizes[size], className]}>
+  <button 
+    type={type} 
+    class:list={["btn", `btn-${variant}`, sizes[size], className]}
+    aria-label={ariaLabel}
+    disabled={disabled}
+  >
     <slot />
-    {icon && <img src={`./${icon}`} alt="icon" class="ml-2" loading="lazy" />}
+    {icon && <img src={`./${icon}`} alt="icono de flecha a la derecha" class="ml-2" loading="lazy" decoding="async" />}
     <slot name="icon" />
   </button>
 )}
@@ -36,7 +49,7 @@ const sizes = {
 <style>
   .btn {
     width: auto;
-    height: 38px;
+    height: 46px;
     display: inline-flex;
     gap: 8px;
     justify-content: center;
@@ -47,6 +60,29 @@ const sizes = {
     border-radius: 100px;
     white-space: nowrap;
     cursor: pointer;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 150ms ease, opacity 150ms ease;
+  }
+
+  /* Focus state - WCAG 2.1 AA compliant */
+  .btn:focus-visible {
+    outline: 2px solid #53EAFD;
+    outline-offset: 4px;
+  }
+
+  /* Active state - tactile feedback */
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Disabled state */
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
 /* background: var(--cz-default-gradient, linear-gradient(90deg, #C800DE 0%, #53EAFD 100%)); */
@@ -62,13 +98,18 @@ const sizes = {
     background-position: center left;
     background-size: 200% 200%;
     border: 2px solid transparent;
-    transition: all 600ms ease;
+    transition: background-position 600ms ease, color 600ms ease, transform 150ms ease, opacity 150ms ease;
     /* padding: 12px 16px; */
   }
 
   .btn-outline:hover {
     background-position: center right;
     color: #b100ff;
+  }
+
+  /* Ensure active state works with hover */
+  .btn-outline:active {
+    transform: scale(0.98);
   }
 
   .btn-solid {
@@ -80,12 +121,17 @@ const sizes = {
     );
     background-position: center left;
     background-size: 200% 200%;
-    transition: all 600ms ease;
+    transition: background-position 600ms ease, transform 150ms ease, opacity 150ms ease;
     /* padding: 12px 16px; */
   }
 
   .btn-solid:hover {
     background-position: center right;
+  }
+
+  /* Ensure active state works with hover */
+  .btn-solid:active {
+    transform: scale(0.98);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -119,6 +165,7 @@ const sizes = {
     /* Para botones large en mobile, usar padding máximo */
     .btn.px-8 {
       padding: 16px 18px;
+      height: 42px;
     }
   }
 

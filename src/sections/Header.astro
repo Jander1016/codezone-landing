@@ -14,10 +14,11 @@ import MobileMenu from "../components/MobileMenu.astro";
     <a class="brand" href="#hero">
       <img
         src="/codezone-logo-color.svg"
-        alt="Logo CodeZone"
-        width="180px"
-        height="26px"
+        alt="Logo de CodeZone - Ir a inicio"
+        width="180"
+        height="26"
         loading="eager"
+        fetchpriority="high"
       />
     </a>
 
@@ -29,19 +30,26 @@ import MobileMenu from "../components/MobileMenu.astro";
     >
         <ul class="flex gap-6 blur-menu">
           {
-            mainNavigation.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class={`nav-link hover:text-cyan-300 backdrop-blur-none px-2 py-1 rounded-md ${
-                    item.isActive ? "text-cyan-300" : ""
-                  }`}
-                  aria-current={item.isActive ? "page" : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
+            mainNavigation.map((item) => {
+              // Extract section ID from href (e.g., "#services-separator" -> "services-separator")
+              const sectionId = item.href.startsWith('#') ? item.href.slice(1) : item.href;
+              
+              return (
+                <li>
+                  <a
+                    href={item.href}
+                    data-nav-link
+                    data-section={sectionId}
+                    class={`nav-link hover:text-cyan-300 backdrop-blur-none px-2 py-1 rounded-md ${
+                      item.isActive ? "text-cyan-300" : ""
+                    }`}
+                    aria-current={item.isActive ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })
           }
         </ul>
     </nav>
@@ -276,47 +284,80 @@ import MobileMenu from "../components/MobileMenu.astro";
     pointer-events: none;
   }
 
+  /* Mobile-first approach: hide desktop navigation by default */
   .desktop-nav,
   .desktop-cta {
     display: none;
   }
 
+  /* Logo - accessible with explicit dimensions */
+  .brand {
+    display: inline-block;
+    line-height: 0;
+  }
+
   .brand img {
     width: 140px;
-    height: auto;
+    height: 26px;
+    display: block;
   }
 
+  /* Active navigation state */
   .nav-link[aria-current="page"] {
-    color: #53eafd;
+    color: var(--cyan-300);
   }
 
+  /* Desktop navigation and CTA styles */
   .desktop-nav a,
   .desktop-cta .btn {
     font-size: 18px;
-    transition: all 400ms ease-in-out;
+    transition: all var(--transition-base);
   }
 
+  /* Navigation link with smooth transitions */
   .nav-link {
     filter: blur(0);
-    transition: all 400ms ease-in-out, filter 400ms ease-in-out, opacity 400ms ease-in-out;
+    transition: 
+      color var(--transition-base),
+      filter var(--transition-base),
+      opacity var(--transition-base);
   }
 
+  /* Blur effect on non-hovered items when any item is hovered */
   .blur-menu:has(.nav-link:hover) .nav-link:not(:hover) {
     opacity: 0.6;
     filter: blur(1.2px);
   }
 
+  /* Hover state */
   .nav-link:hover {
-    color: #53eafd;
+    color: var(--cyan-300);
     filter: blur(0);
   }
 
+  /* Focus state for keyboard navigation */
+  .nav-link:focus-visible {
+    outline: 2px solid var(--cyan-300);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Tablet breakpoint (768px and up) - show desktop navigation */
+  /* @media (min-width: 768px) {
+
+    .brand img {
+      width: 160px;
+      height: 30px;
+    }
+  } */
+
+  /* Desktop breakpoint (1024px and up) - full desktop layout */
   @media (min-width: 1024px) {
     .desktop-nav,
     .desktop-cta {
       display: block;
     }
-
+    
     .brand img {
       width: 180px;
       height: auto;
