@@ -69,10 +69,19 @@
   --z-preloader: 10000;
 }
 
-/* Smooth scroll behavior for anchor navigation */
-html {
-  scroll-behavior: smooth;
-  /* scrollbar-width: none; */
+/* Smooth scroll behavior for anchor navigation 
+   Solo en mobile - en desktop ScrollSmoother maneja el scroll */
+@media (max-width: 1023px) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* En desktop, desactivar scroll-behavior para que ScrollSmoother funcione correctamente */
+@media (min-width: 1024px) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Respect user's motion preferences for accessibility */

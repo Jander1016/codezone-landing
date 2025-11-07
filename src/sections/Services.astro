@@ -244,6 +244,28 @@ import { services } from "../data/services";
     initServicesAnimations();
   }
 
+  // Escuchar evento de navegación programática para forzar animaciones
+  document.addEventListener('trigger-section-animations', (event: Event) => {
+    const customEvent = event as CustomEvent;
+    const sectionId = customEvent.detail?.sectionId;
+    
+    // Si la navegación es a services, forzar refresh de ScrollTrigger
+    if (sectionId === 'services-separator' || sectionId === 'services') {
+      setTimeout(() => {
+        // Forzar refresh para recalcular posiciones
+        ScrollTrigger.refresh();
+        
+        // Forzar que las animaciones se ejecuten inmediatamente
+        const triggers = ScrollTrigger.getAll();
+        triggers.forEach(trigger => {
+          if (trigger.trigger && trigger.trigger.closest('#services')) {
+            trigger.refresh();
+          }
+        });
+      }, 150);
+    }
+  });
+
   // Refresh ScrollTrigger en resize para recalcular posiciones
   let resizeTimer: number;
   window.addEventListener("resize", () => {

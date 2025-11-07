@@ -68,152 +68,315 @@ import MobileMenu from "../components/MobileMenu.astro";
 </header>
 
 <script>
-  function initNavActiveLinks() {
-    try {
-      const links = Array.from(
-        document.querySelectorAll('a[href^="#"].nav-link, #mobilemenu-items a'),
-      );
+  /**
+   * ObserverManager
+   * 
+   * Gestiona el IntersectionObserver para actualizar el estado activo de los links de navegación.
+   * Coordina la detección de secciones visibles y actualiza el estado aria-current de los links.
+   * Puede pausarse temporalmente durante scrolls programáticos para evitar conflictos.
+   * 
+   * @namespace ObserverManager
+   */
+  const ObserverManager = {
+    observer: null as IntersectionObserver | null,
+    linkMap: new Map<string, HTMLElement[]>(),
+    links: [] as HTMLElement[],
+    isPaused: false,
 
-      if (!links.length) return;
+    /**
+     * Inicializa el IntersectionObserver y construye el linkMap.
+     * Crea un mapa de hrefs a elementos de link y configura el observer
+     * para detectar qué sección está visible en el viewport.
+     * 
+     * @param {HTMLElement[]} linkElements - Array de elementos de link a observar
+     * @returns {void}
+     */
+    initialize(linkElements: HTMLElement[]): void {
+      this.links = linkElements;
+      this.linkMap.clear();
 
-      // Flag para deshabilitar observer durante scroll programático
-      let isProgrammaticScroll = false;
-
-      // Map href -> link element (may be multiple: desktop + mobile)
-      const linkMap = new Map();
-      links.forEach((link) => {
+      // Construir linkMap: href -> array de elementos
+      linkElements.forEach((link) => {
         const href = link.getAttribute("href");
         if (!href) return;
-        if (!linkMap.has(href)) linkMap.set(href, []);
-        linkMap.get(href).push(link);
-
-        // click handler: smooth scroll and set active
-        link.addEventListener("click", (e) => {
-          if (href.startsWith("#")) {
-            e.preventDefault();
-            const id = href.slice(1);
-            const target = document.getElementById(id);
-            if (target) {
-              // Deshabilitar observer durante scroll programático
-              isProgrammaticScroll = true;
-              
-              console.log('Click detected, scrolling to:', id);
-              
-              // Usar ScrollSmoother si está disponible, sino scrollIntoView
-              const smoother = (window as any).smoother;
-              if (smoother) {
-                console.log('Using ScrollSmoother');
-                try {
-                  smoother.scrollTo(target, true, "top top");
-                } catch (err) {
-                  console.warn('ScrollSmoother error, using fallback:', err);
-                  target.scrollIntoView({ behavior: "smooth", block: "start" });
-                }
-              } else {
-                console.log('ScrollSmoother not available, using scrollIntoView');
-                target.scrollIntoView({ behavior: "smooth", block: "start" });
-              }
-              
-              // Re-habilitar observer después del scroll (2 segundos para scroll suave)
-              setTimeout(() => {
-                isProgrammaticScroll = false;
-                console.log('Observer re-enabled');
-              }, 2000);
-              
-              // Disparar evento personalizado para activar animaciones de la sección
-              setTimeout(() => {
-                const event = new CustomEvent('trigger-section-animations', {
-                  detail: { sectionId: id }
-                });
-                document.dispatchEvent(event);
-              }, 500);
-            }
-            if (href === "#contact-separator") {
-              setActiveByHref(null);
-            } else {
-              setActiveByHref(href);
-            }
-            // ensure no hash remains in the URL after navigation
-            removeHashFromUrl();
-          }
-        });
+        
+        if (!this.linkMap.has(href)) {
+          this.linkMap.set(href, []);
+        }
+        this.linkMap.get(href)!.push(link);
       });
 
-      function removeHashFromUrl() {
-        if (window.location.hash) {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-      }
-
-      // @ts-ignore: allow dynamic typing for DOM helper
-      function setActiveByHref(href) {
-        // remove from all
-        for (const l of links) {
-          /** @type {HTMLElement} */ (l).removeAttribute("aria-current");
-        }
-        if (!href) return; // clear active when no href provided
-        const same = linkMap.get(href) || [];
-        for (const l of same) {
-          /** @type {HTMLElement} */ (l).setAttribute("aria-current", "page");
-        }
-      }
-
-      const observerOptions = {
-        root: null,
-        rootMargin: "0px 0px -60% 0px",
-        threshold: 0,
-      };
-      const observer = new IntersectionObserver((entries) => {
+      // Configurar IntersectionObserver con opciones globales
+      const observerOptions = window.SCROLL_CONFIG.OBSERVER;
+      
+      this.observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          // Ignorar cambios durante scroll programático
-          if (isProgrammaticScroll) return;
+          // Ignorar cambios si está pausado o durante scroll programático
+          if (this.isPaused || window.isProgrammaticScroll) return;
           
           if (entry.isIntersecting) {
             const id = entry.target.id;
             if (!id) return;
-            // Do not mark the contact section as active
-            if (id === "contact-separator") return;
+            
+            // No marcar la sección de contacto como activa
+            if (id === "contact-separator" || id === "contact") return;
+            
             const href = `#${id}`;
-            setActiveByHref(href);
+            this.setActiveLink(href);
           }
         });
       }, observerOptions);
 
-      linkMap.forEach((_v, href) => {
+      // Observar todos los elementos target
+      this.linkMap.forEach((_v, href) => {
         if (!href || !href.startsWith("#")) return;
         const id = href.slice(1);
         const target = document.getElementById(id);
-        if (target) observer.observe(target);
+        if (target && this.observer) {
+          this.observer.observe(target);
+        }
+      });
+    },
+
+    /**
+     * Pausa el observer por una duración específica.
+     * Durante la pausa, el observer ignora cambios de intersección.
+     * Se reactiva automáticamente después del tiempo especificado.
+     * 
+     * @param {number} [duration=SCROLL_CONFIG.OBSERVER_PAUSE_DURATION] - Duración de la pausa en milisegundos
+     * @returns {void}
+     */
+    pause(duration: number = window.SCROLL_CONFIG.OBSERVER_PAUSE_DURATION): void {
+      this.isPaused = true;
+      
+      setTimeout(() => {
+        this.isPaused = false;
+      }, duration);
+    },
+
+    /**
+     * Resume el observer inmediatamente.
+     * Cancela cualquier pausa en progreso y reactiva la detección de intersecciones.
+     * 
+     * @returns {void}
+     */
+    resume(): void {
+      this.isPaused = false;
+    },
+
+    /**
+     * Verifica si el observer está activo.
+     * Un observer está activo cuando no está pausado.
+     * 
+     * @returns {boolean} true si el observer está activo, false si está pausado
+     */
+    isActive(): boolean {
+      return !this.isPaused;
+    },
+
+    /**
+     * Establece el link activo basado en href.
+     * Remueve aria-current de todos los links y lo establece en los links
+     * que coinciden con el href especificado.
+     * 
+     * @param {string | null} href - Href del link a activar (ej: "#services"), o null para limpiar todos
+     * @returns {void}
+     */
+    setActiveLink(href: string | null): void {
+      // Remover aria-current de todos los links
+      this.links.forEach((link) => {
+        link.removeAttribute("aria-current");
       });
 
-      // @ts-ignore
-      window.setActiveNavHref = setActiveByHref;
+      // Si no hay href, solo limpiar
+      if (!href) return;
 
+      // Establecer aria-current en los links correspondientes
+      const matchingLinks = this.linkMap.get(href) || [];
+      matchingLinks.forEach((link) => {
+        link.setAttribute("aria-current", "page");
+      });
+    }
+  };
+
+  /**
+   * ScrollCoordinator
+   * 
+   * Coordina el scroll programático entre ScrollSmoother y scroll nativo del navegador.
+   * Maneja el flag isProgrammaticScroll, valida el layout después del scroll,
+   * y proporciona fallback automático si ScrollSmoother no está disponible o falla.
+   * 
+   * @namespace ScrollCoordinator
+   */
+  const ScrollCoordinator = {
+    /**
+     * Verifica si ScrollSmoother está disponible y activo.
+     * Comprueba que window.smoother esté definido y no sea null.
+     * 
+     * @returns {boolean} true si ScrollSmoother está disponible, false en caso contrario
+     */
+    isSmootherAvailable(): boolean {
+      return window.smoother !== null && window.smoother !== undefined;
+    },
+
+    /**
+     * Obtiene la instancia de ScrollSmoother.
+     * Retorna la referencia global a la instancia de ScrollSmoother.
+     * 
+     * @returns {any | null} Instancia de ScrollSmoother o null si no está disponible
+     */
+    getSmoother(): any | null {
+      return window.smoother;
+    },
+
+    /**
+     * Establece el flag de scroll programático con auto-reset.
+     * Este flag indica que el scroll fue iniciado por código y no por el usuario.
+     * Se resetea automáticamente después del tiempo especificado.
+     * 
+     * @param {number} [duration=SCROLL_CONFIG.PROGRAMMATIC_SCROLL_DURATION] - Duración en milisegundos antes del reset automático
+     * @returns {void}
+     */
+    setProgrammaticScroll(duration: number = window.SCROLL_CONFIG.PROGRAMMATIC_SCROLL_DURATION): void {
+      window.isProgrammaticScroll = true;
+      
+      setTimeout(() => {
+        window.isProgrammaticScroll = false;
+      }, duration);
+    },
+
+
+
+    /**
+     * Realiza scroll a un elemento usando scroll nativo del navegador.
+     * Establece el flag isProgrammaticScroll y usa scrollIntoView.
+     * ScrollSmoother está DESACTIVADO.
+     * 
+     * @param {HTMLElement} target - Elemento destino del scroll
+     * @param {string} [position="top top"] - Parámetro ignorado (mantenido por compatibilidad)
+     * @returns {Promise<void>}
+     */
+    async scrollToElement(target: HTMLElement, position: string = "top top"): Promise<void> {
+      if (!target) {
+        console.warn('ScrollCoordinator: target element is null');
+        return;
+      }
+
+      try {
+        // Establecer flag de scroll programático
+        this.setProgrammaticScroll();
+
+        // Usar scroll nativo del navegador
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        console.error('ScrollCoordinator: error in scrollToElement', error);
+        // Garantizar reset del flag en caso de error
+        window.isProgrammaticScroll = false;
+      }
+    }
+  };
+
+  /**
+   * Función unificada para manejar clicks de navegación.
+   * Coordina el scroll programático, pausa el observer, actualiza el estado activo,
+   * dispara animaciones de sección y limpia el hash de la URL.
+   * 
+   * @param {Event} e - Evento de click del navegador
+   * @param {string} href - Href del link clickeado (debe ser un hash, ej: "#services")
+   * @returns {Promise<void>}
+   */
+  async function handleNavigationClick(e: Event, href: string): Promise<void> {
+    // Validar que sea un hash
+    if (!href || !href.startsWith("#")) return;
+
+    // Prevenir comportamiento default
+    e.preventDefault();
+
+    // Extraer ID y obtener elemento target
+    const id = href.slice(1);
+    const target = document.getElementById(id);
+
+    if (!target) {
+      console.warn('Navigation: target not found', id);
+      return;
+    }
+
+    // Pausar observer ANTES del scroll
+    ObserverManager.pause();
+
+    // Realizar scroll usando ScrollCoordinator
+    await ScrollCoordinator.scrollToElement(target, "top top");
+
+    // Actualizar estado activo
+    const activeHref = (href === "#contact-separator" || href === "#contact") ? null : href;
+    ObserverManager.setActiveLink(activeHref);
+
+    // Disparar evento para animaciones de sección
+    setTimeout(() => {
+      const event = new CustomEvent('trigger-section-animations', {
+        detail: { sectionId: id }
+      });
+      document.dispatchEvent(event);
+    }, window.SCROLL_CONFIG.SECTION_ANIMATION_DELAY);
+
+    // Remover hash de la URL
+    removeHashFromUrl();
+  }
+
+  /**
+   * Remueve el hash de la URL sin recargar la página.
+   * Usa history.replaceState para limpiar el hash manteniendo el resto de la URL.
+   * 
+   * @returns {void}
+   */
+  function removeHashFromUrl(): void {
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  }
+
+  function initNavActiveLinks() {
+    try {
+      const links = Array.from(
+        document.querySelectorAll('a[href^="#"].nav-link, #mobilemenu-items a'),
+      ) as HTMLElement[];
+
+      if (!links.length) return;
+
+      // Inicializar ObserverManager con los links
+      ObserverManager.initialize(links);
+
+      // Aplicar handleNavigationClick a todos los links
+      links.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (!href) return;
+
+        link.addEventListener("click", (e) => {
+          handleNavigationClick(e, href);
+        });
+      });
+
+      // Exponer setActiveLink globalmente para compatibilidad
+      // @ts-ignore
+      window.setActiveNavHref = (href: string | null) => {
+        ObserverManager.setActiveLink(href);
+      };
+
+      // Escuchar evento personalizado para sincronización
       window.addEventListener('codezone:setActiveNavHref', (ev) => {
         // @ts-ignore: event detail typing
-        setActiveByHref(ev.detail);
+        ObserverManager.setActiveLink(ev.detail);
       });
 
+      // Aplicar handleNavigationClick al logo/brand
       const brandAnchor = document.querySelector('a.brand[href="#hero"]');
       if (brandAnchor) {
         brandAnchor.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = document.getElementById('hero');
-          if (target) {
-            // Usar ScrollSmoother si está disponible, sino scrollIntoView
-            const smoother = (window as any).smoother;
-            if (smoother) {
-              smoother.scrollTo(target, true, "top");
-            } else {
-              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }
-          setActiveByHref(null);
-
-          removeHashFromUrl();
+          handleNavigationClick(e, "#hero");
         });
       }
 
+      // Handler para botones CTA de contacto
       document.addEventListener("click", (e) => {
         const maybeElement = e.target;
         const anchor =
@@ -221,9 +384,8 @@ import MobileMenu from "../components/MobileMenu.astro";
             ? maybeElement.closest('a[href="#contact-separator"]')
             : null;
         if (anchor) {
-          setTimeout(() => setActiveByHref(null), 0);
+          handleNavigationClick(e, "#contact-separator");
         }
-        removeHashFromUrl();
       });
 
       window.addEventListener('hashchange', () => {
@@ -237,8 +399,8 @@ import MobileMenu from "../components/MobileMenu.astro";
         const target = document.getElementById(id);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          if (h !== '#contact-separator') {
-            setActiveByHref(h);
+          if (h !== '#contact-separator' && h !== '#contact') {
+            ObserverManager.setActiveLink(h);
           }
         }
         history.replaceState(null, '', window.location.pathname + window.location.search);
