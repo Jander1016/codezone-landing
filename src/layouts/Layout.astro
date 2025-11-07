@@ -1,5 +1,4 @@
 ---
-import GradientOverlay from "../components/GradientOverlay.astro";
 import Footer from "../sections/Footer.astro";
 import Header from "../sections/Header.astro";
 import "../styles/global.css";
@@ -16,6 +15,23 @@ import "../styles/global.css";
 			type="image/svg+xml"
 			href="/codezone-logo-header.svg"
 		/>
+		
+		<!-- Precarga de fuentes críticas para mejor rendimiento -->
+		<link
+			rel="preload"
+			href="/fonts/funnel-display-v3-latin-regular.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="preload"
+			href="/fonts/funnel-display-v3-latin-500.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
+		/>
+		
 		<meta
 			name="keywords"
 			content="Código, proyectos, software, aplicaciones, codificación, desarrollo"
@@ -56,7 +72,9 @@ import "../styles/global.css";
 					class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
 				>
 					<div class="relative z-2">
-						<slot />
+						<main id="main-content" tabindex="-1">
+							<slot />
+						</main>
 						<!-- <GradientOverlay
 							position="bottom"
 							size="small"
@@ -132,6 +150,7 @@ import "../styles/global.css";
 		waitForPreloader();
 	}
 </script>
+
 <style>
 	body {
 		background: #000;
@@ -145,7 +164,7 @@ import "../styles/global.css";
 		background: url(/grid-100x100.svg), var(--primary-blue);
 	}
 
-	/* ScrollSmoother required styles */
+	/* Estilos requeridos para ScrollSmoother */
 	#smooth-wrapper {
 		overflow: hidden;
 		position: fixed;
@@ -155,7 +174,7 @@ import "../styles/global.css";
 		left: 0;
 		right: 0;
 		bottom: 0;
-		z-index: 1;
+		z-index: var(--z-base);
 	}
 
 	#smooth-content {
@@ -173,7 +192,7 @@ import "../styles/global.css";
 	/* Header debe quedar por encima del ScrollSmoother */
 	header {
 		position: fixed;
-		z-index: 50;
+		z-index: var(--z-header);
 		opacity: 0;
 		pointer-events: none;
 	}
@@ -183,14 +202,14 @@ import "../styles/global.css";
 		pointer-events: auto;
 	}
 
-	/* Preloader styles (minimal, adapted from provided example) */
+	/* Estilos del preloader (mínimos, adaptados del ejemplo proporcionado) */
 	.preloader-overlay {
 		position: fixed;
 		inset: 0;
 		width: 100%;
 		height: 100vh;
 		background: #080c1d;
-		z-index: 9999;
+		z-index: var(--z-preloader);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -201,7 +220,7 @@ import "../styles/global.css";
 		flex-direction: column;
 		align-items: center;
 		color: #f0f8ff;
-		z-index: 10001;
+		z-index: calc(var(--z-preloader) + 1);
 	}
 	.preloader-logo img {
 		width: 125px;
@@ -227,7 +246,7 @@ import "../styles/global.css";
 		transition: width 0.25s linear;
 	}
 
-	/* initial hidden state for animated elements (kept for compatibility with scripts) */
+	/* Estado inicial oculto para elementos animados (mantenido para compatibilidad con scripts) */
 	.topnav,
 	.hero-title,
 	.hero-subtitle,

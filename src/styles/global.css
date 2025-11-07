@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 :root {
+  /* Typography */
   --font-sans: 'Funnel Display', sans-serif;
+  
+  /* Colors */
   --primary-blue-dark: #121D46;
   --primary-blue: #000c23;
   --secondary-blue: #0e3261;
@@ -11,27 +14,190 @@
   --neutral-100: #FAFAFA;
   --neutral-50: #F5F5F5;
   --cz-dark-base: #020618;
+  
+  /* Gradients */
   --cz-default-gradient: linear-gradient(90deg, #C800DE 0%, #53EAFD 100%);
   --cz-border-gradient: linear-gradient(90deg,
       #c800de 10%,
       #53eafd 50%,
       #c800de 90%);
+  
+  /* Layout */
   --width-max-content: 1528px;
+  
+  /* Spacing - Consistent spacing scale */
+  --spacing-xs: 0.5rem;    /* 8px */
+  --spacing-sm: 1rem;      /* 16px */
+  --spacing-md: 1.5rem;    /* 24px */
+  --spacing-lg: 2rem;      /* 32px */
+  --spacing-xl: 3rem;      /* 48px */
+  --spacing-2xl: 4rem;     /* 64px */
+  --spacing-3xl: 6rem;     /* 96px */
+  
+  /* Border Radius - Consistent rounded corners */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+  
+  /* Shadows - Consistent elevation system */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 15px rgba(83, 234, 253, 0.75);
+  --shadow-glow-purple: 0 0 15px rgba(200, 0, 222, 0.75);
+  
+  /* Transitions - Consistent animation timing */
+  --transition-fast: 150ms ease;
+  --transition-base: 300ms ease;
+  --transition-slow: 600ms ease;
+  
+  /* Z-index layers - Consistent stacking context */
+  --z-base: 1;
+  --z-content: 10;
+  --z-header: 50;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-tooltip: 600;
+  --z-mobile-menu: 9998;
+  --z-mobile-burger: 9999;
+  --z-preloader: 10000;
 }
 
-/* Make in-page anchor navigation smooth across the site */
-
-/* *,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-} */
-
+/* Smooth scroll behavior for anchor navigation */
 html {
   scroll-behavior: smooth;
   /* scrollbar-width: none; */
+}
+
+/* Respect user's motion preferences for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Accessibility utilities */
+
+/* Skip to main content link for keyboard navigation */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--cyan-300);
+  color: var(--primary-blue-dark);
+  padding: 8px 16px;
+  text-decoration: none;
+  font-weight: bold;
+  z-index: var(--z-tooltip);
+  border-radius: var(--radius-sm);
+  transition: top var(--transition-fast);
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* Enhanced focus visible for all interactive elements */
+:focus-visible {
+  outline: 2px solid var(--cyan-300);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* Remove default focus outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Ensure all interactive elements are keyboard accessible */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid var(--cyan-300);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* Main content focus styles (for skip-to-main) */
+#main-content:focus {
+  outline: none;
+}
+
+/* Ensure logical tab order - prevent negative tabindex from breaking flow */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Active Navigation Styles */
+
+/* Base navigation link styles */
+.nav-link {
+  position: relative;
+  color: var(--neutral-100);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  transition: color var(--transition-base);
+  display: inline-block;
+}
+
+/* Hover state */
+.nav-link:hover {
+  color: var(--cyan-300);
+}
+
+/* Active state - currently visible section */
+.nav-link.active {
+  color: var(--cyan-300);
+}
+
+/* Active indicator - gradient underline */
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--fuchsia-600), var(--cyan-300));
+  border-radius: 2px;
+  animation: slideIn var(--transition-base);
+}
+
+/* Slide in animation for active indicator */
+@keyframes slideIn {
+  from {
+    width: 0%;
+    opacity: 0;
+  }
+  to {
+    width: 80%;
+    opacity: 1;
+  }
+}
+
+/* Focus state for keyboard navigation */
+.nav-link:focus-visible {
+  outline: 2px solid var(--cyan-300);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
 }
 
 p,
