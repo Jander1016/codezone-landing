@@ -11,9 +11,12 @@ import { services } from "../data/services";
   <div class="flex flex-col items-center w-full max-w-2xl mx-auto shift-up-10">
     <img
       src="/codezone-logo-color.svg"
-      alt="CodeZone"
+      alt="Logo de CodeZone"
+      width="375"
+      height="54"
       class="w-43 md:w- lg:w-[375px] h-auto mb-4"
       loading="lazy"
+      decoding="async"
     />
     <GradientText
       as="h2"
@@ -270,7 +273,7 @@ import { services } from "../data/services";
   @media (min-width: 1280px) {
     .shift-up-10 {
       transform: translateY(15%);
-      z-index: 10;
+      z-index: var(--z-content);
     }
   }
 

@@ -14,11 +14,12 @@ const { name, icon, technologies, description } = Astro.props;
   <div class="tech-icon-wrapper">
     <img 
       src={icon} 
-      alt={name}
+      alt={`Icono de ${name}`}
       class="tech-icon"
       width="48"
       height="48"
       loading="lazy"
+      decoding="async"
     />
   </div>
   

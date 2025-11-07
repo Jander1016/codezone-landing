@@ -28,13 +28,12 @@ const srcsetValue = `
   <div class="card-image">
     <img
       src={image}
-      alt={title}
+      alt={`Imagen representativa de ${title}`}
+      width="480"
+      height="220"
       loading="lazy"
       decoding="async"
-      width="1200"
-      height="600"
       class="w-full h-full object-cover"
-      srcset={srcsetValue}
     />
   </div>
   <div class="card-text">

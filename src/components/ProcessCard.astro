@@ -24,9 +24,12 @@ const { number, title, description, image, isEven = false } = Astro.props;
     <div class="card-image overflow-hidden">
       <img
         src={image}
-        alt={title}
+        alt={`Ilustración de la fase ${number}: ${title}`}
+        width="630"
+        height="420"
         class="process-image object-cover"
         loading="lazy"
+        decoding="async"
       />
     </div>
   </div>
