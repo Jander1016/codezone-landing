@@ -124,7 +124,7 @@ const {
      * @param {boolean} isOpening - true si el menú se está abriendo, false si se está cerrando
      * @returns {void}
      */
-    function animateMenuItems(isOpening: boolean) {
+    function animateMenuItems(isOpening: boolean): void {
       const elements = Array.from(allAnimatedItems);
       if (!isOpening) elements.reverse();
       
@@ -150,15 +150,15 @@ const {
      * 
      * @returns {void}
      */
-    function updateMobileActiveState() {
+    function updateMobileActiveState(): void {
       const mobileLinks = document.querySelectorAll('.mobilemenu-item');
       
       mobileLinks.forEach(link => {
-        const href = link.getAttribute('href');
+        // const href = link.getAttribute('href');
         const section = link.getAttribute('data-section');
         
         // Check if this link should be active based on current scroll position
-        if (section && section !== 'contact-separator' && section !== 'contact') {
+        if (section && section !== '#contact-separator') {
           const targetElement = document.getElementById(section);
           if (targetElement) {
             const rect = targetElement.getBoundingClientRect();
@@ -181,7 +181,7 @@ const {
      * 
      * @returns {void}
      */
-    function toggleMenu() {
+    function toggleMenu(): void {
       isMenuOpen = !isMenuOpen;
       
       if (burgerIcon) burgerIcon.classList.toggle("active", isMenuOpen);
@@ -275,13 +275,13 @@ const {
       setTimeout(async () => {
         // Usar window.setActiveNavHref si está disponible (desde Header.astro)
         if (typeof window.setActiveNavHref === 'function') {
-          const activeHref = (href === '#contact-separator' || href === '#contact') ? null : href;
+          const activeHref = (href === '#contact-separator') ? null : href;
           window.setActiveNavHref(activeHref);
         }
 
         // Disparar evento para sincronizar con Header
         try {
-          const detail = (href === '#contact-separator' || href === '#contact') ? null : href;
+          const detail = (href === '#contact-separator') ? null : href;
           window.dispatchEvent(new CustomEvent('codezone:setActiveNavHref', { detail }));
         } catch (err) {
           /* ignore */
@@ -368,7 +368,7 @@ const {
      * 
      * @returns {void}
      */
-    function setupFocusTrap() {
+    function setupFocusTrap(): void {
       if (!overlay) return;
       
       const focusableElements = overlay.querySelectorAll(

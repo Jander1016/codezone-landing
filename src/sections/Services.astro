@@ -21,7 +21,7 @@ import { services } from "../data/services";
     <GradientText
       as="h2"
       gradient="cyan-purple"
-      className="text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-4"
+      className="textMaskReveal text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-4"
       style="letter-spacing:1px;"
     >
       Tech Your Vibes
@@ -74,7 +74,8 @@ import { services } from "../data/services";
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import { maskTextReveal } from "../utils/animations/text-animations";
+  // import { maskTextReveal } from "../utils/animations/text-animations";
+  import { maskTextReveal2 } from "../utils/animations/text-animations2";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -83,7 +84,7 @@ import { services } from "../data/services";
     if (!servicesSection) return;
 
     const logo = servicesSection.querySelector("img");
-    const claim = servicesSection.querySelector("h2");
+    const claim = servicesSection.querySelector(".textMaskReveal");
     const p1 = servicesSection.querySelector(".paragraph-1");
     const p2 = servicesSection.querySelector(".paragraph-2");
     const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
@@ -91,9 +92,9 @@ import { services } from "../data/services";
     // Detectar tamaño de pantalla
     const isMobile = () => window.innerWidth <= 768;
     const isTablet = () => window.innerWidth > 768 && window.innerWidth <= 1279;
-    const isDesktop = () => window.innerWidth >= 1280;
+    // const isDesktop = () => window.innerWidth >= 1280;
 
-    // 1. Logo - Sin scrub, se anima cuando está más dentro del viewport
+    // 1. Logo, se anima cuando está más dentro del viewport
     if (logo) {
       gsap.from(logo, {
         y: 60,
@@ -103,15 +104,15 @@ import { services } from "../data/services";
         ease: "power2.out",
         scrollTrigger: {
           trigger: logo,
-          start: "top 70%",
+          start: "top 80%",
           toggleActions: "play none none none",
         },
       });
     }
 
-    // 2. Claim h2 con maskTextReveal - Sin scrub
+    // 2. Claim h2 con maskTextReveal
     if (claim) {
-      const titleTimeline = maskTextReveal(claim, {
+      const titleTimeline = maskTextReveal2(claim, {
         duration: 0.6,
         stagger: 0.1,
         ease: "power3.out",
@@ -119,13 +120,69 @@ import { services } from "../data/services";
 
       ScrollTrigger.create({
         trigger: claim,
-        start: "top 75%",
+        start: "top 80%",
         animation: titleTimeline,
         toggleActions: "play none none none",
       });
+
+      // Crear timeline vacío si el elemento no existe
+      // if (!claim) {
+      //   console.warn(`maskTextReveal: Element not found - ${claim}`);
+      //   return gsap.timeline();
+      // }
+
+      // // Obtener el texto y dividirlo en palabras
+      // const text = claim.textContent || "";
+      // const words = text.trim();
+
+      // // Si no hay palabras, retornar timeline vacío
+      // if (words.length === 0) {
+      //   console.warn(`maskTextReveal: No text content found in element`);
+      //   return gsap.timeline();
+      // }
+
+      // // Reemplazar el contenido con spans para cada palabra
+      // // Usamos un wrapper con overflow hidden y padding para evitar cortar descendentes
+      // claim.innerHTML = words
+      //   .split(/\s+/)
+      //   .map(
+      //     (word) =>
+      //       `<span class="word-mask"><span class="word">${word}&nbsp;</span></span>`,
+      //   )
+      //   .join("");
+
+      // const wordElements = claim.querySelectorAll(".word");
+      // gsap.set(wordElements, {
+      //   yPercent: 100,
+      //   autoAlpha: 0,
+      //   opacity: 0,
+      // });
+
+      // // Crear y configurar la animación
+      // const timeline = gsap.timeline({
+      //   scrollTrigger: {
+      //     trigger: claim,
+      //     start: "top 80%", // La animación comienza cuando la parte superior del texto está a un 80% del viewport
+      //     // markers: true, // Descomentar para ver los marcadores de ScrollTrigger (útil para depuración)
+      //     toggleActions: "play none none none", // Solo se reproduce una vez
+      //   },
+      //   // delay: options?.delay || 0,
+      //   // onComplete: options?.onComplete
+      // });
+
+      // // Animar los spans internos desde el estado inicial (yPercent:100, autoAlpha:0) hacia visible
+      // timeline.to(wordElements, {
+      //   yPercent: 0, // La palabra sube a su posición original
+      //   autoAlpha: 1, // La palabra se hace visible
+      //   opacity: 1,
+      //   duration: 0.6, // Duración de la animación de CADA palabra
+      //   ease: "power3.out", // Un suavizado fuerte para una subida con impacto
+      //   // EL EFECTO PROGRESIVO:
+      //   stagger: 0.08, // Retraso de 0.08 segundos entre el inicio de cada palabra
+      // });
     }
 
-    // 3. Párrafo 1 - Sin scrub
+    // 3. Párrafo 1
     if (p1) {
       gsap.from(p1, {
         y: 40,
@@ -135,13 +192,13 @@ import { services } from "../data/services";
         ease: "power2.out",
         scrollTrigger: {
           trigger: p1,
-          start: "top 80%",
+          start: "top 70%",
           toggleActions: "play none none none",
         },
       });
     }
 
-    // 4. Párrafo 2 - Sin scrub
+    // 4. Párrafo 2
     if (p2) {
       gsap.from(p2, {
         y: 40,
@@ -151,7 +208,7 @@ import { services } from "../data/services";
         ease: "power2.out",
         scrollTrigger: {
           trigger: p2,
-          start: "top 80%",
+          start: "top 70%",
           toggleActions: "play none none none",
         },
       });
@@ -245,20 +302,23 @@ import { services } from "../data/services";
   }
 
   // Escuchar evento de navegación programática para forzar animaciones
-  document.addEventListener('trigger-section-animations', (event: Event) => {
+  document.addEventListener("trigger-section-animations", (event: Event) => {
     const customEvent = event as CustomEvent;
     const sectionId = customEvent.detail?.sectionId;
-    
+
     // Si la navegación es a services, forzar refresh de ScrollTrigger
-    if (sectionId === 'services-separator' || sectionId === 'services') {
+    if (sectionId === "services-separator") {
       setTimeout(() => {
         // Forzar refresh para recalcular posiciones
         ScrollTrigger.refresh();
-        
+
         // Forzar que las animaciones se ejecuten inmediatamente
         const triggers = ScrollTrigger.getAll();
-        triggers.forEach(trigger => {
-          if (trigger.trigger && trigger.trigger.closest('#services')) {
+        triggers.forEach((trigger) => {
+          if (
+            trigger.trigger &&
+            trigger.trigger.closest("#services-separator")
+          ) {
             trigger.refresh();
           }
         });
@@ -277,11 +337,6 @@ import { services } from "../data/services";
 </script>
 
 <style>
-  .services-section {
-    /* width: 100%; */
-    /* padding: 4rem 4rem; */
-  }
-
   .service-card-center {
     grid-column: auto;
   }

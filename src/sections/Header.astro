@@ -308,7 +308,7 @@ import MobileMenu from "../components/MobileMenu.astro";
     await ScrollCoordinator.scrollToElement(target, "top top");
 
     // Actualizar estado activo
-    const activeHref = (href === "#contact-separator" || href === "#contact") ? null : href;
+    const activeHref = (href === "#contact-separator") ? null : href;
     ObserverManager.setActiveLink(activeHref);
 
     // Disparar evento para animaciones de sección
@@ -331,7 +331,11 @@ import MobileMenu from "../components/MobileMenu.astro";
    */
   function removeHashFromUrl(): void {
     if (window.location.hash) {
-      history.replaceState(null, '', window.location.pathname + window.location.search);
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (err) {
+        /* ignore */
+      }
     }
   }
 
@@ -399,18 +403,14 @@ import MobileMenu from "../components/MobileMenu.astro";
         const target = document.getElementById(id);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          if (h !== '#contact-separator' && h !== '#contact') {
+          if (h !== '#contact-separator') {
             ObserverManager.setActiveLink(h);
           }
         }
         history.replaceState(null, '', window.location.pathname + window.location.search);
       });
 
-      window.addEventListener('popstate', () => {
-        if (window.location.hash) {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-      });
+      window.addEventListener('popstate', () => removeHashFromUrl());
     } catch (err) {
       /* ignore errors in nav initialization */
     }

@@ -94,8 +94,12 @@ import "../styles/global.css";
 	import { gsap } from "gsap";
 	import { ScrollTrigger } from "gsap/ScrollTrigger";
 	import { ScrollSmoother } from "gsap/ScrollSmoother";
+	import { initGSAP } from "../utils/animations/gsap-config";
 
-	gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+	// Initialize GSAP with global configuration
+	initGSAP();
+	
+	gsap.registerPlugin(ScrollSmoother);
 
 	// TypeScript declarations for global variables
 	declare global {
