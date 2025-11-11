@@ -1,5 +1,4 @@
 ---
-import GradientText from "../components/GradientText.astro";
 import TechStackCard from "../components/TechStackCard.astro";
 import { techStack } from "../data/techStack";
 ---
@@ -15,10 +14,10 @@ import { techStack } from "../data/techStack";
       </h2>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-x-12 lg:gap-y-12 w-full max-w-[1200px] mx-auto justify-items-center">
+    <div class="stack-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-x-12 lg:gap-y-12 w-full max-w-[1200px] mx-auto justify-items-center">
       {
         techStack.map((category, idx) => (
-          <div class={idx >= techStack.length - 2 ? "lg:col-span-2 lg:justify-self-center w-full flex justify-center" : "w-full flex justify-center"}>
+          <div class={`tech-stack-card ${idx >= techStack.length - 2 ? "lg:col-span-2 lg:justify-self-center w-full flex justify-center" : "w-full flex justify-center"}`}>
             <TechStackCard
               name={category.name}
               icon={category.icon}
@@ -35,45 +34,13 @@ import { techStack } from "../data/techStack";
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import { maskTextRevealVertical } from "../utils/animations/text-animations";
+  import { animateStackSection } from "../utils/animations/section-animations";
 
   gsap.registerPlugin(ScrollTrigger);
 
   function initStackAnimations() {
-    const stackSection = document.querySelector("#stack");
-    if (!stackSection) return;
-
-    // Animar el subtítulo (Herramientas)
-    const subtitle = stackSection.querySelector(".stack-subtitle");
-    if (subtitle) {
-      gsap.from(subtitle, {
-        y: 60,
-        opacity: 0,
-        filter: "blur(10px)",
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: subtitle,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-    }
-
-    // Animar el título principal (Nuestro Stack Tecnológico)
-    const title = stackSection.querySelector(".stack-title");
-    if (title) {
-      maskTextRevealVertical(title, {
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: title,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-    }
+    // Animar toda la sección Stack usando la función centralizada
+    animateStackSection();
   }
 
   // Initialize when DOM is ready

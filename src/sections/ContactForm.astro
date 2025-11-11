@@ -11,28 +11,28 @@ import Button from "../components/Button.astro";
     >
       <!-- Left Column: Contact Info -->
       <div
-        class="flex flex-col gap-6 items-center lg:items-start text-center lg:text-left"
+        class="contact-info flex flex-col gap-6 items-center lg:items-start text-center lg:text-left"
       >
         <h2
-          class="text-4xl sm:text-5xl lg:text-[64px] font-medium text-center lg:text-left mb-4 leading-tight"
+          class="contact-title text-4xl sm:text-5xl lg:text-[64px] font-medium text-center lg:text-left mb-4 leading-tight"
         >
           ¿Hablamos de tu próxima <GradientText as="span" gradient="cyan-purple"
             >idea digital?</GradientText
           >
         </h2>
 
-        <p class="text-gray-300 text-base max-w-[500px] text-balance">
+        <p class="contact-paragraph text-gray-300 text-base max-w-[500px] text-balance">
           Cuéntanos qué necesitas y te ayudaremos a transformar tu idea en una
           solución digital real.
         </p>
 
-        <p class="text-gray-300 text-base max-w-[500px] text-balance">
+        <p class="contact-paragraph text-gray-300 text-base max-w-[500px] text-balance">
           Nos encanta colaborar con marcas y negocios que buscan crecer a través
           del diseño y la tecnología.
         </p>
 
         <div
-          class="my-6 max-w-[280px] sm:max-w-[360px] md:max-w-[360px] object-contain"
+          class="contact-logo my-6 max-w-[280px] sm:max-w-[360px] md:max-w-[360px] object-contain"
         >
           <img 
             src="/codezone-logo-color.svg" 
@@ -44,7 +44,7 @@ import Button from "../components/Button.astro";
           />
         </div>
 
-        <div class="flex flex-wrap gap-3 justify-center items-center mt-2">
+        <div class="contact-buttons flex flex-wrap gap-3 justify-center items-center mt-2">
           <Button
             href="tel:+34691019753"
             variant="outline"
@@ -177,108 +177,26 @@ import Button from "../components/Button.astro";
   }
 </style>
 
-<!-- <script type="module">
-  import { validateField, isFormValid } from '../utils/validation';
-  import { sanitizeFormData, RateLimiter } from '../utils/sanitization';
+<!-- <script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { animateContactSection } from '../utils/animations/section-animations';
 
-  const rateLimiter = new RateLimiter();
+  // Registrar plugin ScrollTrigger
+  gsap.registerPlugin(ScrollTrigger);
 
-  const setMessage = (el, type, text) => {
-    if (!el) return;
-    el.textContent = text || '';
-    if (!text) {
-      el.className = 'hidden';
-      return;
-    }
-    // Tailwind classes assigned dynamically
-    let base = 'block p-3 rounded-md text-center text-sm';
-    if (type === 'success') base += ' bg-green-50 border border-green-400 text-green-700';
-    else base += ' bg-red-50 border border-red-400 text-red-700';
-    el.className = base;
-  };
-
-  function initContactForm() {
-    const form = document.getElementById('contact-form');
-    const formMessage = document.getElementById('form-message');
-    if (!form) return;
-    if (formMessage) formMessage.className = 'hidden';
-
-    const inputs = Array.from(form.querySelectorAll('input, textarea'));
-
-    // inputs.forEach(input => {
-    //   input.addEventListener('blur', () => {
-    //     const name = input.name;
-    //     if (!name) return;
-    //     const errorSpan = document.getElementById(`error-${name}`);
-    //     const error = validateField(name, input.value);
-    //     if (error && errorSpan) {
-    //       errorSpan.textContent = error.message;
-    //       input.setAttribute('aria-invalid', 'true');
-    //       input.classList.add('border-red-400');
-    //     } else if (errorSpan) {
-    //       errorSpan.textContent = '';
-    //       input.setAttribute('aria-invalid', 'false');
-    //       input.classList.remove('border-red-400');
-    //     }
-    //   });
-    // });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      setMessage(formMessage, null, '');
-
-      const data = {};
-      new FormData(form).forEach((v, k) => data[k] = v.toString());
-
-      // Validate all fields
-      if (!isFormValid(data)) {
-        inputs.forEach(input => {
-          const name = input.name;
-          if (!name) return;
-          const error = validateField(name, input.value);
-          const errorSpan = document.getElementById(`error-${name}`);
-          if (error && errorSpan) {
-            errorSpan.textContent = error.message;
-            input.setAttribute('aria-invalid', 'true');
-            input.classList.add('border-red-400');
-          }
-        });
-        setMessage(formMessage, 'error', 'Por favor, corrige los errores en el formulario.');
-        return;
-      }
-
-      // Rate limiting
-      const userKey = 'contact-form-submission';
-      if (!rateLimiter.isAllowed(userKey, 5, 60000)) {
-        setMessage(formMessage, 'error', 'Has enviado demasiados mensajes. Por favor, espera un minuto.');
-        return;
-      }
-
-      // const sanitized = sanitizeFormData(data)
-
-      try {
-        // Simulate API call (replace this with real fetch to your endpoint)
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        setMessage(formMessage, 'success', '¡Mensaje enviado con éxito! Te contactaremos pronto.');
-        form.reset();
-        inputs.forEach(inp => {
-          inp.setAttribute('aria-invalid', 'false');
-          inp.classList.remove('border-red-400');
-          const es = document.getElementById(`error-${inp.name}`);
-          if (es) es.textContent = '';
-        });
-        console.log('Form submitted:', sanitized);
-      } catch (err) {
-        console.error('Form submission error:', err);
-        setMessage(formMessage, 'error', 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.');
-      }
-    });
+  /**
+   * Inicializa las animaciones de la sección de contacto
+   */
+  function initContactAnimations() {
+    // Llamar a la función de animación de la sección
+    animateContactSection();
   }
 
+  // Inicializar animaciones cuando el DOM esté listo
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initContactForm);
+    document.addEventListener('DOMContentLoaded', initContactAnimations);
   } else {
-    initContactForm();
+    initContactAnimations();
   }
 </script> -->

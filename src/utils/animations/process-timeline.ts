@@ -29,7 +29,7 @@ const DEFAULT_OPTIONS: Required<ProcessTimelineOptions> = {
 	cardSelector: '.process-card',
 	duration: 0.8,
 	distance: 50,
-	triggerStart: 'top 90%',
+	triggerStart: 'top 85%',
 	markers: false,
 };
 
