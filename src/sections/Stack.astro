@@ -7,10 +7,10 @@ import { techStack } from "../data/techStack";
 <section id="stack" class="stack-section">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <div class="pb-10">
-      <h2 class="text-lg lg:text-2xl font-medium text-center text-cyan-400 mb-2">
+      <h2 class="stack-subtitle text-lg lg:text-2xl font-medium text-center text-cyan-400 mb-2">
         Herramientas
       </h2>
-      <h2 class="text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-12 md:mb-14 lg:mb-16">
+      <h2 class="stack-title text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-12 md:mb-14 lg:mb-16">
         Nuestro Stack Tecnológico
       </h2>
     </div>
@@ -31,3 +31,55 @@ import { techStack } from "../data/techStack";
     </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { maskTextRevealVertical } from "../utils/animations/text-animations";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initStackAnimations() {
+    const stackSection = document.querySelector("#stack");
+    if (!stackSection) return;
+
+    // Animar el subtítulo (Herramientas)
+    const subtitle = stackSection.querySelector(".stack-subtitle");
+    if (subtitle) {
+      gsap.from(subtitle, {
+        y: 60,
+        opacity: 0,
+        filter: "blur(10px)",
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: subtitle,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // Animar el título principal (Nuestro Stack Tecnológico)
+    const title = stackSection.querySelector(".stack-title");
+    if (title) {
+      maskTextRevealVertical(title, {
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: title,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initStackAnimations);
+  } else {
+    initStackAnimations();
+  }
+</script>

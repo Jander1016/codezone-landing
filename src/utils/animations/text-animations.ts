@@ -13,10 +13,11 @@ export interface MaskTextRevealOptions {
   ease?: string;
   /** Delay antes de iniciar la animación (default: 0) */
   delay?: number;
+  /** Configuración opcional de ScrollTrigger (pasa el objeto de configuración si quieres que la timeline use ScrollTrigger) */
+  scrollTrigger?: any;
   /** Callback al completar la animación */
   onComplete?: () => void;
 }
-
 /**
  * Revela texto palabra por palabra usando clip-path
  * Divide el texto en spans individuales y anima cada uno con efecto de máscara
@@ -88,6 +89,86 @@ export function maskTextReveal(
 
   return timeline;
 }
+
+export function maskTextRevealVertical(
+  element: string | Element,
+  options?: MaskTextRevealOptions
+): gsap.core.Timeline | gsap.core.Tween {
+
+  const el = typeof element === 'string'
+    ? document.querySelector(element)
+    : element;
+
+  // Crear timeline vacío si el elemento no existe
+  if (!el) {
+    console.warn(`maskTextReveal2: Element not found - ${element}`);
+    return gsap.timeline();
+  }
+
+  // Obtener el texto y dividirlo en palabras
+  const text = el.textContent || '';
+  const words = text.trim().split(/\s+/);
+
+  // Si no hay palabras, retornar timeline vacío
+  if (words.length === 0) {
+    console.warn(`maskTextReveal2: No text content found in element`);
+    return gsap.timeline();
+  }
+
+  // Obtener el estilo del elemento (background para gradientes o color para texto normal)
+  const computedStyle = window.getComputedStyle(el);
+  const background = computedStyle.background || computedStyle.backgroundImage;
+  const color = computedStyle.color;
+  const hasGradient = background.includes('gradient');
+  
+  // Crear spans con overflow hidden
+  // Si tiene gradiente, aplicarlo con background-clip: text
+  // Si no, usar el color normal del texto
+  el.innerHTML = words
+    .map(word => {
+      if (hasGradient) {
+        return `<span style="display: inline-block; overflow: hidden;">
+          <span style="display: inline-block; background: ${background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>
+        </span>`;
+      } else {
+        return `<span style="display: inline-block; overflow: hidden;">
+          <span style="display: inline-block; color: ${color};">${word}</span>
+        </span>`;
+      }
+    })
+    .join(' ');
+  
+  const innerSpans = el.querySelectorAll('span > span');
+
+  // Si se proporciona scrollTrigger, usar gsap.from directamente
+  if (options?.scrollTrigger) {
+    return gsap.from(innerSpans, {
+      y: 100,
+      duration: options?.duration || ANIMATION_CONFIG.durations.normal,
+      stagger: options?.stagger || ANIMATION_CONFIG.stagger.fast,
+      ease: options?.ease || ANIMATION_CONFIG.easings.default,
+      scrollTrigger: options.scrollTrigger,
+      delay: options?.delay || 0,
+      onComplete: options?.onComplete
+    });
+  }
+
+  // Si no hay scrollTrigger, crear timeline normal
+  const timeline = gsap.timeline({
+    delay: options?.delay || 0,
+    onComplete: options?.onComplete
+  });
+
+  timeline.from(innerSpans, {
+    y: 100,
+    duration: options?.duration || ANIMATION_CONFIG.durations.normal,
+    stagger: options?.stagger || ANIMATION_CONFIG.stagger.fast,
+    ease: options?.ease || ANIMATION_CONFIG.easings.default
+  });
+
+  return timeline;
+}
+
 
 /**
  * Revela texto con efecto blur desde una dirección específica

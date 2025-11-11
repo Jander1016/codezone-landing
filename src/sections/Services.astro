@@ -74,8 +74,7 @@ import { services } from "../data/services";
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  // import { maskTextReveal } from "../utils/animations/text-animations";
-  import { maskTextReveal2 } from "../utils/animations/text-animations2";
+  import { maskTextRevealVertical } from "../utils/animations/text-animations";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -84,7 +83,7 @@ import { services } from "../data/services";
     if (!servicesSection) return;
 
     const logo = servicesSection.querySelector("img");
-    const claim = servicesSection.querySelector(".textMaskReveal");
+    const claim = servicesSection.querySelector("h2");
     const p1 = servicesSection.querySelector(".paragraph-1");
     const p2 = servicesSection.querySelector(".paragraph-2");
     const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
@@ -110,76 +109,18 @@ import { services } from "../data/services";
       });
     }
 
-    // 2. Claim h2 con maskTextReveal
+    // 2. Claim h2 con maskTextReveal2 (animación vertical)
     if (claim) {
-      const titleTimeline = maskTextReveal2(claim, {
+      maskTextRevealVertical(claim, {
         duration: 0.6,
         stagger: 0.1,
         ease: "power3.out",
+        scrollTrigger: {
+          trigger: claim,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
       });
-
-      ScrollTrigger.create({
-        trigger: claim,
-        start: "top 80%",
-        animation: titleTimeline,
-        toggleActions: "play none none none",
-      });
-
-      // Crear timeline vacío si el elemento no existe
-      // if (!claim) {
-      //   console.warn(`maskTextReveal: Element not found - ${claim}`);
-      //   return gsap.timeline();
-      // }
-
-      // // Obtener el texto y dividirlo en palabras
-      // const text = claim.textContent || "";
-      // const words = text.trim();
-
-      // // Si no hay palabras, retornar timeline vacío
-      // if (words.length === 0) {
-      //   console.warn(`maskTextReveal: No text content found in element`);
-      //   return gsap.timeline();
-      // }
-
-      // // Reemplazar el contenido con spans para cada palabra
-      // // Usamos un wrapper con overflow hidden y padding para evitar cortar descendentes
-      // claim.innerHTML = words
-      //   .split(/\s+/)
-      //   .map(
-      //     (word) =>
-      //       `<span class="word-mask"><span class="word">${word}&nbsp;</span></span>`,
-      //   )
-      //   .join("");
-
-      // const wordElements = claim.querySelectorAll(".word");
-      // gsap.set(wordElements, {
-      //   yPercent: 100,
-      //   autoAlpha: 0,
-      //   opacity: 0,
-      // });
-
-      // // Crear y configurar la animación
-      // const timeline = gsap.timeline({
-      //   scrollTrigger: {
-      //     trigger: claim,
-      //     start: "top 80%", // La animación comienza cuando la parte superior del texto está a un 80% del viewport
-      //     // markers: true, // Descomentar para ver los marcadores de ScrollTrigger (útil para depuración)
-      //     toggleActions: "play none none none", // Solo se reproduce una vez
-      //   },
-      //   // delay: options?.delay || 0,
-      //   // onComplete: options?.onComplete
-      // });
-
-      // // Animar los spans internos desde el estado inicial (yPercent:100, autoAlpha:0) hacia visible
-      // timeline.to(wordElements, {
-      //   yPercent: 0, // La palabra sube a su posición original
-      //   autoAlpha: 1, // La palabra se hace visible
-      //   opacity: 1,
-      //   duration: 0.6, // Duración de la animación de CADA palabra
-      //   ease: "power3.out", // Un suavizado fuerte para una subida con impacto
-      //   // EL EFECTO PROGRESIVO:
-      //   stagger: 0.08, // Retraso de 0.08 segundos entre el inicio de cada palabra
-      // });
     }
 
     // 3. Párrafo 1

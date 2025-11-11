@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import type { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { createScrollAnimation } from './scroll-animations';
+import { maskTextRevealVertical } from './text-animations';
 
 /**
  * Configuration options for process timeline animation
@@ -69,7 +70,7 @@ export function initProcessTimeline(
 ): ScrollTrigger[] {
 	// Check for prefers-reduced-motion
 	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	
+
 	if (prefersReducedMotion) {
 		console.log('[ProcessTimeline] Animations disabled due to prefers-reduced-motion');
 		return [];

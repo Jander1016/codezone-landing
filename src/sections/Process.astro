@@ -5,34 +5,92 @@ import { processSteps } from "../data/process";
 
 <section id="process" class="process-section">
   <div class="max-w-332 mx-auto px-1 lg:px-6">
-    <h2 class="text-lg lg:text-2xl font-medium text-center text-cyan-400 mb-2">
+    <h2
+      class="process-subtitle text-lg lg:text-2xl font-medium text-center text-cyan-400 mb-2"
+    >
       Design Thinking + Scrum
     </h2>
 
-    <h2 class="text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-12 md:mb-14 lg:mb-16">
+    <h2
+      class="process-title text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-12 md:mb-14 lg:mb-16"
+    >
       ¿Cómo lo hacemos?
     </h2>
 
-
-    <div class="flex flex-col process-steps space-y-20 md:space-y-24 lg:space-y-34 mx-0 px-0">
-      {processSteps.map((step, index) => (
-        <ProcessCard
-          number={step.number}
-          title={step.title}
-          description={step.description}
-          image={step.image}
-          isEven={index % 2 !== 0}
-        />
-      ))}
+    <div
+      class="flex flex-col process-steps space-y-20 md:space-y-24 lg:space-y-34 mx-0 px-0"
+    >
+      {
+        processSteps.map((step, index) => (
+          <ProcessCard
+            number={step.number}
+            title={step.title}
+            description={step.description}
+            image={step.image}
+            isEven={index % 2 !== 0}
+          />
+        ))
+      }
     </div>
   </div>
 </section>
 
 <script>
-  import { initProcessTimeline } from '../utils/animations/process-timeline';
-  
-  // Initialize animations when component loads
-  initProcessTimeline();
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { initProcessTimeline } from "../utils/animations/process-timeline";
+  import { maskTextRevealVertical } from "../utils/animations/text-animations";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initProcessAnimations() {
+    const processSection = document.querySelector("#process");
+    if (!processSection) return;
+
+    // Animar el subtítulo (Design Thinking + Scrum)
+    const subtitle = processSection.querySelector(".process-subtitle");
+    if (subtitle) {
+      gsap.from(subtitle, {
+        y: 60,
+        opacity: 0,
+        filter: "blur(10px)",
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: subtitle,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // Animar el título principal (¿Cómo lo hacemos?)
+    const title = processSection.querySelector(".process-title");
+    if (title) {
+      console.log('Process title found:', title);
+      console.log('Process title background:', window.getComputedStyle(title).background);
+      maskTextRevealVertical(title, {
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: title,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
+    // Initialize process timeline animations
+    initProcessTimeline();
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initProcessAnimations);
+  } else {
+    initProcessAnimations();
+  }
 </script>
 
 <style>
