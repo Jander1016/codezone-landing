@@ -251,15 +251,18 @@ import Button from "../components/Button.astro";
       );
     }
 
-    // 6. Separador desde abajo hacia su posición
+    // 6. Separador: animarlo AL FINAL de la timeline para que aparezca después
     const separator = document.querySelector('#services-separator');
     if (separator) {
-      tl.from(separator, {
-        y: 50,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power3.out'
-      }, '-=0.3');
+      // Añadimos la animación al final de la timeline (sin overlap)
+      tl.add(
+        gsap.from(separator, {
+          y: 50,
+          opacity: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        })
+      );
     }
 
     // Función para iniciar animaciones
