@@ -8,6 +8,7 @@ import Services from "../sections/Services.astro";
 import Stack from "../sections/Stack.astro";
 import ContactForm from "../sections/ContactForm.astro";
 import ElectricPreloader from "../components/ElectricPreloader.astro";
+import SeparatorMobile from "../components/SeparatorMobile.astro";
 ---
 
 <Layout class="overflow-hiden">
@@ -22,13 +23,15 @@ import ElectricPreloader from "../components/ElectricPreloader.astro";
 
 	<!-- <Separator id="services-separator" /> -->
 	<Separator  wormDuration={0.08} loopInterval={5} idSeparator="services-separator" />
-
+	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="services-separator" />
+	
 	<!-- Services: Personaliza aquí -->
 	<GradientOverlay position="center" size="small" color="fuchsia" opacity="medium" blur="high">
 		<Services />
 	</GradientOverlay>
 
-	<Separator loopInterval={5} idSeparator="process-separator" />
+	<Separator wormDuration={0.08} loopInterval={5} idSeparator="process-separator" />
+	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="process-separator" />
 
 	<!-- Process: Personaliza aquí -->
 	<GradientOverlay position="center" size="medium" color="cyan" opacity="medium" blur="high">
@@ -36,6 +39,7 @@ import ElectricPreloader from "../components/ElectricPreloader.astro";
 	</GradientOverlay>
 
 	<Separator wormDuration={0.08} loopInterval={5} idSeparator="stack-separator" />
+	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="stack-separator" />
 
 	<!-- Stack: Personaliza aquí -->
 	<GradientOverlay position="center" size="small" color="fuchsia" opacity="low" blur="high">
@@ -43,6 +47,7 @@ import ElectricPreloader from "../components/ElectricPreloader.astro";
 	</GradientOverlay>
 
 	<Separator wormDuration={0.08} loopInterval={5} idSeparator="contact-separator" />
+	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="contact-separator" />
 
 	<!-- Contact: Personaliza aquí -->
 	<GradientOverlay position="center" size="small" color="cyan" opacity="medium" blur="high">
