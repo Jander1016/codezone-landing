@@ -40,11 +40,15 @@ import { processSteps } from "../data/process";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { initProcessTimeline } from "../utils/animations/process-timeline";
   import { maskTextRevealVertical } from "../utils/animations/text-animations";
+  import { animateSeparatorAfterSection } from "../utils/animations/animation-helpers";
 
   gsap.registerPlugin(ScrollTrigger);
 
   function initProcessAnimations() {
     const processSection = document.querySelector("#process");
+		const separator = document.querySelector('.stack-separator');
+    const adjustedStart = window.innerWidth <= 768 ? "top 90%" : "top bottom+=400px";
+
     if (!processSection) return;
 
     // Animar el subtítulo (Design Thinking + Scrum)
@@ -83,6 +87,24 @@ import { processSteps } from "../data/process";
 
     // Initialize process timeline animations
     initProcessTimeline();
+
+    // Asegurar que el separador global #process-separator aparezca al final de las animaciones
+    animateSeparatorAfterSection('#process', '#process-separator', { pollDelay: 150, timeout: 5000, finalDelay: 120 });
+
+    if (separator) {
+			gsap.from(separator, {
+				y: 50,
+				opacity: 0,
+				duration: 0.6,
+				ease: 'power2.out',
+				scrollTrigger: {
+					trigger: separator,
+					start: adjustedStart,
+					toggleActions: "play none none none",
+				},
+			});
+		}
+
   }
 
   // Initialize when DOM is ready

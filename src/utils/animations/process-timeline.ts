@@ -27,9 +27,9 @@ export interface ProcessTimelineOptions {
 const DEFAULT_OPTIONS: Required<ProcessTimelineOptions> = {
 	container: '.process-steps',
 	cardSelector: '.process-card',
-	duration: 0.8,
+	duration: 0.6,
 	distance: 50,
-	triggerStart: 'top 85%',
+	triggerStart: 'top 80%',
 	markers: false,
 };
 
@@ -93,10 +93,19 @@ export function initProcessTimeline(
 		return [];
 	}
 
+	// Detectar tamaño de pantalla
+	const isMobile = window.innerWidth < 768;
+	const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+	const isDesktop = window.innerWidth >= 1024 && window.innerWidth < 1920;
+	const isLargeScreen = window.innerWidth >= 1920;
+
+	// Ocultar todas las cards inicialmente
+	gsap.set(cards, { opacity: 0 });
+
 	// Create ScrollTriggers array
 	const scrollTriggers: ScrollTrigger[] = [];
 
-	// Iterate through cards
+	// Crear una animación por cada card con stagger reducido
 	cards.forEach((card, index) => {
 		// Determine if card is even (inverted layout)
 		const isEven = index % 2 !== 0;
@@ -116,38 +125,65 @@ export function initProcessTimeline(
 		const contentX = isEven ? config.distance : -config.distance;
 		const imageX = isEven ? -config.distance : config.distance;
 
+		// Ocultar elementos inicialmente
+		gsap.set([content, imageWrapper], { opacity: 0, x: contentX });
+		gsap.set(imageWrapper, { x: imageX });
+
 		// Create timeline
 		const tl = gsap.timeline();
 
+		// Mostrar la card primero
+		tl.to(card, {
+			opacity: 1,
+			duration: 0.1,
+		});
+
 		// Add animations (both start at position 0 for simultaneous effect)
-		tl.from(
+		tl.to(
 			content,
 			{
-				x: contentX,
-				opacity: 0,
+				x: 0,
+				opacity: 1,
 				duration: config.duration,
 				ease: 'power2.out',
 			},
-			0,
+			0.1,
 		);
 
-		tl.from(
+		tl.to(
 			imageWrapper,
 			{
-				x: imageX,
-				opacity: 0,
+				x: 0,
+				opacity: 1,
 				duration: config.duration,
 				ease: 'power2.out',
 			},
-			0,
+			0.1,
 		);
+
+		// Ajustar el trigger según el índice y tamaño de pantalla
+		const getAdjustedStart = () => {
+			// Primeras 2 cards siempre usan el trigger base
+			if (index < 2) return config.triggerStart;
+
+			// Para cards 3+ ajustar según pantalla
+			if (isMobile) return 'top 95%';
+			if (isTablet) return 'top 85%';
+			if (isDesktop) return 'top bottom+=600'; // Desktop: activar más temprano
+			if (isLargeScreen) return 'top bottom+=600'; // Large: aún más temprano
+			return 'top 80%';
+		};
+
+		const adjustedStart = getAdjustedStart();
 
 		// Create ScrollTrigger using existing utility
 		const st = createScrollAnimation(tl, {
 			trigger: card,
-			start: config.triggerStart,
+			start: adjustedStart,
 			markers: config.markers,
 		});
+
+		
 
 		scrollTriggers.push(st);
 	});

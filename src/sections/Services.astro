@@ -75,6 +75,7 @@ import { services } from "../data/services";
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { maskTextRevealVertical } from "../utils/animations/text-animations";
+  import { setupSectionAnimationRefresh, animateSeparatorAfterSection } from "../utils/animations/animation-helpers";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -87,6 +88,7 @@ import { services } from "../data/services";
     const p1 = servicesSection.querySelector(".paragraph-1");
     const p2 = servicesSection.querySelector(".paragraph-2");
     const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
+    const separator = document.querySelector('#process-separator');
 
     // Detectar tamaño de pantalla
     const isMobile = () => window.innerWidth <= 768;
@@ -149,7 +151,7 @@ import { services } from "../data/services";
         ease: "power2.out",
         scrollTrigger: {
           trigger: p2,
-          start: "top 70%",
+          start: "top 80%",
           toggleActions: "play none none none",
         },
       });
@@ -158,7 +160,6 @@ import { services } from "../data/services";
     // 5. Cards - Animación según tamaño de pantalla
     if (cards.length > 0) {
       if (isMobile() || isTablet()) {
-        // MOBILE/TABLET: Cards entran una por una SIN scrub
         cards.forEach((card, index) => {
           gsap.from(card, {
             y: 100,
@@ -168,7 +169,7 @@ import { services } from "../data/services";
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
-              start: "top 90%",
+              start: "top 70%",
               toggleActions: "play none none none",
             },
           });
@@ -189,9 +190,8 @@ import { services } from "../data/services";
             ease: "power2.out",
             scrollTrigger: {
               trigger: card1,
-              start: "top 85%",
-              end: "top 55%",
-              scrub: 1,
+              start: "top 70%",
+              end: "top 50%",
               toggleActions: "play none none none",
             },
           });
@@ -206,9 +206,8 @@ import { services } from "../data/services";
             ease: "power2.out",
             scrollTrigger: {
               trigger: card3,
-              start: "top 85%",
-              end: "top 55%",
-              scrub: 1,
+              start: "top 70%",
+              end: "top 50%",
               toggleActions: "play none none none",
             },
           });
@@ -224,15 +223,29 @@ import { services } from "../data/services";
             ease: "power2.out",
             scrollTrigger: {
               trigger: card2,
-              start: "top 85%",
-              end: "top 55%",
-              scrub: 1,
+              start: "top 70%",
+              end: "top 50%",
               toggleActions: "play none none none",
             },
           });
         }
       }
     }
+     
+    if (separator) {
+       gsap.from(separator, {
+        y: 50,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: separator,
+          start: "top 75%",
+          toggleActions: "play none none none",
+        },
+      });
+    }
+
   }
 
   // Inicializar cuando el DOM esté listo
@@ -241,40 +254,16 @@ import { services } from "../data/services";
   } else {
     initServicesAnimations();
   }
-
-  // Escuchar evento de navegación programática para forzar animaciones
-  document.addEventListener("trigger-section-animations", (event: Event) => {
-    const customEvent = event as CustomEvent;
-    const sectionId = customEvent.detail?.sectionId;
-
-    // Si la navegación es a services, forzar refresh de ScrollTrigger
-    if (sectionId === "services-separator") {
-      setTimeout(() => {
-        // Forzar refresh para recalcular posiciones
-        ScrollTrigger.refresh();
-
-        // Forzar que las animaciones se ejecuten inmediatamente
-        const triggers = ScrollTrigger.getAll();
-        triggers.forEach((trigger) => {
-          if (
-            trigger.trigger &&
-            trigger.trigger.closest("#services-separator")
-          ) {
-            trigger.refresh();
-          }
-        });
-      }, 150);
-    }
+  // Esto centraliza el comportamiento para todos los separadores.
+  setupSectionAnimationRefresh({
+    specialSectionIds: ["services-separator"],
+    specialDelay: 150,
+    includeResize: true,
+    resizeDebounce: 250
   });
-
-  // Refresh ScrollTrigger en resize para recalcular posiciones
-  let resizeTimer: number;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 250);
-  });
+  // Asegurar que el separador principal aparezca después de las animaciones de la sección
+  // Retorna una función de cleanup si se necesita
+  animateSeparatorAfterSection('#services', '#services-separator', { pollDelay: 150, timeout: 4000, finalDelay: 120 });
 </script>
 
 <style>

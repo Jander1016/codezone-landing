@@ -1,8 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { maskTextRevealVertical, blurTextReveal } from './text-animations';
+import { maskTextRevealVertical } from './text-animations';
 import { groupByRows } from './scroll-animations';
-import { ANIMATION_CONFIG } from './animation-helpers';
 
 /**
  * Opciones de configuración para animaciones de sección
@@ -60,7 +59,7 @@ const CONTACT_SELECTORS = {
  */
 const ANIMATION_DEFAULTS = {
   stack: {
-    start: 'top 85%',
+    start: 'top 90%',
     duration: 0.7,
     sequenceDelay: 0.2,
     subtitle: {
@@ -73,10 +72,10 @@ const ANIMATION_DEFAULTS = {
       ease: 'power3.out'
     },
     items: {
-      rowDelay: 0.3,
-      itemDelay: 0.15,
-      y: 50,
-      ease: 'power2.out'
+      stagger: 0.12,
+      duration: 0.7,
+      y: 0,
+      ease: 'back.out(1.7)'
     }
   },
   contact: {
@@ -99,31 +98,7 @@ const ANIMATION_DEFAULTS = {
   }
 } as const;
 
-/**
- * Anima items de un grid de forma secuencial, opcionalmente por filas
- * Función auxiliar reutilizable para animar grids en cualquier sección
- * 
- * @param container - Selector o elemento contenedor del grid
- * @param options - Opciones de configuración
- * @returns ScrollTrigger creado
- * 
- * @example
- * ```typescript
- * // Animar items por filas
- * animateGridItems('#stack', {
- *   itemsSelector: '.tech-stack-card',
- *   animateByRows: true,
- *   rowDelay: 0.15
- * });
- * 
- * // Animar items secuencialmente sin agrupar por filas
- * animateGridItems('#services', {
- *   itemsSelector: '.service-card',
- *   animateByRows: false,
- *   itemDelay: 0.1
- * });
- * ```
- */
+
 export function animateGridItems(
   container: string | Element,
   options: GridItemsAnimationOptions
@@ -133,121 +108,99 @@ export function animateGridItems(
     ? document.querySelector(container)
     : container;
 
-  // Validar que el contenedor existe
+  // Validar contenedor
   if (!containerEl) {
     console.warn(`animateGridItems: Container not found - ${container}`);
     return null;
   }
 
-  // Seleccionar los items a animar
-  const items = containerEl.querySelectorAll(options.itemsSelector);
-
-  // Validar que hay items para animar
-  if (!items || items.length === 0) {
+  // Seleccionar items
+  const items = Array.from(containerEl.querySelectorAll(options.itemsSelector));
+  if (!items.length) {
     console.warn(`animateGridItems: No items found with selector - ${options.itemsSelector}`);
     return null;
   }
 
-  // Configuración por defecto
-  const config = {
-    start: options.start || 'top 90%',
-    duration: options.duration || ANIMATION_CONFIG.durations.normal,
-    animateByRows: options.animateByRows !== false, // default true
-    rowDelay: options.rowDelay || 0.15,
-    itemDelay: options.itemDelay || 0.1,
-    markers: options.markers || false
-  };
+  // Check prefers-reduced-motion
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    // Mostrar elementos directamente sin animación
+    items.forEach(item => {
+      gsap.set(item, { opacity: 1 });
+    });
+    return null;
+  }
 
-  // Crear timeline con ScrollTrigger
+  // Establecer estado inicial INMEDIATAMENTE (ocultar todos los items)
+  gsap.set(items, { opacity: 0, scale: 0.8 });
+
+  // Agrupar por filas
+  const rows = groupByRows(items);
+
+  // Usar valores pasados o defaults mínimos
+  const duration = options.duration ?? 0.6;
+  const rowDelay = options.rowDelay ?? 0.3;
+  const itemDelay = options.itemDelay ?? 0.15;
+  const start = options.start ?? 'top 90%';
+  const markers = options.markers ?? false;
+
+  // Timeline con ScrollTrigger
   const timeline = gsap.timeline({
     scrollTrigger: {
       trigger: containerEl,
-      start: config.start,
-      markers: config.markers
+      start: start,
+      markers: markers
     }
   });
 
-  // Animar por filas o secuencialmente
-  if (config.animateByRows) {
-    // Agrupar items por filas
-    const rows = groupByRows(items);
+  // Animación secuencial por fila y columna
+  rows.forEach((row, rowIndex) => {
+    row.forEach((el, colIndex) => {
+      // Delay acumulado: priorizar filas sobre columnas
+      const totalDelay = (rowIndex * rowDelay) + (colIndex * itemDelay);
 
-    // Animar cada fila de manera secuencial con dirección alternada
-    rows.forEach((row, rowIndex) => {
-      // Alternar dirección: filas pares desde la izquierda, impares desde la derecha
-      const isEvenRow = rowIndex % 2 === 0;
-      const xOffset = isEvenRow ? -30 : 30;
-      
-      // Calcular el tiempo de inicio para que las filas se animen una después de la otra
-      const startTime = rowIndex * (config.duration + config.rowDelay);
-      
-      timeline.from(row, {
-        x: xOffset,
-        y: 30,
-        opacity: 0,
-        duration: config.duration,
-        stagger: {
-          each: config.itemDelay,
-          from: isEvenRow ? 'start' : 'end' // Alternar dirección del stagger
+      timeline.to(el,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: duration,
+          ease: 'back.out(1.7)'
         },
-        ease: 'power2.out'
-      }, startTime);
+        totalDelay
+      );
     });
-  } else {
-    // Animar todos los items secuencialmente sin agrupar
-    timeline.from(items, {
-      y: 50,
-      opacity: 0,
-      duration: config.duration,
-      stagger: config.itemDelay,
-      ease: 'power2.out'
-    });
-  }
+  });
 
-  // Retornar el ScrollTrigger creado
   return timeline.scrollTrigger as ScrollTrigger;
 }
 
-/**
- * Anima todos los elementos de la sección Stack Tecnológico
- * 
- * Secuencia de animación:
- * 1. Texto superior (subtítulo) - blur desde abajo
- * 2. Título principal (h2) - maskTextRevealVertical
- * 3. Items del grid - aparición secuencial por filas
- * 
- * @param sectionSelector - Selector de la sección (default: '#stack')
- * @param options - Opciones de configuración
- * @returns Array de ScrollTriggers creados
- * 
- * @example
- * ```typescript
- * // Uso básico
- * animateStackSection();
- * 
- * // Con configuración personalizada
- * animateStackSection('#stack', {
- *   duration: 0.8,
- *   sequenceDelay: 0.3,
- *   markers: true
- * });
- * ```
- */
 export function animateStackSection(
   sectionSelector: string = '#stack',
   options?: SectionAnimationOptions
 ): ScrollTrigger[] {
   // Detectar preferencia de movimiento reducido
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
-  if (prefersReducedMotion) {
-    return [];
-  }
+  if (prefersReducedMotion) return [];
 
-  // Configuración con valores por defecto
+  // Detectar tamaño de pantalla
+  const isMobile = window.innerWidth < 768;
+  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+  const isDesktop = window.innerWidth >= 1024 && window.innerWidth < 1920;
+  const isLargeScreen = window.innerWidth >= 1920;
+
+  // Configuración responsive con ajuste para pantallas grandes
+  const getStartPosition = () => {
+    if (options?.start) return options.start;
+    if (isMobile) return 'top bottom+=300'; // Mobile: se activa cuando está casi visible
+    if (isTablet) return 'top bottom+=150';
+    if (isDesktop) return 'top bottom+=900';
+    if (isLargeScreen) return 'top bottom+=300'; // Pantallas grandes: se activa antes
+    return 'top bottom+=200';
+  };
+
   const config = {
-    start: options?.start || ANIMATION_DEFAULTS.stack.start,
-    duration: options?.duration || ANIMATION_DEFAULTS.stack.duration,
+    start: getStartPosition(),
+    duration: options?.duration || (isMobile ? 0.5 : ANIMATION_DEFAULTS.stack.duration),
     sequenceDelay: options?.sequenceDelay || ANIMATION_DEFAULTS.stack.sequenceDelay,
     markers: options?.markers || false
   };
@@ -309,16 +262,15 @@ export function animateStackSection(
     console.warn(`animateStackSection: Title not found - ${STACK_SELECTORS.title}`);
   }
 
-  // 3. Animar items del grid usando animateGridItems()
+  // 3. Animar items del grid usando animateGridItems (lightbulb effect)
   const gridContainer = section.querySelector(STACK_SELECTORS.gridContainer);
   if (gridContainer) {
     const gridTrigger = animateGridItems(gridContainer, {
       itemsSelector: STACK_SELECTORS.items,
+      duration: isMobile ? 0.6 : 0.8,
+      rowDelay: isMobile ? 0.4 : isTablet ? 0.5 : 0.6,
+      itemDelay: isMobile ? 0.15 : 0.2,
       start: config.start,
-      duration: config.duration,
-      animateByRows: true,
-      rowDelay: ANIMATION_DEFAULTS.stack.items.rowDelay,
-      itemDelay: ANIMATION_DEFAULTS.stack.items.itemDelay,
       markers: config.markers
     });
 
@@ -364,15 +316,28 @@ export function animateContactSection(
 ): ScrollTrigger[] {
   // Detectar preferencia de movimiento reducido
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
+
   if (prefersReducedMotion) {
     return [];
   }
 
-  // Configuración con valores por defecto
+  // Detectar tamaño de pantalla
+  const isMobile = window.innerWidth < 768;
+  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+  const isLargeScreen = window.innerWidth >= 1920;
+
+  // Configuración responsive con ajuste para pantallas grandes
+  const getStartPosition = () => {
+    if (options?.start) return options.start;
+    if (isMobile) return 'top 85%'; // Mobile: se activa cuando está casi visible
+    if (isTablet) return 'top bottom-=150';
+    if (isLargeScreen) return 'top bottom-=300'; // Pantallas grandes: se activa antes
+    return 'top bottom-=200';
+  };
+
   const config = {
-    start: options?.start || ANIMATION_DEFAULTS.contact.start,
-    duration: options?.duration || ANIMATION_DEFAULTS.contact.duration,
+    start: getStartPosition(),
+    duration: options?.duration || (isMobile ? 0.5 : ANIMATION_DEFAULTS.contact.duration),
     sequenceDelay: options?.sequenceDelay || ANIMATION_DEFAULTS.contact.sequenceDelay,
     markers: options?.markers || false
   };
@@ -542,12 +507,12 @@ export function animateContactSection(
 export function cleanupSectionAnimations(): void {
   // Obtener todos los ScrollTriggers activos
   const allTriggers = ScrollTrigger.getAll();
-  
+
   // Destruir cada ScrollTrigger
   allTriggers.forEach(trigger => {
     trigger.kill();
   });
-  
+
   // Log para debugging (solo en desarrollo)
   if (import.meta.env.DEV) {
     console.log(`cleanupSectionAnimations: Destroyed ${allTriggers.length} ScrollTriggers`);
