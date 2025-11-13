@@ -29,7 +29,7 @@ const DEFAULT_OPTIONS: Required<ProcessTimelineOptions> = {
 	cardSelector: '.process-card',
 	duration: 0.6,
 	distance: 50,
-	triggerStart: 'top 80%',
+	triggerStart: 'top 85%',
 	markers: false,
 };
 
@@ -164,13 +164,13 @@ export function initProcessTimeline(
 		// Ajustar el trigger según el índice y tamaño de pantalla
 		const getAdjustedStart = () => {
 			// Primeras 2 cards siempre usan el trigger base
-			if (index < 2) return config.triggerStart;
+			if (index < 3) return config.triggerStart;
 
 			// Para cards 3+ ajustar según pantalla
 			if (isMobile) return 'top 95%';
 			if (isTablet) return 'top 85%';
 			if (isDesktop) return 'top bottom+=600'; // Desktop: activar más temprano
-			if (isLargeScreen) return 'top bottom+=600'; // Large: aún más temprano
+			if (isLargeScreen) return 'top bottom+=200'; // Large: aún más temprano
 			return 'top 80%';
 		};
 
@@ -179,7 +179,7 @@ export function initProcessTimeline(
 		// Create ScrollTrigger using existing utility
 		const st = createScrollAnimation(tl, {
 			trigger: card,
-			start: adjustedStart,
+			start: config.triggerStart,
 			markers: config.markers,
 		});
 

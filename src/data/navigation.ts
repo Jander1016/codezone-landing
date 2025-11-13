@@ -26,3 +26,21 @@ export const mainNavigation: NavItem[] = [
     isActive: false
   }
 ];
+
+export const mainNavigationMobile: NavItem[] = [
+  {
+    label: 'Tecnología a medida',
+    href: '#mobile-services-separator',
+    isActive: false
+  },
+  {
+    label: 'Cómo lo hacemos',
+    href: '#mobile-process-separator',
+    isActive: false
+  },
+  {
+    label: 'Nuestro stack tecnológico',
+    href: '#mobile-stack-separator',
+    isActive: false
+  }
+];

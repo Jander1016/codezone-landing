@@ -81,7 +81,7 @@ const {
     <!-- Contact CTA -->
     <div class="mobilemenu-cta-wrapper">
       <Button
-        href="#contact-separator"
+        href="#mobile-contact-separator"
         variant="outline"
         size="small"
         icon="icon-arrow.svg"
@@ -158,7 +158,7 @@ const {
         const section = link.getAttribute('data-section');
         
         // Check if this link should be active based on current scroll position
-        if (section && section !== '#contact-separator') {
+        if (section && section !== '#mobile-contact-separator') {
           const targetElement = document.getElementById(section);
           if (targetElement) {
             const rect = targetElement.getBoundingClientRect();
@@ -281,7 +281,7 @@ const {
 
         // Disparar evento para sincronizar con Header
         try {
-          const detail = (href === '#contact-separator') ? null : href;
+          const detail = (href === '#mobile-contact-separator') ? null : href;
           window.dispatchEvent(new CustomEvent('codezone:setActiveNavHref', { detail }));
         } catch (err) {
           /* ignore */
