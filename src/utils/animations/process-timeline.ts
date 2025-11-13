@@ -167,7 +167,7 @@ export function initProcessTimeline(
 			if (index < 3) return config.triggerStart;
 
 			// Para cards 3+ ajustar según pantalla
-			if (isMobile) return 'top 95%';
+			if (isMobile) return 'center bottom';
 			if (isTablet) return 'top 85%';
 			if (isDesktop) return 'top bottom+=600'; // Desktop: activar más temprano
 			if (isLargeScreen) return 'top bottom+=200'; // Large: aún más temprano
