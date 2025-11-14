@@ -564,7 +564,6 @@ const {
       // Calculate FPS every second
       if (timestamp - state.fpsLastTime >= 1000) {
         state.fps = Math.round((state.frameCount * 1000) / (timestamp - state.fpsLastTime));
-        console.log(`ElectricPreloader FPS: ${state.fps} | Particles: ${state.particles.length} | Bolts: ${state.bolts.length}`);
         
         state.frameCount = 0;
         state.fpsLastTime = timestamp;
@@ -815,9 +814,6 @@ const {
       // Start animation loop
       state.animationId = requestAnimationFrame(step);
       
-      console.log(`ElectricPreloader: Initialized with ${state.particles.length} particles`);
-    } else {
-      console.log('ElectricPreloader: Reduced motion mode - animations disabled');
     }
     
     // Trigger logo fade-in animation (respects reduced motion internally)
