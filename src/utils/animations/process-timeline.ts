@@ -963,7 +963,7 @@ export function initProcessTimeline(){
 			start: 'top 90%',
 			toggleActions: 'play none none none',
 			animation: tl,
-			markers: true,
+			// markers: true,
 		});
 	});
 }
