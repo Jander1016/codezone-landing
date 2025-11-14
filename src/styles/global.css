@@ -51,7 +51,7 @@
   
   /* Transitions - Consistent animation timing */
   --transition-fast: 150ms ease;
-  --transition-base: 300ms ease;
+  --transition-base: 300ms ease-in-out;
   --transition-slow: 600ms ease;
   
   /* Z-index layers - Consistent stacking context */
