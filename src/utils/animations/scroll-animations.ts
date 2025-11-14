@@ -54,8 +54,8 @@ export function createScrollAnimation(
 	return ScrollTrigger.create({
 		trigger: options.trigger,
 		start: options.start || 'top 80%',
-		end: options.end || 'bottom 20%',
-		scrub: options.scrub || false,
+		// end: options.end || 'bottom 20%',
+		// scrub: options.scrub || false,
 		markers: options.markers || false,
 		toggleActions: options.toggleActions || 'play none none none',
 		animation: animation,

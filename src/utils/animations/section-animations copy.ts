@@ -1,9 +1,8 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { maskTextRevealVertical } from './text-animations';
+import { groupByRows } from './scroll-animations';
 
-// Registrar plugin (seguro hacerlo una vez al cargar este módulo)
-gsap.registerPlugin(ScrollTrigger);
 /**
  * Opciones de configuración para animaciones de sección
  */
@@ -30,8 +29,6 @@ export interface GridItemsAnimationOptions extends SectionAnimationOptions {
   rowDelay?: number;
   /** Delay entre items de la misma fila (default: 0.1) */
   itemDelay?: number;
-  /** Callback opcional cuando TODOS los items han sido revelados */
-  onComplete?: () => void;
 }
 
 /**
@@ -42,8 +39,7 @@ const STACK_SELECTORS = {
   subtitle: '.stack-subtitle',
   title: '.stack-title',
   gridContainer: '.stack-grid',
-  items: '.tech-stack-card',
-  separator: '#contact-separator'
+  items: '.tech-stack-card'
 } as const;
 
 /**
@@ -105,69 +101,47 @@ export function animateGridItems(
     return null;
   }
 
-  // Estado inicial: ocultar items (no se cambia display para no alterar comportamiento de foco)
+  // Establecer estado inicial INMEDIATAMENTE (ocultar todos los items)
   gsap.set(items, { opacity: 0, scale: 0.8 });
+
+  // Agrupar por filas
+  const rows = groupByRows(items);
 
   // Usar valores pasados o defaults mínimos
   const duration = options.duration ?? 0.6;
+  const rowDelay = options.rowDelay ?? 0.3;
   const itemDelay = options.itemDelay ?? 0.15;
   const start = options.start ?? 'top 90%';
   const markers = options.markers ?? false;
 
-  // Usar ScrollTrigger.batch para revelar elementos cuando entran al viewport
-  // Esto evita que todos se muestren a la vez y permite animarlos en pequeños grupos
-  // Llevar registro de qué elementos ya fueron revelados para poder
-  // disparar un callback cuando TODOS estén visibles
-  const revealed = new Set<Element>();
-  let allRevealedCalled = false;
-
-  ScrollTrigger.batch(items, {
-    interval: 0.1,
-    start: start,
-    onEnter: (batch) => {
-      batch.forEach(b => revealed.add(b));
-      // Animar el batch que acaba de entrar
-      const tween = gsap.to(batch, {
-        opacity: 1,
-        scale: 1,
-        duration: duration,
-        ease: 'back.out(1.7)',
-        stagger: { each: itemDelay }
-      });
-      // Cuando termine la animación, comprobar si todos los items fueron revelados
-      tween.eventCallback('onComplete', () => {
-        if (!allRevealedCalled && revealed.size === items.length) {
-          allRevealedCalled = true;
-          options.onComplete?.();
-        }
-      });
-    },
-    onEnterBack: (batch) => {
-      batch.forEach(b => revealed.add(b));
-      const tween = gsap.to(batch, {
-        opacity: 1,
-        scale: 1,
-        duration: duration,
-        ease: 'back.out(1.7)',
-        stagger: { each: itemDelay }
-      });
-      tween.eventCallback('onComplete', () => {
-        if (!allRevealedCalled && revealed.size === items.length) {
-          allRevealedCalled = true;
-          options.onComplete?.();
-        }
-      });
+  // Timeline con ScrollTrigger
+  const timeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: containerEl,
+      start: start,
+      markers: markers
     }
   });
 
-  // Devuelto: crear un ScrollTrigger auxiliar sobre el contenedor para permitir limpieza/seguimiento
-  const containerTrigger = ScrollTrigger.create({
-    trigger: containerEl,
-    start: start,
-    markers: markers
+  // Animación secuencial por fila y columna
+  rows.forEach((row, rowIndex) => {
+    row.forEach((el, colIndex) => {
+      // Delay acumulado: priorizar filas sobre columnas
+      const totalDelay = (rowIndex * rowDelay) + (colIndex * itemDelay);
+
+      timeline.to(el,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: duration,
+          ease: 'back.out(1.7)'
+        },
+        totalDelay
+      );
+    });
   });
 
-  return containerTrigger as ScrollTrigger;
+  return timeline.scrollTrigger as ScrollTrigger;
 }
 
 export function animateStackSection(
@@ -267,19 +241,7 @@ export function animateStackSection(
       rowDelay: isMobile ? 0.4 : isTablet ? 0.5 : 0.6,
       itemDelay: isMobile ? 0.15 : 0.2,
       start: config.start,
-      markers: config.markers,
-      onComplete: () => {
-        // Cuando todos los items han sido revelados, animar el separador secuencialmente
-        const sep = section.querySelector(STACK_SELECTORS.separator);
-        if (sep) {
-          gsap.from(sep, {
-            y: 50,
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power2.out'
-          });
-        }
-      }
+      markers: config.markers
     });
 
     if (gridTrigger) {
@@ -288,10 +250,6 @@ export function animateStackSection(
   } else {
     console.warn(`animateStackSection: Grid container not found - ${STACK_SELECTORS.gridContainer}`);
   }
-
-  // Nota: la animación del separador se dispara secuencialmente desde el callback
-  // `onComplete` que se pasa a `animateGridItems`. No se crea un ScrollTrigger
-  // independiente para el separador aquí para evitar duplicados.
 
   return triggers;
 }

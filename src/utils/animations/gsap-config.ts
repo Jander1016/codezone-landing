@@ -31,8 +31,6 @@ export function initGSAP(): void {
       ScrollTrigger.refresh();
     }, 250);
   });
-
-  console.log('GSAP initialized successfully');
 }
 
 /**
@@ -46,5 +44,4 @@ export function cleanupGSAP(): void {
   // Matar todas las animaciones activas
   gsap.killTweensOf('*');
   
-  console.log('GSAP cleanup completed');
 }

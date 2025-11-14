@@ -35,7 +35,6 @@ import { techStack } from "../data/techStack";
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { animateStackSection } from "../utils/animations/section-animations";
-  import { animateSeparatorAfterSection } from "../utils/animations/animation-helpers";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -43,7 +42,7 @@ import { techStack } from "../data/techStack";
     // Animar toda la sección Stack usando la función centralizada
     animateStackSection();
     // Asegurar que el separador #stack-separator aparezca tras las animaciones
-    animateSeparatorAfterSection('#stack', '#stack-separator', { pollDelay: 150, timeout: 4000, finalDelay: 120 });
+    // animateSeparatorAfterSection('#stack', '#stack-separator', { pollDelay: 150, timeout: 4000, finalDelay: 120 });
   }
 
   // Initialize when DOM is ready
