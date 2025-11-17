@@ -120,7 +120,7 @@ export function maskTextRevealVertical(
   const background = computedStyle.background || computedStyle.backgroundImage;
   const color = computedStyle.color;
   const hasGradient = background.includes('gradient');
-  
+
   // Crear spans con overflow hidden
   // Si tiene gradiente, aplicarlo con background-clip: text
   // Si no, usar el color normal del texto
@@ -137,7 +137,7 @@ export function maskTextRevealVertical(
       }
     })
     .join(' ');
-  
+
   const innerSpans = el.querySelectorAll('span > span');
 
   // Si se proporciona scrollTrigger, usar gsap.from directamente
@@ -216,4 +216,83 @@ export function blurTextReveal(
     delay: options?.delay || 0,
     onComplete: options?.onComplete
   });
+}
+
+
+export function maskTextRevealMix(
+  element: string | Element,
+  options?: MaskTextRevealOptions
+): gsap.core.Timeline | gsap.core.Tween {
+
+  const el = typeof element === 'string'
+    ? document.querySelector(element)
+    : element;
+
+  // Crear timeline vacío si el elemento no existe
+  if (!el) {
+    console.warn(`maskTextRevealMix: Element not found - ${element}`);
+    return gsap.timeline();
+  }
+
+  // Obtener el texto y dividirlo en palabras
+  const text = el.textContent || '';
+  const words = text.trim().split(/\s+/);
+
+  // Si no hay palabras, retornar timeline vacío
+  if (words.length === 0) {
+    console.warn(`maskTextReveal2: No text content found in element`);
+    return gsap.timeline();
+  }
+
+  const computedStyle = window.getComputedStyle(el);
+  const background = computedStyle.background || computedStyle.backgroundImage;
+  const color = computedStyle.color;
+  const hasGradient = background.includes('gradient');
+
+  el.innerHTML = words
+    .map(word => {
+      if (hasGradient) {
+        return `<span style="display: inline-block; overflow: hidden;">
+          <span style="display: inline-block; background: ${background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>
+        </span>`;
+      } else {
+        return `<span style="display: inline-block; overflow: hidden;">
+          <span style="display: inline-block; color: ${color};">${word}</span>
+        </span>`;
+      }
+    })
+    .join(' ');
+
+  const innerSpans = el.querySelectorAll('span > span');
+
+  // Si se proporciona scrollTrigger, usar gsap.from directamente
+  if (options?.scrollTrigger) {
+    return gsap.from(innerSpans, {
+      clipPath: 'inset(0 100% 0 0)',
+      opacity: 0,
+      autoAlpha: 1,     // La palabra se hace visible
+      duration: options?.duration || ANIMATION_CONFIG.durations.normal,
+      ease: options?.ease || ANIMATION_CONFIG.easings.default,
+      scrollTrigger: options.scrollTrigger,
+      delay: options?.delay || 0,
+      onComplete: options?.onComplete
+    });
+  }
+
+  // Si no hay scrollTrigger, crear timeline normal
+  const timeline = gsap.timeline({
+    delay: options?.delay || 0,
+    onComplete: options?.onComplete
+  });
+
+  timeline.from(innerSpans, {
+    clipPath: 'inset(0 100% 0 0)',
+    opacity: 0,
+    autoAlpha: 1,     // La palabra se hace visible
+    duration: options?.duration || ANIMATION_CONFIG.durations.normal,
+    stagger: options?.stagger || ANIMATION_CONFIG.stagger.fast,
+    ease: options?.ease || ANIMATION_CONFIG.easings.default
+  });
+
+  return timeline;
 }

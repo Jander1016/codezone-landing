@@ -5,28 +5,31 @@ import Button from "../components/Button.astro";
 ---
 
 <section id="contact" class="w-full mb-50">
-  <div class="max-w-7xl mx-auto lg:px-4">
     <div
-      class="grid grid-cols-1 items-center lg:items-baseline lg:grid-cols-[60%_40%] gap-12 lg:gap-4"
+      class="max-w-7xl mx-auto lg:px-4 grid grid-cols-1 items-center lg:items-baseline lg:grid-cols-[60%_40%] gap-12 lg:gap-4"
     >
       <!-- Left Column: Contact Info -->
-      <div
-        class="contact-info flex flex-col gap-6 items-center lg:items-start text-center lg:text-left"
-      >
+      <div class="contact-info flex flex-col gap-6 items-center lg:items-start text-center lg:text-left">
         <h2
           class="contact-title text-4xl sm:text-5xl lg:text-[64px] font-medium text-center lg:text-left mb-4 leading-tight"
         >
           ¿Hablamos de tu próxima <GradientText as="span" gradient="cyan-purple"
-            >idea digital?</GradientText
-          >
+            >idea digital</GradientText>?
         </h2>
 
-        <p class="contact-paragraph text-gray-300 text-base max-w-[500px] text-balance">
+        
+          
+
+        <p
+          class="contact-paragraph text-gray-300 text-base max-w-[500px] text-balance"
+        >
           Cuéntanos qué necesitas y te ayudaremos a transformar tu idea en una
           solución digital real.
         </p>
 
-        <p class="contact-paragraph text-gray-300 text-base max-w-[500px] text-balance">
+        <p
+          class="contact-paragraph text-gray-300 text-base max-w-[500px] text-balance"
+        >
           Nos encanta colaborar con marcas y negocios que buscan crecer a través
           del diseño y la tecnología.
         </p>
@@ -34,9 +37,9 @@ import Button from "../components/Button.astro";
         <div
           class="contact-logo my-6 max-w-[280px] sm:max-w-[360px] md:max-w-[360px] object-contain"
         >
-          <img 
-            src="/codezone-logo-color.svg" 
-            alt="Logo de CodeZone" 
+          <img
+            src="/codezone-logo-color.svg"
+            alt="Logo de CodeZone"
             width="360"
             height="52"
             loading="lazy"
@@ -44,7 +47,9 @@ import Button from "../components/Button.astro";
           />
         </div>
 
-        <div class="contact-buttons flex flex-wrap gap-3 justify-center items-center mt-2">
+        <div
+          class="contact-buttons flex flex-wrap gap-3 justify-center items-center mt-2"
+        >
           <Button
             href="tel:+34691019753"
             variant="outline"
@@ -68,7 +73,7 @@ import Button from "../components/Button.astro";
       </div>
 
       <!-- Right Column: Form -->
-      <div class="w-full lg:max-w-[504px] mx-0 ">
+      <div class="form-info w-full lg:max-w-[504px] mx-0">
         <div
           class="form-contact bg-[linear-gradient(180deg,#0e1738_0.38%,rgba(18,29,70,0)_100%)] border rounded-2xl p-4 sm:p-6 md:p-8"
         >
@@ -78,7 +83,12 @@ import Button from "../components/Button.astro";
             FORMULARIO DE CONTACTO
           </h3>
 
-          <form id="contact-form" class="flex flex-col gap-4" autocomplete="off" novalidate>
+          <form
+            id="contact-form"
+            class="flex flex-col gap-4"
+            autocomplete="off"
+            novalidate
+          >
             <div>
               <FormInput
                 type="text"
@@ -156,7 +166,6 @@ import Button from "../components/Button.astro";
         </div>
       </div>
     </div>
-  </div>
 </section>
 
 <style>
@@ -177,26 +186,17 @@ import Button from "../components/Button.astro";
   }
 </style>
 
-<!-- <script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-  import { animateContactSection } from '../utils/animations/section-animations';
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { animateContactSection } from "../utils/animations/contact-animations";
 
-  // Registrar plugin ScrollTrigger
   gsap.registerPlugin(ScrollTrigger);
 
-  /**
-   * Inicializa las animaciones de la sección de contacto
-   */
-  function initContactAnimations() {
-    // Llamar a la función de animación de la sección
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", animateContactSection);
+  } else {
     animateContactSection();
   }
-
-  // Inicializar animaciones cuando el DOM esté listo
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initContactAnimations);
-  } else {
-    initContactAnimations();
-  }
-</script> -->
+</script>
