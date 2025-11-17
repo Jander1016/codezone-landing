@@ -190,7 +190,7 @@ export function animateStackSection(
     if (isMobile) return 'top bottom+=350'; // Mobile: se activa cuando está casi visible
     if (isTablet) return 'top bottom+=150';
     if (isDesktop) return 'top bottom+=900';
-    if (isLargeScreen) return 'top bottom+=300'; // Pantallas grandes: se activa antes
+    if (isLargeScreen) return 'top bottom+=400'; // Pantallas grandes: se activa antes
     return 'top bottom+=200';
   };
 
