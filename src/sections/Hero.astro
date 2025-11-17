@@ -266,25 +266,27 @@ import Button from "../components/Button.astro";
     }
 
     // Función para iniciar animaciones
-    function startAnimations() {
+    // function startAnimations() {
       conditionalAnimate(
         () => tl.play(),
         () => {
           // Fallback: no hacer nada, dejar contenido visible
         }
       );
-    }
+    // }
 
-    // Escuchar evento del preloader
-    window.addEventListener('preloader:complete', startAnimations);
+    // tl.play();
 
-    // Fallback: si no hay preloader, iniciar después de un pequeño delay
-    setTimeout(() => {
-      const preloader = document.getElementById('electric-preloader');
-      if (!preloader) {
-        startAnimations();
-      }
-    }, 100);
+    // // Escuchar evento del preloader
+    // window.addEventListener('preloader:complete', startAnimations);
+
+    // // Fallback: si no hay preloader, iniciar después de un pequeño delay
+    // setTimeout(() => {
+    //   const preloader = document.getElementById('electric-preloader');
+    //   if (!preloader) {
+    //     startAnimations();
+    //   }
+    // }, 100);
   }
 
   // Inicializar cuando el DOM esté listo
