@@ -115,7 +115,6 @@ export function initProcessTimeline() {
 			scrollTrigger: {
 				trigger: separator,
 				start: "top bottom+=200",
-				markers: true,
 			},
 		});
 	}
