@@ -32,7 +32,7 @@ export function animateContactSection() {
 			scrollTrigger: {
 				trigger: contactTitle,
 				start: 'top bottom+=450',
-				markers: true,
+				// markers: true,
 			}
 		});
 	}
