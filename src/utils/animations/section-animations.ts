@@ -104,8 +104,7 @@ export function animateGridItems(
     });
     return null;
   }
-
-  // Estado inicial: ocultar items (no se cambia display para no alterar comportamiento de foco)
+  // Estado inicial: ocultar y escalar hacia abajo
   gsap.set(items, { opacity: 0, scale: 0.8 });
 
   // Usar valores pasados o defaults mínimos
@@ -114,10 +113,6 @@ export function animateGridItems(
   const start = options.start ?? 'top 90%';
   const markers = options.markers ?? false;
 
-  // Usar ScrollTrigger.batch para revelar elementos cuando entran al viewport
-  // Esto evita que todos se muestren a la vez y permite animarlos en pequeños grupos
-  // Llevar registro de qué elementos ya fueron revelados para poder
-  // disparar un callback cuando TODOS estén visibles
   const revealed = new Set<Element>();
   let allRevealedCalled = false;
 
@@ -290,11 +285,6 @@ export function animateStackSection(
 			},
 		});
 	}
-
-  // Nota: la animación del separador se dispara secuencialmente desde el callback
-  // `onComplete` que se pasa a `animateGridItems`. No se crea un ScrollTrigger
-  // independiente para el separador aquí para evitar duplicados.
-
   return triggers;
 }
 
