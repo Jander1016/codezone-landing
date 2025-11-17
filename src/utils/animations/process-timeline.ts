@@ -778,7 +778,7 @@ function createSeparatorAnimation(
  * @see ResponsiveValue - Interface for viewport-specific values
  * @see ViewportSize - Viewport size categories (mobile, tablet, desktop, large)
  */
-export function initProcessTimeline2(
+export function initProcessTimeline11(
 	options?: ProcessTimelineOptions
 ): ScrollTrigger[] {
 	// 8.1: Check for prefers-reduced-motion
@@ -901,8 +901,14 @@ export function initProcessTimeline2(
 		}, 0.1);
 		
 		// Create ScrollTrigger with toggleActions (like the example)
+		// Preferir la imagen interna como trigger para que el start coincida
+		// con la aparición de la imagen en el viewport. Si no existe imagen,
+		// usar el imageWrapper; como fallback usar el propio card.
+		const imgEl = imageWrapper.querySelector('img');
+		const triggerEl = (imgEl as Element) ?? imageWrapper ?? card;
+
 		const st = ScrollTrigger.create({
-			trigger: card,
+			trigger: triggerEl,
 			start: 'top 90%',
 			toggleActions: 'play none none none',
 			markers: config.markers,
@@ -923,6 +929,17 @@ export function initProcessTimeline2(
 
 export function initProcessTimeline(){
 	const processCards = document.querySelectorAll('.process-card');
+	const processSection = document.querySelector('#process');
+	if (!processSection) {
+		console.warn('[ProcessTimeline] Process section not found');
+		return;
+	}
+
+	const subtitle = processSection.querySelector('.process-subtitle');
+	const title = processSection.querySelector('.process-title');
+	const scrollTriggers: ScrollTrigger[] = [];
+
+	// Check for prefers-reduced-motion
 	const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	if (prefersReducedMotion) {
@@ -930,7 +947,50 @@ export function initProcessTimeline(){
 		return;
 	}
 
-	processCards.forEach((card, index) => {
+	// 1. Animate subtitle
+	if (subtitle) {
+		const subtitleTL = gsap.timeline();
+		
+		subtitleTL.from(subtitle, {
+			y: 60,
+			opacity: 0,
+			filter: 'blur(10px)',
+			duration: 0.6,
+			ease: ANIMATION_CONFIG.easings.smooth
+		});
+		
+		const st = ScrollTrigger.create({
+			trigger: subtitle,
+			start: 'top 90%',
+			toggleActions: 'play none none none',
+			animation: subtitleTL,
+			id: 'process-subtitle'
+		});
+		scrollTriggers.push(st);
+	}
+	
+	// 2. Animate title
+	if (title) {
+		const result = maskTextRevealVertical(title, {
+			duration: 0.6,
+			stagger: ANIMATION_CONFIG.stagger.fast,
+			ease: ANIMATION_CONFIG.easings.default,
+			scrollTrigger: {
+				trigger: title,
+				start: 'top 90%',
+				toggleActions: 'play none none none',
+				id: 'process-title'
+			}
+		});
+		
+		if (result.scrollTrigger) {
+			scrollTriggers.push(result.scrollTrigger);
+		}
+	}
+
+	let topOffset = 80;
+
+	processCards.forEach((card) => {
 
 		const isReversedCard = card.classList.contains('process-card-reverse');
 		const content = card.querySelector('.process-content');
@@ -942,6 +1002,8 @@ export function initProcessTimeline(){
 		}
 		const contentX = isReversedCard ? 50 : -50;
 		const imageX = isReversedCard ? -50 : 50;
+
+		topOffset += 10;
 
 		const tl = gsap.timeline();
 		
@@ -960,10 +1022,9 @@ export function initProcessTimeline(){
 		},0);
 		ScrollTrigger.create({
 			trigger: card,
-			start: 'top 90%',
+			start: `top ${topOffset}%`,
 			toggleActions: 'play none none none',
 			animation: tl,
-			// markers: true,
 		});
 	});
 }
