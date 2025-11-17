@@ -187,7 +187,7 @@ export function animateStackSection(
   // Configuración responsive con ajuste para pantallas grandes
   const getStartPosition = () => {
     if (options?.start) return options.start;
-    if (isMobile) return 'top bottom+=300'; // Mobile: se activa cuando está casi visible
+    if (isMobile) return 'top bottom+=350'; // Mobile: se activa cuando está casi visible
     if (isTablet) return 'top bottom+=150';
     if (isDesktop) return 'top bottom+=900';
     if (isLargeScreen) return 'top bottom+=300'; // Pantallas grandes: se activa antes
