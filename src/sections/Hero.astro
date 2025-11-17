@@ -184,7 +184,7 @@ import Button from "../components/Button.astro";
 
   function initHeroAnimations() {
     // Crear timeline
-    const tl = gsap.timeline({ paused: true });
+    const tl = gsap.timeline();
 
     // 1. Header/Navbar entra desde arriba (todo el header)
     const header = document.querySelector('header');
