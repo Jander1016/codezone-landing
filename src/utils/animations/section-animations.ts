@@ -268,18 +268,6 @@ export function animateStackSection(
       itemDelay: isMobile ? 0.15 : 0.2,
       start: config.start,
       markers: config.markers,
-      onComplete: () => {
-        // Cuando todos los items han sido revelados, animar el separador secuencialmente
-        const sep = section.querySelector(STACK_SELECTORS.separator);
-        if (sep) {
-          gsap.from(sep, {
-            y: 50,
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power2.out'
-          });
-        }
-      }
     });
 
     if (gridTrigger) {
@@ -288,6 +276,21 @@ export function animateStackSection(
   } else {
     console.warn(`animateStackSection: Grid container not found - ${STACK_SELECTORS.gridContainer}`);
   }
+
+  const separator = document.querySelector(STACK_SELECTORS.separator);
+  	if (separator) {
+		gsap.from(separator, {
+			y: 50,
+			opacity: 0,
+			duration: 0.6,
+			ease: 'power3.out',
+			scrollTrigger: {
+				trigger: separator,
+				start: config.start,
+				markers: true,
+			},
+		});
+	}
 
   // Nota: la animación del separador se dispara secuencialmente desde el callback
   // `onComplete` que se pasa a `animateGridItems`. No se crea un ScrollTrigger
