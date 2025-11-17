@@ -287,7 +287,6 @@ export function animateStackSection(
 			scrollTrigger: {
 				trigger: separator,
 				start: config.start,
-				markers: true,
 			},
 		});
 	}
