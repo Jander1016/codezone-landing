@@ -76,7 +76,7 @@ const SPECIAL_HREFS_NO_ACTIVE = [
  */
 const MOBILE_HREF_MAP: Record<string, string> = {
   '#mobile-contact-separator': '#contact-separator',
-  '#mobile-hero': '#hero'
+  '#hero': '#hero'
 };
 
 /**
