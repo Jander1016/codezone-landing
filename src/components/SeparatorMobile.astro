@@ -44,8 +44,8 @@ const gradient2Id = `gradient2-${id}`;
         id={id}
         class="separator-svg w-full h-auto"
         width="348"
-        height="48" 
-        viewBox="0 0 348 48"
+        height="44"
+        viewBox="0 0 348 44"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
@@ -61,7 +61,8 @@ const gradient2Id = `gradient2-${id}`;
                     type="fractalNoise"
                     baseFrequency="0.03"
                     numOctaves="1"
-                    seed="2">
+                    seed="1"
+                >
                 </feTurbulence>
                 <feDisplacementMap
                     in="SourceGraphic"
@@ -71,70 +72,56 @@ const gradient2Id = `gradient2-${id}`;
                 >
                 </feDisplacementMap>
             </filter>
-
-            <!-- Blur filter -->
+            <!-- Drop shadow filter -->
             <filter
                 id={filterId}
                 x="0"
                 y="0"
                 width="347.945"
-                height="47.4097"
+                height="43.4099"
                 filterUnits="userSpaceOnUse"
                 color-interpolation-filters="sRGB"
             >
-                <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                <feFlood flood-opacity="0" result="BackgroundImageFix"
+                ></feFlood>
+                <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"></feColorMatrix>
+                <feOffset></feOffset>
+                <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+                <feComposite in2="hardAlpha" operator="out"></feComposite>
                 <feBlend
                     mode="normal"
                     in="SourceGraphic"
-                    in2="BackgroundImageFix"
-                    result="shape" />
-                <feGaussianBlur
-                    stdDeviation="5"
-                    result="effect1_foregroundBlur" />
+                    in2="effect1_dropShadow"
+                    result="shape"></feBlend>
             </filter>
-            
-
-            <!-- Gradient 1 -->
             <linearGradient
                 id={gradient1Id}
                 x1="10"
-                y1="40.7328"
+                y1="33.7328"
                 x2="337.945"
-                y2="40.9171"
+                y2="33.9171"
                 gradientUnits="userSpaceOnUse"
             >
-                <stop stop-color="#53EAFD" stop-opacity="0"></stop>
+                <stop stop-color="#53EAFD" stop-opacity="0"
+                ></stop>
                 <stop offset="0.519231" stop-color="#C800DE"></stop>
-                <stop offset="1" stop-color="#53EAFD" stop-opacity="0"></stop>
-            </linearGradient>
-
-            <!-- Gradient 2 -->
-            <linearGradient
-                id={gradient2Id}
-                x1="10.0557"
-                y1="40.7328"
-                x2="338.001"
-                y2="40.9171"
-                gradientUnits="userSpaceOnUse"
-            >
-                <stop stop-color="#53EAFD" stop-opacity="0"></stop>
-                <stop offset="0.519231" stop-color="#C800DE"></stop>
-                <stop offset="1" stop-color="#53EAFD" stop-opacity="0"></stop>
+                <stop
+                    offset="1"
+                    stop-color="#53EAFD"
+                    stop-opacity="0"></stop>
             </linearGradient>
         </defs>
 
         <!-- Blurred path -->
         <g filter={`url(#${filterId})`}>
             <path
-                d="M10 37.4099C15.3216 35.8941 20.6621 34.7479 26.1315 33.6415C74.9969 24.3322 124.445 22.1614 173.838 22C173.919 22 173.999 22 174.079 22C223.198 22.1262 272.496 27.0685 321.607 34.6296C327.082 35.499 332.565 36.4028 337.945 37.4099C332.767 35.6287 327.444 33.9813 322.108 32.4054C274.23 18.4888 224.395 10.1376 174.079 10C173.998 10 173.916 10 173.835 10C123.764 10.1399 73.2089 15.7223 25.5408 31.4394C20.2188 33.2514 15.0541 35.1398 10 37.4099Z"
+                d="M10 33.4099C15.2324 31.6427 20.5143 30.2491 25.9346 28.9075C74.4009 17.4622 124.218 14.1542 173.837 14C173.918 14 173.999 14 174.079 14C223.597 14.13 273.074 20.2086 321.774 29.8882C327.203 30.9931 332.632 32.1448 337.945 33.4099C332.699 31.8867 327.323 30.4872 321.941 29.1468C273.652 17.3487 223.996 10.1338 174.079 10C173.998 10 173.917 10 173.836 10C123.991 10.147 73.8049 14.5923 25.7377 28.1734C20.3665 29.7502 15.1432 31.3912 10 33.4099Z"
                 fill={`url(#${gradient1Id})`}></path>
         </g>
-
-        <!-- Main path -->
-        <path
-            d="M10.0557 37.4099C15.2992 35.6741 20.5884 34.3114 26.0149 32.9993C74.5311 21.821 124.302 18.6551 173.893 18.5C173.974 18.5 174.054 18.5 174.135 18.5C223.602 18.6295 273.057 24.5661 321.808 33.9808C327.243 35.0563 332.679 36.177 338.001 37.4099C332.763 35.8545 327.394 34.424 322.017 33.0541C273.78 20.9912 224.101 13.6342 174.135 13.5C174.054 13.5 173.973 13.5 173.891 13.5C124.018 13.6462 73.7861 18.2335 25.7687 32.0817C20.4037 33.6879 15.1877 35.3598 10.0557 37.4099Z"
-            stroke={`url(#${gradient2Id})`}
-            stroke-width="2"></path>
     </svg>
 </div>
 
@@ -198,22 +185,19 @@ const gradient2Id = `gradient2-${id}`;
                 }
 
                 // Animar el seed para crear movimiento horizontal suave
-                gsap.to(
-                    turb,
-                    {
-                        attr: { baseFrequency: 0.09 },
-                        duration: wormDuration,
-                        yoyo: true,
-                        repeat: 12,
-                        ease: "sine.inOut",
-                        onComplete: () => {
-                            // Remover el filtro al finalizar
-                            gsap.set(sep, { filter: "none" });
-                            // Reset baseFrequency
-                            gsap.set(turb, { attr: { baseFrequency: 0 } });
-                        },
+                gsap.to(turb, {
+                    attr: { baseFrequency: 0.09 },
+                    duration: wormDuration,
+                    yoyo: true,
+                    repeat: 12,
+                    ease: "sine.inOut",
+                    onComplete: () => {
+                        // Remover el filtro al finalizar
+                        gsap.set(sep, { filter: "none" });
+                        // Reset baseFrequency
+                        gsap.set(turb, { attr: { baseFrequency: 0 } });
                     },
-                );
+                });
             }
 
             // Ejecutar el efecto inmediatamente después del fade-in
