@@ -15,15 +15,8 @@ import "../styles/global.css";
 			type="image/svg+xml"
 			href="/codezone-logo-header.svg"
 		/>
-		
+
 		<!-- Precarga de fuentes críticas para mejor rendimiento -->
-		<link
-			rel="preload"
-			href="/fonts/funnel-display-v3-latin-400.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin="anonymous"
-		/>
 		<link
 			rel="preload"
 			href="/fonts/funnel-display-v3-latin-500.woff2"
@@ -31,7 +24,7 @@ import "../styles/global.css";
 			type="font/woff2"
 			crossorigin="anonymous"
 		/>
-		
+
 		<meta
 			name="keywords"
 			content="Código, proyectos, software, aplicaciones, codificación, desarrollo"
@@ -82,7 +75,7 @@ import "../styles/global.css";
 							opacity="low"
 							blur="high"
 						> -->
-							<Footer />
+						<Footer />
 						<!-- </GradientOverlay> -->
 					</div>
 				</div>
@@ -90,7 +83,7 @@ import "../styles/global.css";
 		</div>
 	</body>
 </html>
-<script>
+<!-- <script>
 	import { gsap } from "gsap";
 	import { ScrollTrigger } from "gsap/ScrollTrigger";
 	import { ScrollSmoother } from "gsap/ScrollSmoother";
@@ -204,7 +197,6 @@ import "../styles/global.css";
 						
 						// Si el contenido está colapsado (altura 0), refrescar ScrollTrigger
 						if (scrollHeight === 0) {
-							console.warn('ScrollSmoother: smooth-content collapsed, refreshing ScrollTrigger');
 							window.ScrollTrigger.refresh();
 						}
 					}
@@ -236,7 +228,6 @@ import "../styles/global.css";
 			// Guardar referencia global para acceso desde otros scripts
 			window.smoother = smoother;
 		} catch (error) {
-			console.error("ScrollSmoother: initialization failed", error);
 			window.smoother = null;
 		}
 	}
@@ -288,7 +279,7 @@ import "../styles/global.css";
 		setTimeout(() => {
 			const preloader = document.getElementById('electric-preloader');
 			if (!preloader) {
-				console.log('ScrollSmoother: disabled - using native scroll');
+				// console.log('ScrollSmoother: disabled - using native scroll');
 			}
 		}, 200);
 	}
@@ -301,14 +292,65 @@ import "../styles/global.css";
 		});
 	} else {
 		waitForPreloader();
+		}
+		</script> -->
+<script>
+	import Lenis from "lenis";
+	const lenis = new Lenis({
+		duration: 1.2,
+		easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+		orientation: "vertical",
+		gestureOrientation: "vertical",
+		smoothWheel: true,
+		syncTouch: true,
+		wheelMultiplier: 2,
+		touchMultiplier: 2,
+	});
+
+	function raf(time: number) {
+		lenis.raf(time);
+		requestAnimationFrame(raf);
 	}
+
+	requestAnimationFrame(raf);
 </script>
 
 <style>
+	html {
+		width: 100%;
+		min-height: 100%;
+		scroll-behavior: initial;
+	}
+
+	html,
 	body {
-		background: #000;
+		width: 100%;
+		overscroll-behavior: none;
+		min-height: 100%;
+		/* height: 100%; */
+	}
+
+	::-webkit-scrollbar {
+		width: 15px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #000c23;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #1e3e7b;
+		border-radius: 8px;
+		border: 2px solid #1e3e7b;
+	}
+
+	* {
+		scrollbar-width: 15px;
+		scrollbar-color: #1e3e7b #18181b;
+	}
+
+	body {
 		font-family: "Funnel Display", system-ui, sans-serif;
-		/* font-optical-sizing: auto; */
 		letter-spacing: 0.5px;
 		color: var(--neutral-50);
 		margin: 0;
@@ -319,7 +361,6 @@ import "../styles/global.css";
 
 	/* ScrollSmoother DESACTIVADO - usando scroll nativo */
 	#smooth-wrapper {
-		/* Scroll nativo - sin position fixed */
 		width: 100%;
 		min-height: 100vh;
 	}
@@ -337,7 +378,7 @@ import "../styles/global.css";
 
 	/* Header debe quedar por encima del ScrollSmoother */
 	header {
-		position: fixed;
+		position: sticky;
 		z-index: var(--z-header);
 		opacity: 0;
 		pointer-events: none;
