@@ -296,24 +296,67 @@ import "../styles/global.css";
 		</script> -->
 <script>
 	import Lenis from "lenis";
-	const lenis = new Lenis({
-		// duration: 1.2,
-		// easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
-		lerp: 0.03,
-		orientation: "vertical",
-		gestureOrientation: "vertical",
-		smoothWheel: true,
-		syncTouch: true,
-		wheelMultiplier: 2,
-		touchMultiplier: 2,
-	});
+	
+	const DESKTOP_BREAKPOINT = 1024;
+	let lenis: Lenis | null = null;
 
-	function raf(time: number) {
-		lenis.raf(time);
+	function isDesktop(): boolean {
+		return window.innerWidth >= DESKTOP_BREAKPOINT;
+	}
+
+	function initLenis() {
+		if (!isDesktop()) {
+			return;
+		}
+
+		lenis = new Lenis({
+			lerp: 0.03,
+			orientation: "vertical",
+			gestureOrientation: "vertical",
+			smoothWheel: true,
+			syncTouch: false,
+			wheelMultiplier: 2,
+			touchMultiplier: 2,
+		});
+
+		function raf(time: number) {
+			if (lenis) {
+				lenis.raf(time);
+			}
+			requestAnimationFrame(raf);
+		}
+
 		requestAnimationFrame(raf);
 	}
 
-	requestAnimationFrame(raf);
+	function destroyLenis() {
+		if (lenis) {
+			lenis.destroy();
+			lenis = null;
+		}
+	}
+
+	function handleResize() {
+		const nowDesktop = isDesktop();
+		const hasLenis = lenis !== null;
+
+		if (nowDesktop && !hasLenis) {
+			initLenis();
+		} else if (!nowDesktop && hasLenis) {
+			destroyLenis();
+		}
+	}
+
+	// Initialize on load
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", () => {
+			initLenis();
+			window.addEventListener("resize", handleResize);
+		});
+	} else {
+		initLenis();
+		window.addEventListener("resize", handleResize);
+	}
 </script>
 
 <style>
@@ -331,23 +374,38 @@ import "../styles/global.css";
 		/* height: 100%; */
 	}
 
-	::-webkit-scrollbar {
-		width: 15px;
+	/* Hide scrollbar on mobile, show on desktop */
+	@media (max-width: 1023px) {
+		::-webkit-scrollbar {
+			display: none;
+		}
+
+		* {
+			scrollbar-width: none;
+			-ms-overflow-style: none;
+		}
 	}
 
-	::-webkit-scrollbar-track {
-		background: #000c23;
-	}
+	/* Desktop scrollbar styles */
+	@media (min-width: 1024px) {
+		::-webkit-scrollbar {
+			width: 15px;
+		}
 
-	::-webkit-scrollbar-thumb {
-		background-color: #1e3e7b;
-		border-radius: 8px;
-		border: 2px solid #1e3e7b;
-	}
+		::-webkit-scrollbar-track {
+			background: #000c23;
+		}
 
-	* {
-		scrollbar-width: 15px;
-		scrollbar-color: #1e3e7b #18181b;
+		::-webkit-scrollbar-thumb {
+			background-color: #1e3e7b;
+			border-radius: 8px;
+			border: 2px solid #1e3e7b;
+		}
+
+		* {
+			scrollbar-width: thin;
+			scrollbar-color: #1e3e7b #18181b;
+		}
 	}
 
 	body {
