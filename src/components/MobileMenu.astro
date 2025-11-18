@@ -164,18 +164,14 @@ const {
       if (burgerBtn) burgerBtn.setAttribute("aria-expanded", String(isMenuOpen));
       
       if (isMenuOpen) {
-        // Calculate scrollbar width before hiding overflow
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        
         if (overlay) {
           overlay.classList.add("visible");
           overlay.setAttribute('aria-hidden', 'false');
           try { (overlay as any).inert = false; } catch (e) { /* ignore if not supported */ }
         }
         
-        // Prevent body scroll and compensate for scrollbar
+        // Prevent body scroll (no padding compensation needed on mobile)
         document.body.style.overflow = "hidden";
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
         
         setTimeout(() => {
           animateMenuItems(true);
@@ -194,9 +190,8 @@ const {
             try { (overlay as any).inert = true; } catch (e) { /* ignore */ }
           }
           
-          // Restore body scroll and remove padding
+          // Restore body scroll
           document.body.style.overflow = "";
-          document.body.style.paddingRight = "";
           
           // Return focus to burger button
           try {
@@ -452,8 +447,7 @@ const {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    top: -20px; /* remove any top offset for better positioning */
-    right: -10px;
+    top:-20px;
   }
 
   .mobilemenu-overlay.visible {
