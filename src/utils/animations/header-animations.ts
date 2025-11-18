@@ -132,6 +132,10 @@
 
 
   /**
+   * @deprecated This function has been moved to NavigationManager.
+   * Use `NavigationManager.handleNavigationClick()` from 'src/utils/navigation/navigation-manager.ts' instead.
+   * This function is kept here temporarily for reference but should not be used.
+   * 
    * Función unificada para manejar clicks de navegación.
    * Coordina el scroll programático, pausa el observer, actualiza el estado activo,
    * dispara animaciones de sección y limpia el hash de la URL.
@@ -140,113 +144,124 @@
    * @param {string} href - Href del link clickeado (debe ser un hash, ej: "#services")
    * @returns {Promise<void>}
    */
-  async function handleNavigationClick(e: Event, href: string): Promise<void> {
-    // Validar que sea un hash
-    if (!href || !href.startsWith("#")) return;
+  // async function handleNavigationClick(e: Event, href: string): Promise<void> {
+  //   // Validar que sea un hash
+  //   if (!href || !href.startsWith("#")) return;
 
-    // Prevenir comportamiento default
-    e.preventDefault();
+  //   // Prevenir comportamiento default
+  //   e.preventDefault();
 
-    // Extraer ID y obtener elemento target
-    const id = href.slice(1);
-    const target = document.getElementById(id);
+  //   // Extraer ID y obtener elemento target
+  //   const id = href.slice(1);
+  //   const target = document.getElementById(id);
     
-    if (!target) {
-      console.warn('Navigation: target not found', id);
-      return;
-    }
+  //   if (!target) {
+  //     console.warn('Navigation: target not found', id);
+  //     return;
+  //   }
 
-    // Actualizar estado activo
-    const activeHref = (href === "#contact-separator") ? null : href;
+  //   // Actualizar estado activo
+  //   const activeHref = (href === "#contact-separator") ? null : href;
 
-    // Disparar evento para animaciones de sección
-    const event = new CustomEvent('trigger-section-animations', {
-      detail: { sectionId: id }
-    });
-    document.dispatchEvent(event);
+  //   // Disparar evento para animaciones de sección
+  //   const event = new CustomEvent('trigger-section-animations', {
+  //     detail: { sectionId: id }
+  //   });
+  //   document.dispatchEvent(event);
 
-    // Remover hash de la URL
-    removeHashFromUrl();
-  }
+  //   // Remover hash de la URL
+  //   removeHashFromUrl();
+  // }
 
   /**
+   * @deprecated This function has been moved to NavigationManager.
+   * Use `NavigationManager.removeHashFromUrl()` from 'src/utils/navigation/navigation-manager.ts' instead.
+   * This function is kept here temporarily for reference but should not be used.
+   * 
    * Remueve el hash de la URL sin recargar la página.
    * Usa history.replaceState para limpiar el hash manteniendo el resto de la URL.
    * 
    * @returns {void}
    */
-  function removeHashFromUrl(): void {
-    if (window.location.hash) {
-      try {
-        history.replaceState(null, '', window.location.pathname + window.location.search);
-      } catch (err) {
-        /* ignore */
-      }
-    }
-  }
+  // function removeHashFromUrl(): void {
+  //   if (window.location.hash) {
+  //     try {
+  //       history.replaceState(null, '', window.location.pathname + window.location.search);
+  //     } catch (err) {
+  //       /* ignore */
+  //     }
+  //   }
+  // }
 
-  export function initNavActiveLinks() {
-    try {
-      const links = Array.from(
-        document.querySelectorAll('a[href^="#"].nav-link, #mobilemenu-items a'),
-      ) as HTMLElement[];
+  /**
+   * @deprecated This function has been replaced by NavigationManager.
+   * Navigation is now handled by Header.astro and MobileMenu.astro components
+   * using `NavigationManager.initialize()` and `NavigationManager.handleNavigationClick()` 
+   * from 'src/utils/navigation/navigation-manager.ts'.
+   * This function is kept here temporarily for reference but should not be used.
+   */
+  // export function initNavActiveLinks() {
+  //   try {
+  //     const links = Array.from(
+  //       document.querySelectorAll('a[href^="#"].nav-link, #mobilemenu-items a'),
+  //     ) as HTMLElement[];
 
-      if (!links.length) return;
+  //     if (!links.length) return;
 
-      // Aplicar handleNavigationClick a todos los links
-      links.forEach((link) => {
-        const href = link.getAttribute("href");
-        if (!href) return;
+  //     // Aplicar handleNavigationClick a todos los links
+  //     links.forEach((link) => {
+  //       const href = link.getAttribute("href");
+  //       if (!href) return;
 
-        link.addEventListener("click", (e) => {
-          handleNavigationClick(e, href);
-        });
-      });
+  //       link.addEventListener("click", (e) => {
+  //         handleNavigationClick(e, href);
+  //       });
+  //     });
 
 
-      // Escuchar evento personalizado para sincronización
-      window.addEventListener('codezone:setActiveNavHref', (ev) => {
-        // @ts-ignore: event detail typing
-        ObserverManager.setActiveLink(ev.detail);
-      });
+  //     // Escuchar evento personalizado para sincronización
+  //     window.addEventListener('codezone:setActiveNavHref', (ev) => {
+  //       // @ts-ignore: event detail typing
+  //       ObserverManager.setActiveLink(ev.detail);
+  //     });
 
-      // Aplicar handleNavigationClick al logo/brand
-      const brandAnchor = document.querySelector('a.brand[href="#hero"]');
-      if (brandAnchor) {
-        brandAnchor.addEventListener('click', (e) => {
-          handleNavigationClick(e, "#hero");
-        });
-      }
+  //     // Aplicar handleNavigationClick al logo/brand
+  //     const brandAnchor = document.querySelector('a.brand[href="#hero"]');
+  //     if (brandAnchor) {
+  //       brandAnchor.addEventListener('click', (e) => {
+  //         handleNavigationClick(e, "#hero");
+  //       });
+  //     }
 
-      // Handler para botones CTA de contacto
-      document.addEventListener("click", (e) => {
-        const maybeElement = e.target;
-        const anchor =
-          maybeElement instanceof Element
-            ? maybeElement.closest('a[href="#contact-separator"]')
-            : null;
-        if (anchor) {
-          handleNavigationClick(e, "#contact-separator");
-        }
-      });
+  //     // Handler para botones CTA de contacto
+  //     document.addEventListener("click", (e) => {
+  //       const maybeElement = e.target;
+  //       const anchor =
+  //         maybeElement instanceof Element
+  //           ? maybeElement.closest('a[href="#contact-separator"]')
+  //           : null;
+  //       if (anchor) {
+  //         handleNavigationClick(e, "#contact-separator");
+  //       }
+  //     });
 
-      window.addEventListener('hashchange', () => {
-        const h = window.location.hash || '';
-        if (!h) return;
-        const id = h.slice(1);
-        if (!id) {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-          return;
-        }
-        const target = document.getElementById(id);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        history.replaceState(null, '', window.location.pathname + window.location.search);
-      });
+  //     window.addEventListener('hashchange', () => {
+  //       const h = window.location.hash || '';
+  //       if (!h) return;
+  //       const id = h.slice(1);
+  //       if (!id) {
+  //         history.replaceState(null, '', window.location.pathname + window.location.search);
+  //         return;
+  //       }
+  //       const target = document.getElementById(id);
+  //       if (target) {
+  //         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  //       }
+  //       history.replaceState(null, '', window.location.pathname + window.location.search);
+  //     });
 
-      window.addEventListener('popstate', () => removeHashFromUrl());
-    } catch (err) {
-      /* ignore errors in nav initialization */
-    }
-  }
+  //     window.addEventListener('popstate', () => removeHashFromUrl());
+  //   } catch (err) {
+  //     /* ignore errors in nav initialization */
+  //   }
+  // }

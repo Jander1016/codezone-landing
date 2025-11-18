@@ -100,6 +100,11 @@ const {
 
 <script>
   /* @ts-nocheck */
+  import { 
+    handleMobileNavigation,
+    NAV_CONFIG 
+  } from '../utils/navigation/navigation-manager';
+
   document.addEventListener("DOMContentLoaded", () => {
     const burgerBtn = document.getElementById("mobilemenu-burger");
     const burgerIcon = document.getElementById("mobilemenu-burger-icon");
@@ -143,36 +148,7 @@ const {
       });
     }
 
-    /**
-     * Actualiza el estado activo de los links de navegación en el menú móvil.
-     * Verifica qué sección está visible en el viewport y actualiza el atributo
-     * aria-current de los links correspondientes.
-     * 
-     * @returns {void}
-     */
-    function updateMobileActiveState(): void {
-      const mobileLinks = document.querySelectorAll('.mobilemenu-item');
-      
-      mobileLinks.forEach(link => {
-        // const href = link.getAttribute('href');
-        const section = link.getAttribute('data-section');
-        
-        // Check if this link should be active based on current scroll position
-        if (section && section !== '#mobile-contact-separator') {
-          const targetElement = document.getElementById(section);
-          if (targetElement) {
-            const rect = targetElement.getBoundingClientRect();
-            const isInView = rect.top <= window.innerHeight * 0.3 && rect.bottom >= 100;
-            
-            if (isInView) {
-              link.setAttribute('aria-current', 'page');
-            } else {
-              link.removeAttribute('aria-current');
-            }
-          }
-        }
-      });
-    }
+
 
     /**
      * Alterna el estado abierto/cerrado del menú móvil.
@@ -194,9 +170,6 @@ const {
           try { (overlay as any).inert = false; } catch (e) { /* ignore if not supported */ }
         }
         document.body.style.overflow = "hidden";
-        
-        // Update active state when opening menu
-        updateMobileActiveState();
         
         setTimeout(() => {
           animateMenuItems(true);
@@ -242,71 +215,7 @@ const {
       navData = [];
     }
 
-    /**
-     * Maneja la navegación desde el menú móvil.
-     * Usa el sistema centralizado de ScrollCoordinator y ObserverManager.
-     * Cierra el menú si está especificado, sincroniza con el Header,
-     * establece el flag isProgrammaticScroll, y ejecuta el scroll.
-     * 
-     * @param {string} href - Href del link clickeado (debe ser un hash, ej: "#services")
-     * @param {boolean} [closeMenu=false] - Si true, cierra el menú antes de navegar
-     * @returns {Promise<void>}
-     */
-    async function handleMobileNavigation(href: string, closeMenu: boolean = false): Promise<void> {
-      if (!href || !href.startsWith('#')) return;
 
-      const id = href.slice(1);
-      const target = document.getElementById(id);
-
-      if (!target) {
-        console.warn('MobileMenu: target not found', id);
-        return;
-      }
-
-      // Cerrar menú si está abierto
-      if (closeMenu && isMenuOpen) {
-        toggleMenu();
-      }
-
-      // Calcular delay basado en animación del menú
-      const totalItemDuration = allAnimatedItems.length * itemAnimationDuration;
-      const delay = closeMenu ? totalItemDuration + 120 : 0;
-
-      setTimeout(async () => {
-        // Usar window.setActiveNavHref si está disponible (desde Header.astro)
-        if (typeof window.setActiveNavHref === 'function') {
-          const activeHref = (href === '#contact-separator') ? null : href;
-          window.setActiveNavHref(activeHref);
-        }
-
-        // Disparar evento para sincronizar con Header
-        try {
-          const detail = (href === '#mobile-contact-separator') ? null : href;
-          window.dispatchEvent(new CustomEvent('codezone:setActiveNavHref', { detail }));
-        } catch (err) {
-          /* ignore */
-        }
-
-        // Establecer flag global y realizar scroll nativo
-        window.isProgrammaticScroll = true;
-
-        // Usar scroll nativo del navegador (ScrollSmoother DESACTIVADO)
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Re-habilitar observer después del scroll
-        setTimeout(() => {
-          window.isProgrammaticScroll = false;
-        }, window.SCROLL_CONFIG.PROGRAMMATIC_SCROLL_DURATION);
-
-        // Disparar evento para animaciones de sección
-        setTimeout(() => {
-          const event = new CustomEvent('trigger-section-animations', {
-            detail: { sectionId: id }
-          });
-          document.dispatchEvent(event);
-        }, window.SCROLL_CONFIG.SECTION_ANIMATION_DELAY);
-      }, delay);
-    }
 
     // Handle menu item clicks
     menuItems.forEach((item) => {
@@ -323,7 +232,18 @@ const {
         }
 
         if (href && href.startsWith('#')) {
-          handleMobileNavigation(href, isMenuOpen);
+          // Calculate delay based on menu animation
+          const totalItemDuration = allAnimatedItems.length * itemAnimationDuration;
+          const menuCloseDelay = totalItemDuration + NAV_CONFIG.MENU_CLOSE_DELAY;
+          
+          // Use NavigationManager with menu close coordination
+          handleMobileNavigation(
+            href,
+            () => {
+              if (isMenuOpen) toggleMenu();
+            },
+            { menuCloseDelay }
+          );
         } else {
           if (isMenuOpen) toggleMenu();
         }
@@ -334,23 +254,37 @@ const {
     if (logo) {
       logo.addEventListener('click', (e) => {
         e.preventDefault();
-        handleMobileNavigation('#hero', isMenuOpen);
         
-        // Remover hash de URL
-        try {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        } catch (err) {
-          /* ignore */
-        }
+        // Calculate delay based on menu animation
+        const totalItemDuration = allAnimatedItems.length * itemAnimationDuration;
+        const menuCloseDelay = totalItemDuration + NAV_CONFIG.MENU_CLOSE_DELAY;
+        
+        // Use NavigationManager for logo navigation
+        handleMobileNavigation(
+          '#hero',
+          () => {
+            if (isMenuOpen) toggleMenu();
+          },
+          { menuCloseDelay }
+        );
       });
     }
 
-    // Listen for active nav updates from header
-    window.addEventListener('codezone:setActiveNavHref', () => {
-      // Sincronizar con el sistema global de ObserverManager
-      // El estado activo ya se maneja desde Header.astro
-      // Solo necesitamos actualizar el estado visual local si es necesario
-      updateMobileActiveState();
+    // Listen for active nav updates from NavigationManager
+    window.addEventListener('codezone:setActiveNavHref', (event) => {
+      const activeHref = (event as CustomEvent).detail;
+      const mobileLinks = document.querySelectorAll('.mobilemenu-item');
+      
+      // Update visual state of mobile menu links
+      mobileLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        
+        if (href === activeHref) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
     });
 
     // ESC key to close

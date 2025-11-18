@@ -68,16 +68,70 @@ import MobileMenu from "../components/MobileMenu.astro";
 </header>
 
 <script>
-import { initNavActiveLinks } from "../utils/animations/header-animations";
+import { 
+  initialize, 
+  handleNavigationClick,
+  NAV_CONFIG 
+} from "../utils/navigation/navigation-manager";
 
-   
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initNavActiveLinks);
-  } else {
-    initNavActiveLinks();
+document.addEventListener('DOMContentLoaded', () => {
+  // Get all desktop nav links
+  const desktopLinks = Array.from(
+    document.querySelectorAll('.desktop-nav a[href^="#"]')
+  ) as HTMLElement[];
+  
+  // Get all mobile nav links
+  const mobileLinks = Array.from(
+    document.querySelectorAll('.mobilemenu-item')
+  ) as HTMLElement[];
+  
+  // Combine all navigation links for initialization
+  const allNavLinks = [...desktopLinks, ...mobileLinks];
+  
+  // Initialize NavigationManager with all links
+  initialize(allNavLinks);
+  
+  // Attach click handlers to desktop nav links
+  desktopLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+    
+    link.addEventListener('click', (e) => {
+      handleNavigationClick(e, href);
+    });
+  });
+  
+  // Handle logo click
+  const logo = document.querySelector('a.brand[href="#hero"]');
+  if (logo) {
+    logo.addEventListener('click', (e) => {
+      handleNavigationClick(e, '#hero');
+    });
   }
- 
+  
+  // Handle CTA button
+  const ctaButton = document.querySelector('a[href="#contact-separator"]');
+  if (ctaButton) {
+    ctaButton.addEventListener('click', (e) => {
+      handleNavigationClick(e, '#contact-separator');
+    });
+  }
+  
+  // Listen for active state sync events
+  window.addEventListener('codezone:setActiveNavHref', (event) => {
+    const activeHref = (event as CustomEvent).detail;
+    
+    // Update visual state of desktop links
+    desktopLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === activeHref) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  });
+});
 </script> 
 
 <style>
