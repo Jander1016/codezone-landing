@@ -33,7 +33,10 @@ import Button from "../components/Button.astro";
         </div>
       </article>
       <article class="right-content">
-        <div class="animation-circles-container py-4 md:py-2" data-animate="hero-image">
+        <div
+          class="animation-circles-container py-4 md:py-2"
+          data-animate="hero-image"
+        >
           <div class="capa-stack">
             <img
               class="logo-glow-fx animate-logo-pulse"
@@ -68,9 +71,10 @@ import Button from "../components/Button.astro";
   .animate-spin-slow {
     animation: spin-slow 6s linear infinite;
   }
- 
+
   @keyframes animate-logo-pulse {
-    0%,100% {
+    0%,
+    100% {
       filter: drop-shadow(0 0 10px rgba(200, 0, 222, 0.75));
     }
 
@@ -112,7 +116,7 @@ import Button from "../components/Button.astro";
       transform: rotate(360deg);
     }
   }
-   
+
   .logo-glow-fx {
     transition: transform 0.8s ease-out;
     transform: rotateY(0deg);
@@ -136,7 +140,7 @@ import Button from "../components/Button.astro";
   .right-content {
     flex: 0 0 40%;
     width: 40%;
-    margin-left: auto; 
+    margin-left: auto;
   }
 
   #hero {
@@ -173,125 +177,14 @@ import Button from "../components/Button.astro";
       height: auto;
     }
   }
-
 </style>
 
 <script>
-  import { gsap } from 'gsap';
-  import { maskTextReveal } from '../utils/animations/text-animations';
-  import { animateFromWithBlur, animateScaleUp } from '../utils/animations/animation-helpers';
-  import { conditionalAnimate } from '../utils/accessibility';
-
-  function initHeroAnimations() {
-    // Crear timeline
-    const tl = gsap.timeline();
-
-    // 1. Header/Navbar entra desde arriba (todo el header)
-    const header = document.querySelector('header');
-    if (header) {
-      // Set initial state
-      gsap.set(header, { y: -100, opacity: 0 });
-      // Animate to visible state
-      tl.to(header, {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: 'power3.out',
-        onStart: () => {
-          // Habilitar pointer events cuando la animación comienza
-          header.classList.add('is-visible');
-        }
-      });
-    }
-
-    // 2. animation-circles-container con scaleUp (mantiene entrada actual)
-    const heroImage = document.querySelector('.animation-circles-container');
-    if (heroImage) {
-      tl.add(
-        animateScaleUp(heroImage, {
-          duration: 1.0,
-          ease: 'back.out(1.7)'
-        }),
-        '-=0.3'
-      );
-    }
-
-    // 3. h2 (hero-title) con maskTextReveal palabra por palabra
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-      const titleTimeline = maskTextReveal(heroTitle, {
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'power3.out'
-      });
-      tl.add(titleTimeline, '-=0.5');
-    }
-
-    // 4. h1 (hero-subtitle) desde izquierda con blur
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    if (heroSubtitle) {
-      tl.add(
-        animateFromWithBlur(heroSubtitle, 'left', {
-          duration: 0.6,
-          ease: 'power3.out'
-        }),
-        '-=0.4'
-      );
-    }
-
-    // 5. CTA desde izquierda con blur
-    const heroCta = document.querySelector('.hero-cta');
-    if (heroCta) {
-      tl.add(
-        animateFromWithBlur(heroCta, 'left', {
-          duration: 0.6,
-          ease: 'power3.out'
-        }),
-        '-=0.4'
-      );
-    }
-
-    // 6. Separador: animarlo AL FINAL de la timeline para que aparezca después
-    const separator = document.querySelector('#services-separator');
-    if (separator) {
-      // Añadimos la animación al final de la timeline (sin overlap)
-      tl.add(
-        gsap.from(separator, {
-          y: 50,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power3.out'
-        })
-      );
-    }
-
-    // Función para iniciar animaciones
-    // function startAnimations() {
-      conditionalAnimate(
-        () => tl.play(),
-        () => {
-          // Fallback: no hacer nada, dejar contenido visible
-        }
-      );
-    // }
-
-    // tl.play();
-
-    // // Escuchar evento del preloader
-    // window.addEventListener('preloader:complete', startAnimations);
-
-    // // Fallback: si no hay preloader, iniciar después de un pequeño delay
-    // setTimeout(() => {
-    //   const preloader = document.getElementById('electric-preloader');
-    //   if (!preloader) {
-    //     startAnimations();
-    //   }
-    // }, 100);
-  }
+  import { initHeroAnimations } from "../utils/animations/hero-animations";
 
   // Inicializar cuando el DOM esté listo
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeroAnimations);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initHeroAnimations);
   } else {
     initHeroAnimations();
   }
