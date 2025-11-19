@@ -6,7 +6,28 @@ import { imagetools } from 'vite-imagetools';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'static',
+  
+  build: {
+    inlineStylesheets: 'auto', // Inline CSS pequeño automáticamente
+  },
+  
   vite: {
     plugins: [tailwindcss(), imagetools()],
-  }
+    build: {
+      cssCodeSplit: true, // Split CSS por ruta
+      minify: 'esbuild', // Minificación rápida
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Separar vendor chunks grandes
+            'lenis': ['lenis'],
+          }
+        }
+      }
+    }
+  },
+  
+  // Compresión nativa de Astro
+  compressHTML: true,
 });
