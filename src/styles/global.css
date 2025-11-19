@@ -235,27 +235,18 @@ button {
 
   p,
   a {
-    font-size: 16px !important;
+    font-size: 15px !important;
     letter-spacing: 0% !important;
   }
 }
 
 
-/* funnel-display-300 - latin */
+/* funnel-display-regular - latin */
 @font-face {
   font-display: swap;
   font-family: 'Funnel Display';
   font-style: normal;
   font-weight: 300;
-  src: url('/fonts/funnel-display-v3-latin-300.woff2') format('woff2');
-}
-
-/* funnel-display-400 - latin */
-@font-face {
-  font-display: swap;
-  font-family: 'Funnel Display';
-  font-style: normal;
-  font-weight: 400;
   src: url('/fonts/funnel-display-v3-latin-regular.woff2') format('woff2');
 }
 
@@ -277,20 +268,3 @@ button {
   src: url('/fonts/funnel-display-v3-latin-600.woff2') format('woff2');
 }
 
-/* funnel-display-700 - latin */
-@font-face {
-  font-display: swap;
-  font-family: 'Funnel Display';
-  font-style: normal;
-  font-weight: 700;
-  src: url('/fonts/funnel-display-v3-latin-700.woff2') format('woff2');
-}
-
-/* funnel-display-800 - latin */
-@font-face {
-  font-display: swap;
-  font-family: 'Funnel Display';
-  font-style: normal;
-  font-weight: 800;
-  src: url('/fonts/funnel-display-v3-latin-800.woff2') format('woff2');
-}
