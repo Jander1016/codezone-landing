@@ -38,7 +38,7 @@ const gradient2Id = `gradient2-${id}`;
 
 <div
     id={idSeparator}
-    class={`cz-separator w-full m-0 pt-15 relative flex justify-center items-end pointer-events-none select-none md:hidden ${className}`}
+    class={`cz-separator w-full m-0 mt-15 relative flex justify-center items-end pointer-events-none select-none md:hidden ${className}`}
 >
     <svg
         id={id}
@@ -126,6 +126,11 @@ const gradient2Id = `gradient2-${id}`;
     .separator-svg line {
         will-change: filter, opacity;
     }
+
+    .cz-separator {
+        scroll-margin-top: 3.5rem;
+    }
+    
 </style>
 
 <script>
