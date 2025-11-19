@@ -9,50 +9,52 @@ import "../styles/global.css";
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CodeZone</title>
+		
+		<!-- DNS Prefetch y Preconnect para Netlify CDN - Aparecen primero para optimizar conexiones -->
+		<link rel="dns-prefetch" href="https://codezone-v1.netlify.app" />
+		<link rel="preconnect" href="https://codezone-v1.netlify.app" crossorigin />
+		
+		<title>CodeZone - Desarrollo Web y Software a Medida</title>
 		<link
 			rel="icon"
 			type="image/svg+xml"
 			href="/codezone-logo-header.svg"
 		/>
 
-		<!-- Precarga de fuentes críticas para mejor rendimiento -->
+		<!-- Preload SOLO fuentes críticas (600 y 700) para mejor rendimiento -->
 		<link
 			rel="preload"
 			href="/fonts/funnel-display-v3-latin-500.woff2"
 			as="font"
 			type="font/woff2"
-			crossorigin="anonymous"
+			crossorigin
+		/>
+		<link
+			rel="preload"
+			href="/fonts/funnel-display-v3-latin-600.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+		
+		<!-- Meta tags optimizados para SEO -->
+		<meta
+			name="description"
+			content="Desarrollo de páginas web, software a medida e integración de sistemas (APIs). Expertos en soluciones digitales personalizadas."
 		/>
 		<meta
 			name="keywords"
-			content="Código, proyectos, software, aplicaciones, codificación, desarrollo"
+			content="desarrollo web, software a medida, APIs, integración de sistemas, CodeZone"
 		/>
 		<meta name="author" content="CodeZone" />
-		<meta
-			name="description"
-			content="Desarrollo de páginas web, software a medida e integración de sistemas(APIs)."
-		/>
 
-		<meta property="og:title" content="CodeZone" />
+		<!-- Open Graph -->
+		<meta property="og:title" content="CodeZone - Desarrollo Web y Software" />
 		<meta
 			property="og:description"
-			content="Desarrollo de páginas web, software a medida e integración de sistemas(APIs)."
+			content="Desarrollo de páginas web, software a medida e integración de sistemas (APIs)."
 		/>
-		<!-- <meta property="og:type" content="website" />
-		<meta property="og:url" content="https://yourwebsite.com" />
-		<meta
-			property="og:image"
-			content="https://yourwebsite.com/og-image.jpg"
-		/>
-
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content="CodeZone" />
-		<meta name="twitter:site" content="@yourtwitterhandle" />
-		<meta
-			name="twitter:description"
-			content="Desarrollo de páginas web, software a medida e integración de sistemas(APIs)."
-		/> -->
+		<meta property="og:type" content="website" />
 	</head>
 	<body>
 		<Header />
