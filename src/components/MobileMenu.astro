@@ -101,10 +101,15 @@ const {
 
 <script>
   /* @ts-nocheck */
-  import { 
-    handleMobileNavigation,
-    NAV_CONFIG 
-  } from '../utils/navigation/navigation-manager';
+
+  // Defer loading of the navigation manager until it's actually needed
+  // to reduce initial JS critical path. We'll dynamically import it on first use.
+  let _navManager: any = null;
+  async function getNavManager(): Promise<any> {
+    if (_navManager) return _navManager;
+    _navManager = await import('../utils/navigation/navigation-manager');
+    return _navManager;
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     const burgerBtn = document.getElementById("mobilemenu-burger");
@@ -224,12 +229,12 @@ const {
 
     // Handle menu item clicks
     menuItems.forEach((item) => {
-      item.addEventListener("click", (ev) => {
+      item.addEventListener("click", async (ev) => {
         const el = ev.currentTarget;
         if (!(el instanceof Element)) return;
-        
+
         ev.preventDefault();
-        
+
         const idx = el.getAttribute('data-index');
         let href = (el.getAttribute && el.getAttribute('href')) || '';
         if (idx !== null && navData[idx]) {
@@ -239,8 +244,10 @@ const {
         if (href && href.startsWith('#')) {
           // Calculate delay based on menu animation
           const totalItemDuration = allAnimatedItems.length * itemAnimationDuration;
+          // Dynamically import the navigation manager to avoid loading it in the initial bundle
+          const { NAV_CONFIG, handleMobileNavigation } = await getNavManager();
           const menuCloseDelay = totalItemDuration + NAV_CONFIG.MENU_CLOSE_DELAY;
-          
+
           // Use NavigationManager with menu close coordination
           handleMobileNavigation(
             href,
@@ -257,13 +264,14 @@ const {
 
     // Handle logo click
     if (logo) {
-      logo.addEventListener('click', (e) => {
+      logo.addEventListener('click', async (e) => {
         e.preventDefault();
-        
+
         // Calculate delay based on menu animation
         const totalItemDuration = allAnimatedItems.length * itemAnimationDuration;
+        const { NAV_CONFIG, handleMobileNavigation } = await getNavManager();
         const menuCloseDelay = totalItemDuration + NAV_CONFIG.MENU_CLOSE_DELAY;
-        
+
         // Use NavigationManager for logo navigation
         handleMobileNavigation(
           '#hero',
