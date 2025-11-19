@@ -262,7 +262,7 @@ export function animateStackSection(
       rowDelay: isMobile ? 0.4 : isTablet ? 0.5 : 0.6,
       itemDelay: isMobile ? 0.15 : 0.2,
       start: config.start,
-      markers: true
+      // markers: true
     });
 
     if (gridTrigger) {
