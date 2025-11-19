@@ -182,7 +182,7 @@ export function animateStackSection(
   // Configuración responsive con ajuste para pantallas grandes
   const getStartPosition = () => {
     if (options?.start) return options.start;
-    if (isMobile) return 'top bottom+=350'; // Mobile: se activa cuando está casi visible
+    if (isMobile) return 'top-=350 bottom+=350'; // Mobile: se activa cuando está casi visible
     if (isTablet) return 'top bottom+=150';
     if (isDesktop) return 'top bottom+=900';
     if (isLargeScreen) return 'top bottom+=400'; // Pantallas grandes: se activa antes
@@ -262,7 +262,7 @@ export function animateStackSection(
       rowDelay: isMobile ? 0.4 : isTablet ? 0.5 : 0.6,
       itemDelay: isMobile ? 0.15 : 0.2,
       start: config.start,
-      markers: config.markers,
+      markers: true
     });
 
     if (gridTrigger) {
