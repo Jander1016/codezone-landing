@@ -1,10 +1,14 @@
 
 import { gsap } from 'gsap';
-import { animateFromWithBlur, ANIMATION_CONFIG } from './animation-helpers';
-import {  maskTextRevealMix } from './text-animations';
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ANIMATION_CONFIG } from './animation-helpers';
+import { maskTextRevealMix } from './text-animations';
 
 
 export function animateContactSection() {
+
+
+	gsap.registerPlugin(ScrollTrigger);
 
 	const section = document.querySelector("#contact");
 
@@ -26,27 +30,28 @@ export function animateContactSection() {
 
 	// 1. Título con máscara de texto
 	if (contactTitle) {
+
 		maskTextRevealMix(contactTitle, {
-			duration: 0.6,
+			duration: ANIMATION_CONFIG.durations.verySlow,
 			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactTitle,
-				start: 'top bottom+=450',
-				// markers: true,
-			}
-		});
+				start: 'top-=420% 90%',
+			},
+		})
 	}
 
 	// 3. Párrafos en secuencia con gap fijo
-
 	contactParagraphs.forEach((p) => {
-		animateFromWithBlur(p, "left", {
-			duration: 0.6,
-			stagger: 0.2,
-			ease: "power3.out",
+		gsap.from(p, {
+			x: -30,
+			opacity: 0,
+			filter: "blur(20px)",
+			duration: ANIMATION_CONFIG.durations.slow,
+			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: p,
-				start: 'top bottom+=450',
+				start: 'top-=850 90%',
 			},
 		});
 	});
@@ -54,25 +59,29 @@ export function animateContactSection() {
 
 	// Logo y botones después de párrafos
 	if (contactLogo) {
-		animateFromWithBlur(contactLogo, "left", {
-			duration: 0.6,
-			stagger: 0.2,
-			ease: "power3.out",
+		gsap.from(contactLogo, {
+			x: -30,
+			opacity: 0,
+			filter: "blur(20px)",
+			duration: ANIMATION_CONFIG.durations.slow,
+			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactLogo,
-				start: 'top bottom+=450',
+				start: 'top-=850 90%',
 			},
 		});
 	}
 
 	if (contactButtons) {
-		animateFromWithBlur(contactButtons, "left", {
-			duration: 0.6,
-			stagger: 0.2,
-			ease: "power3.out",
+		gsap.from(contactButtons, {
+			x: -30,
+			opacity: 0,
+			filter: "blur(20px)",
+			duration: ANIMATION_CONFIG.durations.slow,
+			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactButtons,
-				start: 'top bottom+=500',
+				start: 'top-=850 90%',
 			},
 		});
 	}
@@ -82,12 +91,11 @@ export function animateContactSection() {
 			y: 30,
 			opacity: 0,
 			filter: "blur(20px)",
-			duration: 0.6,
-			stagger: 0.2,
-			ease: "power3.out",
+			duration: ANIMATION_CONFIG.durations.slow,
+			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactForm,
-				start: 'top bottom+=350',
+				start: 'top-=105% 90%',
 			},
 		});
 	}
