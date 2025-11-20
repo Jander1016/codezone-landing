@@ -75,7 +75,7 @@ const SPECIAL_HREFS_NO_ACTIVE = [
  * Used to normalize mobile hrefs for consistent target resolution
  */
 const MOBILE_HREF_MAP: Record<string, string> = {
-  '#mobile-contact-separator': '#contact-separator',
+  '#mobile-contact-separator': '#mobile-contact-separator',
   '#hero': '#hero'
 };
 
@@ -166,7 +166,6 @@ function getTargetElement(href: string): HTMLElement | null {
   const normalizedHref = normalizeHref(href);
   const id = normalizedHref.slice(1); // Remove the # prefix
   const target = document.getElementById(id);
-  
   if (!target) {
     console.warn('NavigationManager: target element not found', id);
     return null;
