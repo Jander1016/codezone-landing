@@ -211,7 +211,7 @@ select:focus-visible,
 
 p,
 a {
-  font-size: 18px !important;
+  font-size: 18px;
   line-height: 1.5 !important;
   letter-spacing: 0% !important;
 
