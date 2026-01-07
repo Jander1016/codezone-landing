@@ -2,80 +2,128 @@
 import ServiceCard from "../components/ServiceCard.astro";
 import GradientText from "../components/GradientText.astro";
 import { services } from "../data/services";
+import Card from "../components/Card.astro";
+import ServiceDetail from "../components/ServiceDetail.astro";
+import {
+  DataWebSolutions,
+  DataQuality,
+  DataSoftwareSolutions,
+  DataWarrantySoftware,
+} from "../data/servicesDetail";
+import GradientOverlay from "../components/GradientOverlay.astro";
+import SpeedGauge from "../components/SpeedGauge.astro";
 ---
 
-<section
-  id="services"
-  class="services-section lg:mb-20 flex flex-col items-center justify-center"
+<GradientOverlay
+  position="center"
+  size="small"
+  color="fuchsia"
+  opacity="medium"
+  blur="high"
 >
-  <div class="flex flex-col items-center w-full max-w-2xl mx-auto shift-up-10">
-    <img
-      src="/codezone-logo-color.svg"
-      alt="Logo de CodeZone"
-      width="375"
-      height="54"
-      class="w-43 md:w- lg:w-[375px] h-auto mb-4"
-      loading="lazy"
-      decoding="async"
-    />
-    <GradientText
-      as="h2"
-      gradient="cyan-purple"
-      className="textMaskReveal text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-4"
-      style="letter-spacing:1px;"
-    >
-      Tech Your Vibes
-    </GradientText>
-    <div class="flex flex-col mt-9 max-w-[504px] min-w-[342px] w-full px-4">
-      <p
-        class="paragraph-1 text-sm text-pretty text-neutral-100 text-center mb-8"
-      >
-        En Codezone convertimos lo que tu negocio busca y necesita en tecnología
-        a medida, respetando su esencia y maximizando su valor.
-      </p>
-      <p
-        class="paragraph-2 text-sm text-pretty text-neutral-100 text-center mb-8"
-      >
-        Ayudamos a marcas y empresas a crear productos inspiradores, confiables
-        y rentables.
-      </p>
-    </div>
-  </div>
-
-  <!-- Responsive Services Grid -->
-  <div
-    class={`services-grid services-cards-container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 justify-center w-full mx-auto`}
+  <section
+    id="services"
+    class="services-section lg:mb-20 flex flex-col items-center justify-center"
   >
-    {
-      services.map((service, index) => (
-        <div
-          class={
-            index === 2
-              ? "service-card flex h-full md:col-span-2 md:mx-auto md:max-w-[480px] xl:col-span-1 xl:mx-0"
-              : index === 1
-                ? "service-card flex h-full shift-up-10"
-                : "service-card flex h-full w-full"
-          }
-          data-card-index={index}
+    <div
+      class="flex flex-col items-center w-full max-w-2xl mx-auto shift-up-10"
+    >
+      <img
+        src="/codezone-logo-color.svg"
+        alt="Logo de CodeZone"
+        width="375"
+        height="54"
+        class="w-43 md:w- lg:w-[375px] h-auto mb-4"
+        loading="lazy"
+        decoding="async"
+      />
+      <GradientText
+        as="h2"
+        gradient="cyan-purple"
+        className="textMaskReveal text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-4"
+        style="letter-spacing:1px;"
+      >
+        Tech Your Vibes
+      </GradientText>
+      <div class="flex flex-col mt-9 max-w-[504px] min-w-[342px] w-full px-4">
+        <p
+          class="paragraph-1 text-sm text-neutral-100 text-center mb-8"
         >
-          <ServiceCard
-            title={service.title}
-            description={service.description}
-            image={service.image}
-            cta={service.ctaText}
-            ctaHref={service.ctaHref}
-          />
-        </div>
-      ))
-    }
-  </div>
-</section>
+          En Codezone convertimos lo que tu negocio busca y necesita en
+          tecnología a medida, respetando su esencia y maximizando su valor.
+        </p>
+        <p
+          class="paragraph-2 text-sm text-neutral-100 text-center mb-8"
+        >
+          Ayudamos a marcas y empresas a crear productos inspiradores,
+          confiables y rentables.
+        </p>
+      </div>
+    </div>
+
+    <!-- Responsive Services Grid -->
+    <div
+      class={`services-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 justify-center w-full mx-auto`}
+    >
+      {
+        services.map((service, index) => (
+          <div
+            class={
+              index === 2
+                ? "flex h-full md:col-span-2 md:mx-auto md:max-w-[480px] xl:col-span-1 xl:mx-0"
+                : index === 1
+                  ? "flex h-full shift-up-10"
+                  : "flex h-full w-full"
+            }
+            data-card-index={index}
+          >
+            <ServiceCard
+              title={service.title}
+              description={service.description}
+              image={service.image}
+              cta={service.ctaText}
+              ctaHref={service.ctaHref}
+            />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</GradientOverlay>
+
+<ServiceDetail
+  title="Desarrollo Web"
+  description="Diseñamos y desarrollamos plataformas web a medida. Creamos soluciones digitales de máxima calidad, alineadas con su marca y enfocadas en el crecimiento de su negocio."
+>
+<Card title="Soluciones Web" points={DataWebSolutions} />
+<Card velocitySpeed={true} />
+  <Card title="Estándard de Calidad" points={DataQuality} />
+</ServiceDetail>
+<ServiceDetail
+  title="Software a medida"
+  description="Transformamos procesos complejos en soluciones digitales eficientes. Diseñamos software empresarial y aplicaciones escalables que optimizan operaciones y potencian su productividad."
+>
+  <Card image="/images/Gemini_Generated_Neon-5.webp" />
+  <Card title="Soluciones de Software" points={DataSoftwareSolutions} />
+  <Card title="Software de garantía" points={DataWarrantySoftware} />
+</ServiceDetail>
+<ServiceDetail
+  title="Integración de Sistemas y APIs"
+  description="Eliminamos la fricción de sus procesos. Conectamos sus sistemas de negocio (ERP, CRM, E-commerce, etc.) para que trabajen de forma unificada, garantizando la eficiencia operativa y el flujo de datos."
+>
+  <Card title="Soluciones de Software" points={DataSoftwareSolutions} />
+  <Card title="Software de garantía" points={DataWarrantySoftware} />
+  <Card image="/images/Gemini_Generated_Neon-4.webp" />
+</ServiceDetail>
 
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { maskTextRevealVertical } from "../utils/animations/text-animations";
-  import { setupSectionAnimationRefresh, animateSeparatorAfterSection } from "../utils/animations/animation-helpers";
+  import {
+    setupSectionAnimationRefresh,
+    animateSeparatorAfterSection,
+  } from "../utils/animations/animation-helpers";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -88,7 +136,7 @@ import { services } from "../data/services";
     const p1 = servicesSection.querySelector(".paragraph-1");
     const p2 = servicesSection.querySelector(".paragraph-2");
     const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
-    const separator = document.querySelector('#process-separator');
+    const separator = document.querySelector("#process-separator");
 
     // Detectar tamaño de pantalla
     const isMobile = () => window.innerWidth <= 768;
@@ -231,13 +279,13 @@ import { services } from "../data/services";
         }
       }
     }
-     
+
     if (separator) {
-       gsap.from(separator, {
+      gsap.from(separator, {
         y: 50,
         opacity: 0,
         duration: 0.6,
-        ease: 'power3.out',
+        ease: "power3.out",
         scrollTrigger: {
           trigger: separator,
           start: "top 75%",
@@ -245,7 +293,6 @@ import { services } from "../data/services";
         },
       });
     }
-
   }
 
   // Inicializar cuando el DOM esté listo
@@ -259,11 +306,15 @@ import { services } from "../data/services";
     specialSectionIds: ["services-separator"],
     specialDelay: 150,
     includeResize: true,
-    resizeDebounce: 250
+    resizeDebounce: 250,
   });
   // Asegurar que el separador principal aparezca después de las animaciones de la sección
   // Retorna una función de cleanup si se necesita
-  animateSeparatorAfterSection('#services', '#services-separator', { pollDelay: 150, timeout: 4000, finalDelay: 120 });
+  animateSeparatorAfterSection("#services", "#services-separator", {
+    pollDelay: 150,
+    timeout: 4000,
+    finalDelay: 120,
+  });
 </script>
 
 <style>

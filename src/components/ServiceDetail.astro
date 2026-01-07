@@ -1,0 +1,54 @@
+---
+import GradientText from "./GradientText.astro";
+
+interface Props {
+    title: string;
+    description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<section
+    class="max-w-[1528px] mx-auto mt-24 md:mt-32 lg:mt-40 flex flex-col justify-start items-center gap-8"
+>
+    <div
+        class="max-w-[769px] inline-flex flex-col justify-start items-center gap-2"
+    >
+        <GradientText
+            as="h2"
+            gradient="purple-cyan"
+            className="textMaskReveal text-3xl md:text-4xl lg:text-5xl font-medium text-center"
+        >
+            {title}
+        </GradientText>
+        <div
+            class="flex items-center justify-center w-full h-full object-contain"
+        >
+            <img src="/line-point.webp" alt="line-point" loading="lazy" decoding="async" />
+        </div>
+        <div class="text-center justify-start text-neutral-100 text-[15px] md:text-lg font-medium leading-7">
+            {description}
+        </div>
+    </div>
+    <!-- <div
+        class={`w-full grid grid-cols-1 mx-auto  xl:grid-cols-3 justify-start items-stretch gap-11
+        *:min-h-[332px]
+        *:overflow-hidden
+        md:[&>*:nth-child(1)]:order-1 
+        md:[&>*:nth-child(3)]:order-2 
+        md:[&>*:nth-child(2)]:order-3 
+        md:[&>*:nth-child(2)]:col-span-2 
+        md:[&>*:nth-child(2)]:justify-self-center 
+        md:[&>*:nth-child(2)]:w-[calc(50%-1.375rem)]
+        xl:*:order-1
+        xl:[&>*:nth-child(2)]:order-2
+        xl:[&>*:nth-child(3)]:order-3
+        xl:[&>*:nth-child(2)]:col-span-1
+        xl:[&>*:nth-child(2)]:justify-self-auto
+        xl:[&>*:nth-child(2)]:w-auto`}
+    > -->
+    <div class="lg:w-full grid grid-cols-1 mx-auto lg:grid-cols-3 justify-start gap-8 xl:gap-11 *:min-h-[332px] *:max-h-[332px]">
+        <slot />
+    </div>
+</section>
