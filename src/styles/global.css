@@ -3,6 +3,7 @@
 :root {
   /* Typography */
   --font-sans: 'Funnel Display', sans-serif;
+  --font-size-card: clamp(0.875rem, 0.8462rem + 0.1282vw, 1rem);
   
   /* Colors */
   --primary-blue-dark: #121D46;
