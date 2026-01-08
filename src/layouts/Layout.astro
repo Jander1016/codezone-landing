@@ -9,11 +9,15 @@ import "../styles/global.css";
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		
+
 		<!-- DNS Prefetch y Preconnect para Netlify CDN - Aparecen primero para optimizar conexiones -->
 		<link rel="dns-prefetch" href="https://codezone-v1.netlify.app" />
-		<link rel="preconnect" href="https://codezone-v1.netlify.app" crossorigin />
-		
+		<link
+			rel="preconnect"
+			href="https://codezone-v1.netlify.app"
+			crossorigin
+		/>
+
 		<title>CodeZone - Desarrollo Web y Software a Medida</title>
 		<link
 			rel="icon"
@@ -36,7 +40,7 @@ import "../styles/global.css";
 			type="font/woff2"
 			crossorigin
 		/>
-		
+
 		<!-- Meta tags optimizados para SEO -->
 		<meta
 			name="description"
@@ -49,7 +53,10 @@ import "../styles/global.css";
 		<meta name="author" content="CodeZone" />
 
 		<!-- Open Graph -->
-		<meta property="og:title" content="CodeZone - Desarrollo Web y Software" />
+		<meta
+			property="og:title"
+			content="CodeZone - Desarrollo Web y Software"
+		/>
 		<meta
 			property="og:description"
 			content="Desarrollo de páginas web, software a medida e integración de sistemas (APIs)."
@@ -58,36 +65,23 @@ import "../styles/global.css";
 	</head>
 	<body>
 		<Header />
-<!-- 
-		<div id="smooth-wrapper">
-			<div id="smooth-content" class="overflow-hidden"> -->
-				<div
-					id="background-mask"
-					class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
-				>
-					<div class="relative z-2">
-						<main id="main-content" tabindex="-1">
-							<slot />
-						</main>
-						<!-- <GradientOverlay
-							position="bottom"
-							size="small"
-							color="fuchsia"
-							opacity="low"
-							blur="high"
-						> -->
-						<Footer />
-						<!-- </GradientOverlay> -->
-					</div>
-				</div>
-			<!-- </div>
-		</div> -->
+		<div
+			id="background-mask"
+			class="relative z-1 w-full mx-auto px-4 sm:px-6 lg:px-8"
+		>
+			<div class="relative z-2">
+				<main id="main-content" tabindex="-1">
+					<slot />
+				</main>
+			</div>
+		</div>
+		<Footer />
 	</body>
 </html>
-	
+
 <script>
 	import Lenis from "lenis";
-	
+
 	const DESKTOP_BREAKPOINT = 1024;
 	let lenis: Lenis | null = null;
 
@@ -209,24 +203,12 @@ import "../styles/global.css";
 		background: url(/grid-100x100.svg), var(--primary-blue);
 	}
 
-	/* ScrollSmoother DESACTIVADO - usando scroll nativo */
-	/* #smooth-wrapper {
-		width: 100%;
-		min-height: 100dvh;
-	}
-
-	#smooth-content {
-		width: 100%;
-		min-height: 100dvh;
-	} */
-
 	#background-mask {
 		width: 100%;
 		min-height: 100dvh;
 		margin: 0px;
 	}
 
-	/* Header debe quedar por encima del ScrollSmoother */
 	header {
 		position: fixed;
 		z-index: var(--z-header);
@@ -234,24 +216,10 @@ import "../styles/global.css";
 		pointer-events: none;
 	}
 
-	/* Habilitar clicks cuando el header es visible */
 	header.is-visible {
 		pointer-events: auto;
 	}
 
-	/* Estilos del preloader (mínimos, adaptados del ejemplo proporcionado) */
-	.preloader-overlay {
-		position: fixed;
-		inset: 0;
-		width: 100%;
-		height: 100dvh;
-		background: #080c1d;
-		z-index: var(--z-preloader);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-	}
 
 	.loading-content {
 		display: flex;
@@ -294,5 +262,4 @@ import "../styles/global.css";
 	.separator {
 		opacity: 0;
 	}
-
 </style>
