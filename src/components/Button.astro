@@ -12,7 +12,16 @@ interface Props {
   disabled?: boolean;
 }
 
-const { variant = "solid", size = "medium", href, type = "button", icon, className, ariaLabel, disabled = false } = Astro.props;
+const {
+  variant = "solid",
+  size = "medium",
+  href,
+  type = "button",
+  icon,
+  className,
+  ariaLabel,
+  disabled = false,
+} = Astro.props;
 
 const sizes = {
   small: "px-4 py-2 text-sm",
@@ -21,30 +30,48 @@ const sizes = {
 };
 ---
 
-{href ? (
-  <a 
-    href={href} 
-    class:list={["btn", `btn-${variant}`, sizes[size], className]}
-    aria-label={ariaLabel}
-    aria-disabled={disabled ? "true" : undefined}
-    tabindex={disabled ? -1 : undefined}
-  >
-    <slot />
-    {icon && <img src={`./${icon}`} alt="icono de flecha a la derecha" class="ml-2" loading="lazy" decoding="async" />}
-    <slot name="icon" />
-  </a>
-) : (
-  <button 
-    type={type} 
-    class:list={["btn", `btn-${variant}`, sizes[size], className]}
-    aria-label={ariaLabel}
-    disabled={disabled}
-  >
-    <slot />
-    {icon && <img src={`./${icon}`} alt="icono de flecha a la derecha" class="ml-2" loading="lazy" decoding="async" />}
-    <slot name="icon" />
-  </button>
-)}
+{
+  href ? (
+    <a
+      href={href}
+      class:list={["btn", `btn-${variant}`, sizes[size], className]}
+      aria-label={ariaLabel}
+      aria-disabled={disabled ? "true" : undefined}
+      tabindex={disabled ? -1 : undefined}
+    >
+      <slot />
+      {icon && (
+        <img
+          src={`./${icon}`}
+          alt="icono de flecha a la derecha"
+          class="ml-2"
+          loading="eager"
+          decoding="async"
+        />
+      )}
+      <slot name="icon" />
+    </a>
+  ) : (
+    <button
+      type={type}
+      class:list={["btn", `btn-${variant}`, sizes[size], className]}
+      aria-label={ariaLabel}
+      disabled={disabled}
+    >
+      <slot />
+      {icon && (
+        <img
+          src={`./${icon}`}
+          alt="icono de flecha a la derecha"
+          class="ml-2"
+          loading="eager"
+          decoding="async"
+        />
+      )}
+      <slot name="icon" />
+    </button>
+  )
+}
 
 <style>
   .btn {
@@ -56,19 +83,21 @@ const sizes = {
     align-items: center;
     text-decoration: none;
     font-weight: 500;
-    color: #fcfcfc;
+    color: var(--light-gray);
     border-radius: 100px;
     white-space: nowrap;
     cursor: pointer;
     position: relative;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 150ms ease, opacity 150ms ease;
+    transition:
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
   }
 
   /* Focus state - WCAG 2.1 AA compliant */
   .btn:focus-visible {
-    outline: 2px solid #53EAFD;
+    outline: 2px solid var(--cyan-300);
     outline-offset: 4px;
   }
 
@@ -85,20 +114,22 @@ const sizes = {
     pointer-events: none;
   }
 
-/* background: var(--cz-default-gradient, linear-gradient(90deg, #C800DE 0%, #53EAFD 100%)); */
+  /* background: var(--cz-default-gradient, linear-gradient(90deg, #C800DE 0%, #53EAFD 100%)); */
   .btn-outline {
     background: transparent;
-    background-image: linear-gradient(
-        180deg, var(--primary-blue) 0%,
-        var(--primary-blue) 50%
-      ),
-      linear-gradient(90deg, #C800DE 0%, #53EAFD 100%);
+    background-image:
+      linear-gradient(90deg, var(--primary-blue) 0%, var(--primary-blue) 50%),
+      var(--cz-default-gradient);
     background-clip: padding-box, border-box;
     background-origin: border-box;
     background-position: center left;
     background-size: 200% 200%;
     border: 2px solid transparent;
-    transition: background-position 600ms ease, color 600ms ease, transform 150ms ease, opacity 150ms ease;
+    transition:
+      background-position var(--transition-slow),
+      color var(--transition-slow),
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
     /* padding: 12px 16px; */
   }
 
@@ -115,13 +146,16 @@ const sizes = {
   .btn-solid {
     background-image: linear-gradient(
       90deg,
-      #c800de 10%,
-      #53eafd 50%,
-      #c800de 90%
+      var(--fuchsia-600) 10%,
+      var(--cyan-300) 50%,
+      var(--fuchsia-600) 90%
     );
     background-position: center left;
     background-size: 200% 200%;
-    transition: background-position 600ms ease, transform 150ms ease, opacity 150ms ease;
+    transition:
+      background-position var(--transition-slow),
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
     /* padding: 12px 16px; */
   }
 
@@ -154,19 +188,18 @@ const sizes = {
       width: auto;
       justify-content: center;
     }
-    
+
     /* Mantener padding mínimo 16x12 y máximo 16x18 en mobile */
     .btn-outline,
     .btn-solid {
       padding: 12px 16px;
       min-width: fit-content;
     }
-    
+
     /* Para botones large en mobile, usar padding máximo */
     .btn.px-8 {
       padding: 16px 18px;
       height: 42px;
     }
   }
-
 </style>

@@ -38,7 +38,7 @@ const {
         </div>
 
         <div class="tooltip">
-          <p>
+          <p class="paragraph-tooltip">
             <span>Velocidad, UX y SEO</span>
             <span>{tooltipText}</span>
           </p>
@@ -85,12 +85,8 @@ const {
 
   .box-to-scale {
     width: 100%;
-    max-width: 480px;  
+    max-width: 480px;
     aspect-ratio: 480 / 332;
-    /* position: relative; */
-    
-    /* transform-origin: top center;
-    transform: scale(min(1, calc(95vw / 480px))); */
   }
 
   .contenedor-velocimetro {
@@ -98,7 +94,7 @@ const {
     height: 100%;
     position: relative;
     border-radius: 5%;
-    border: 2px solid #0c2d44;
+    border: 2px solid var(--secondary-blue, #0e3261);
     background: radial-gradient(
       at -50% -75%,
       rgba(83, 234, 253, 1) 0%,
@@ -184,7 +180,7 @@ const {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 40; 
+    z-index: 40;
   }
 
   .box-tooltip img {
@@ -204,7 +200,7 @@ const {
     min-height: 50px;
     opacity: 0;
     visibility: hidden;
-    background-color: var(--primary-blue); 
+    background-color: var(--primary-blue);
     color: var(--light-gray);
     padding: 16px;
     border-radius: 8px;
@@ -212,7 +208,7 @@ const {
     pointer-events: none;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     font-size: var(--font-size-card);
-    z-index: 100; 
+    z-index: 100;
     /* transition:
       opacity 0.3s ease,
       transform 0.3s ease,
@@ -239,7 +235,10 @@ const {
     font-weight: 100;
   }
 
-  
+  .paragraph-tooltip {
+    font-size: var(--font-size-card);
+  }
+
   @media (min-width: 960px) {
     .tooltip {
       position: absolute;

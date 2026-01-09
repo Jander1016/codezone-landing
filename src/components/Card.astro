@@ -7,31 +7,35 @@ interface Props {
     points?: string[];
     image?: string;
     velocitySpeed?: boolean;
+    className?: string;
 }
 
-const { title, points, image, velocitySpeed } = Astro.props;
+const { title, points, image, velocitySpeed, className } = Astro.props;
 ---
 
 <div
-    class={`h-full rounded-3xl border border-cyan-300/20 flex flex-col justify-center items-start gap-4 shadow-2xl 
+    class={`h-full rounded-3xl border border-cyan-300/20 flex flex-col justify-center gap-4 shadow-2xl 
     ${velocitySpeed ? "p-0 border-0" : "p-8"}
-    ${image ? "bg-cover bg-center" : ""}`}
+    ${image ? "bg-cover bg-center" : ""}
+    ${className ?? ""}`}
     style={image ? { backgroundImage: `url(${image})` } : undefined}
 >
     {
         title && (
-            <h3 class="text-cyan-300 font-bold text-2xl lg:text-3xl mb-0">{title}</h3>
+            <h3 class="text-cyan-300 font-bold text-2xl lg:text-[28px] mb-0">
+                {title}
+            </h3>
         )
     }
     {
         points && (
-            <div class="flex justify-start items-center gap-2.5">
-                <div class="flex flex-col gap-2.5">
-                    {points.map((point, index) => (
-                        <Point key={`${index}-${point}`} description={point} />
-                    ))}
-                </div>
-            </div>
+            <ul class="flex flex-col gap-2.5">
+                {points.map((point) => (
+                    <li>
+                        <Point description={point} />
+                    </li>
+                ))}
+            </ul>
         )
     }
     {velocitySpeed && <SpeedGauge />}
