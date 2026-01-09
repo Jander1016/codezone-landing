@@ -2,6 +2,41 @@ import { gsap } from 'gsap';
 import { ANIMATION_CONFIG } from './animation-helpers';
 
 /**
+ * Helper para preparar el DOM del texto
+ * Divide el texto en palabras y envuelve en spans, respetando gradientes si existen.
+ */
+function prepareTextForAnimation(el: Element): NodeListOf<Element> | null {
+  const text = el.textContent || '';
+  const words = text.trim().split(/\s+/);
+
+  if (words.length === 0) {
+    console.warn(`prepareTextForAnimation: No text content found in element`);
+    return null;
+  }
+
+  const computedStyle = window.getComputedStyle(el);
+  const background = computedStyle.background || computedStyle.backgroundImage;
+  const color = computedStyle.color;
+  const hasGradient = background.includes('gradient');
+
+  el.innerHTML = words
+    .map(word => {
+      if (hasGradient) {
+        return `<span style="display: inline-block; overflow: hidden;">
+          <span style="display: inline-block; background: ${background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>
+        </span>`;
+      } else {
+        return `<span style="display: inline-block; overflow: hidden;">
+          <span style="display: inline-block; color: ${color};">${word}</span>
+        </span>`;
+      }
+    })
+    .join(' ');
+
+  return el.querySelectorAll('span > span');
+}
+
+/**
  * Opciones de configuración para animaciones de texto
  */
 export interface MaskTextRevealOptions {
@@ -105,40 +140,12 @@ export function maskTextRevealVertical(
     return gsap.timeline();
   }
 
-  // Obtener el texto y dividirlo en palabras
-  const text = el.textContent || '';
-  const words = text.trim().split(/\s+/);
+  // Preparar el DOM usando el helper
+  const innerSpans = prepareTextForAnimation(el);
 
-  // Si no hay palabras, retornar timeline vacío
-  if (words.length === 0) {
-    console.warn(`maskTextReveal2: No text content found in element`);
+  if (!innerSpans) {
     return gsap.timeline();
   }
-
-  // Obtener el estilo del elemento (background para gradientes o color para texto normal)
-  const computedStyle = window.getComputedStyle(el);
-  const background = computedStyle.background || computedStyle.backgroundImage;
-  const color = computedStyle.color;
-  const hasGradient = background.includes('gradient');
-
-  // Crear spans con overflow hidden
-  // Si tiene gradiente, aplicarlo con background-clip: text
-  // Si no, usar el color normal del texto
-  el.innerHTML = words
-    .map(word => {
-      if (hasGradient) {
-        return `<span style="display: inline-block; overflow: hidden;">
-          <span style="display: inline-block; background: ${background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>
-        </span>`;
-      } else {
-        return `<span style="display: inline-block; overflow: hidden;">
-          <span style="display: inline-block; color: ${color};">${word}</span>
-        </span>`;
-      }
-    })
-    .join(' ');
-
-  const innerSpans = el.querySelectorAll('span > span');
 
   // Si se proporciona scrollTrigger, usar gsap.from directamente
   if (options?.scrollTrigger) {
@@ -234,36 +241,12 @@ export function maskTextRevealMix(
     return gsap.timeline();
   }
 
-  // Obtener el texto y dividirlo en palabras
-  const text = el.textContent || '';
-  const words = text.trim().split(/\s+/);
+  // Preparar el DOM usando el helper
+  const innerSpans = prepareTextForAnimation(el);
 
-  // Si no hay palabras, retornar timeline vacío
-  if (words.length === 0) {
-    console.warn(`maskTextReveal2: No text content found in element`);
+  if (!innerSpans) {
     return gsap.timeline();
   }
-
-  const computedStyle = window.getComputedStyle(el);
-  const background = computedStyle.background || computedStyle.backgroundImage;
-  const color = computedStyle.color;
-  const hasGradient = background.includes('gradient');
-
-  el.innerHTML = words
-    .map(word => {
-      if (hasGradient) {
-        return `<span style="display: inline-block; overflow: hidden;">
-          <span style="display: inline-block; background: ${background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>
-        </span>`;
-      } else {
-        return `<span style="display: inline-block; overflow: hidden;">
-          <span style="display: inline-block; color: ${color};">${word}</span>
-        </span>`;
-      }
-    })
-    .join(' ');
-
-  const innerSpans = el.querySelectorAll('span > span');
 
   // Si se proporciona scrollTrigger, usar gsap.from directamente
   if (options?.scrollTrigger) {

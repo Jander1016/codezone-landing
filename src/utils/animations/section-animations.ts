@@ -116,46 +116,31 @@ export function animateGridItems(
   const revealed = new Set<Element>();
   let allRevealedCalled = false;
 
+  const animateBatch = (batch: Element[]) => {
+    batch.forEach(b => revealed.add(b));
+    const tween = gsap.to(batch, {
+      opacity: 1,
+      scale: 1,
+      duration: duration,
+      ease: 'back.out(1.7)',
+      stagger: { each: itemDelay }
+    });
+
+    tween.eventCallback('onComplete', () => {
+      if (!allRevealedCalled && revealed.size === items.length) {
+        allRevealedCalled = true;
+        options.onComplete?.();
+      }
+    });
+  };
+
   ScrollTrigger.batch(items, {
     interval: 0.1,
     start: start,
-    onEnter: (batch) => {
-      batch.forEach(b => revealed.add(b));
-      // Animar el batch que acaba de entrar
-      const tween = gsap.to(batch, {
-        opacity: 1,
-        scale: 1,
-        duration: duration,
-        ease: 'back.out(1.7)',
-        stagger: { each: itemDelay }
-      });
-      // Cuando termine la animación, comprobar si todos los items fueron revelados
-      tween.eventCallback('onComplete', () => {
-        if (!allRevealedCalled && revealed.size === items.length) {
-          allRevealedCalled = true;
-          options.onComplete?.();
-        }
-      });
-    },
-    onEnterBack: (batch) => {
-      batch.forEach(b => revealed.add(b));
-      const tween = gsap.to(batch, {
-        opacity: 1,
-        scale: 1,
-        duration: duration,
-        ease: 'back.out(1.7)',
-        stagger: { each: itemDelay }
-      });
-      tween.eventCallback('onComplete', () => {
-        if (!allRevealedCalled && revealed.size === items.length) {
-          allRevealedCalled = true;
-          options.onComplete?.();
-        }
-      });
-    }
+    onEnter: animateBatch,
+    onEnterBack: animateBatch
   });
 
-  // Devuelto: crear un ScrollTrigger auxiliar sobre el contenedor para permitir limpieza/seguimiento
   const containerTrigger = ScrollTrigger.create({
     trigger: containerEl,
     start: start,
@@ -273,18 +258,18 @@ export function animateStackSection(
   }
 
   const separator = document.querySelector(STACK_SELECTORS.separator);
-  	if (separator) {
-		gsap.from(separator, {
-			y: 50,
-			opacity: 0,
-			duration: 0.6,
-			ease: 'power3.out',
-			scrollTrigger: {
-				trigger: separator,
-				start: config.start,
-			},
-		});
-	}
+  if (separator) {
+    gsap.from(separator, {
+      y: 50,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: separator,
+        start: config.start,
+      },
+    });
+  }
   return triggers;
 }
 

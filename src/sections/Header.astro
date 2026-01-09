@@ -5,11 +5,11 @@ import MobileMenu from "../components/MobileMenu.astro";
 ---
 
 <header
-  class="fixed top-0 px-2 left-0 right-0 z-50 backdrop-blur-sm"
+  class="fixed top-0 px-2 left-0 right-0 z-(--z-header) backdrop-blur-sm"
   style="--header-height:72px"
 >
   <div
-    class="container max-w-[1528px] h-14 md:h-18 mx-auto mt-4 px-4 flex justify-between items-center shadow-lg rounded-full glass-gradient-border backdrop-blur-md bg-transparent xl:p-4"
+    class="container max-w-(--width-max-content) h-14 md:h-18 mx-auto mt-4 px-4 flex justify-between items-center shadow-lg rounded-full glass-gradient-border backdrop-blur-md bg-transparent xl:p-4"
   >
     <a class="brand" href="#hero">
       <img
@@ -17,41 +17,42 @@ import MobileMenu from "../components/MobileMenu.astro";
         alt="Logo de CodeZone - Ir a inicio"
         width="180"
         height="26"
-        loading="lazy"
+        loading="eager"
         fetchpriority="high"
       />
     </a>
 
-    
     <nav
       class="topnav desktop-nav text-neutral-50 text-lg font-medium"
       aria-label="Main navigation"
       data-animate="header-nav"
     >
-        <ul class="flex gap-6 blur-menu">
-          {
-            mainNavigation.map((item) => {
-              // Extract section ID from href (e.g., "#services-separator" -> "services-separator")
-              const sectionId = item.href.startsWith('#') ? item.href.slice(1) : item.href;
-              
-              return (
-                <li>
-                  <a
-                    href={item.href}
-                    data-nav-link
-                    data-section={sectionId}
-                    class={`nav-link hover:text-cyan-300 backdrop-blur-none px-2 py-1 rounded-md ${
-                      item.isActive ? "text-cyan-300" : ""
-                    }`}
-                    aria-current={item.isActive ? "page" : undefined}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              );
-            })
-          }
-        </ul>
+      <ul class="flex gap-6 blur-menu">
+        {
+          mainNavigation.map((item) => {
+            // Extract section ID from href (e.g., "#services-separator" -> "services-separator")
+            const sectionId = item.href.startsWith("#")
+              ? item.href.slice(1)
+              : item.href;
+
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  data-nav-link
+                  data-section={sectionId}
+                  class={`nav-link hover:text-cyan-300 backdrop-blur-none px-2 py-1 rounded-md ${
+                    item.isActive ? "text-cyan-300" : ""
+                  }`}
+                  aria-current={item.isActive ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
     </nav>
 
     <div class="desktop-cta">
@@ -62,77 +63,77 @@ import MobileMenu from "../components/MobileMenu.astro";
         icon="icon-arrow.svg">Contacto</Button
       >
     </div>
-    
+
     <MobileMenu navItems={mainNavigationMobile} />
   </div>
 </header>
 
 <script>
-import { 
-  initialize, 
-  handleNavigationClick,
-  NAV_CONFIG 
-} from "../utils/navigation/navigation-manager";
+  import {
+    initialize,
+    handleNavigationClick,
+    NAV_CONFIG,
+  } from "../utils/navigation/navigation-manager";
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Get all desktop nav links
-  const desktopLinks = Array.from(
-    document.querySelectorAll('.desktop-nav a[href^="#"]')
-  ) as HTMLElement[];
-  
-  // Get all mobile nav links
-  const mobileLinks = Array.from(
-    document.querySelectorAll('.mobilemenu-item')
-  ) as HTMLElement[];
-  
-  // Combine all navigation links for initialization
-  const allNavLinks = [...desktopLinks, ...mobileLinks];
-  
-  // Initialize NavigationManager with all links
-  initialize(allNavLinks);
-  
-  // Attach click handlers to desktop nav links
-  desktopLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-    
-    link.addEventListener('click', (e) => {
-      handleNavigationClick(e, href);
+  document.addEventListener("DOMContentLoaded", () => {
+    // Get all desktop nav links
+    const desktopLinks = Array.from(
+      document.querySelectorAll('.desktop-nav a[href^="#"]'),
+    ) as HTMLElement[];
+
+    // Get all mobile nav links
+    const mobileLinks = Array.from(
+      document.querySelectorAll(".mobilemenu-item"),
+    ) as HTMLElement[];
+
+    // Combine all navigation links for initialization
+    const allNavLinks = [...desktopLinks, ...mobileLinks];
+
+    // Initialize NavigationManager with all links
+    initialize(allNavLinks);
+
+    // Attach click handlers to desktop nav links
+    desktopLinks.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href) return;
+
+      link.addEventListener("click", (e) => {
+        handleNavigationClick(e, href);
+      });
+    });
+
+    // Handle logo click
+    const logo = document.querySelector('a.brand[href="#hero"]');
+    if (logo) {
+      logo.addEventListener("click", (e) => {
+        handleNavigationClick(e, "#hero");
+      });
+    }
+
+    // Handle CTA button
+    const ctaButton = document.querySelector('a[href="#contact-separator"]');
+    if (ctaButton) {
+      ctaButton.addEventListener("click", (e) => {
+        handleNavigationClick(e, "#contact-separator");
+      });
+    }
+
+    // Listen for active state sync events
+    window.addEventListener("codezone:setActiveNavHref", (event) => {
+      const activeHref = (event as CustomEvent).detail;
+
+      // Update visual state of desktop links
+      desktopLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (href === activeHref) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
     });
   });
-  
-  // Handle logo click
-  const logo = document.querySelector('a.brand[href="#hero"]');
-  if (logo) {
-    logo.addEventListener('click', (e) => {
-      handleNavigationClick(e, '#hero');
-    });
-  }
-  
-  // Handle CTA button
-  const ctaButton = document.querySelector('a[href="#contact-separator"]');
-  if (ctaButton) {
-    ctaButton.addEventListener('click', (e) => {
-      handleNavigationClick(e, '#contact-separator');
-    });
-  }
-  
-  // Listen for active state sync events
-  window.addEventListener('codezone:setActiveNavHref', (event) => {
-    const activeHref = (event as CustomEvent).detail;
-    
-    // Update visual state of desktop links
-    desktopLinks.forEach(link => {
-      const href = link.getAttribute('href');
-      if (href === activeHref) {
-        link.setAttribute('aria-current', 'page');
-      } else {
-        link.removeAttribute('aria-current');
-      }
-    });
-  });
-});
-</script> 
+</script>
 
 <style>
   .glass-gradient-border {
@@ -147,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inset: 0;
     padding: 2px;
     border-radius: 9999px;
-    background: linear-gradient(45deg, var(--fuchsia-600), var(--cyan-300));
+    background: linear-gradient(360deg, var(--fuchsia-600), var(--cyan-300));
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -189,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Navigation link with smooth transitions */
   .nav-link {
     filter: blur(0);
-    transition: 
+    transition:
       all var(--transition-base),
       filter var(--transition-base),
       opacity var(--transition-base);
@@ -220,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .desktop-cta {
       display: block;
     }
-    
+
     .brand img {
       width: 180px;
       height: auto;
