@@ -1,9 +1,9 @@
 export const DataWebSolutions = [
-   "LandingPage",
-   "TiendaOnline",
-   "WebCorporativa",
-   "PortalContenido",
-   "MicrositioEventos"
+   "Landing Page",
+   "Tiendas Online",
+   "Webs Corporativas",
+   "Portales de Contenido",
+   "Micrositios y Eventos"
 ]
 
 export const DataQuality = [
