@@ -4,7 +4,7 @@
   /* Typography */
   --font-sans: 'Funnel Display', sans-serif;
   --font-size-card: clamp(0.875rem, 0.8462rem + 0.1282vw, 1rem);
-  
+
   /* Colors */
   --primary-blue-dark: #121D46;
   --primary-blue: #000c23;
@@ -15,33 +15,40 @@
   --neutral-100: #FAFAFA;
   --neutral-50: #F5F5F5;
   --cz-dark-base: #020618;
-  
+
   /* Gradients */
   --cz-default-gradient: linear-gradient(90deg, #C800DE 0%, #53EAFD 100%);
   --cz-border-gradient: linear-gradient(90deg,
       #c800de 10%,
       #53eafd 50%,
       #c800de 90%);
-  
+
   /* Layout */
   --width-max-content: 1528px;
-  
+
   /* Spacing - Consistent spacing scale */
-  --spacing-xs: 0.5rem;    /* 8px */
-  --spacing-sm: 1rem;      /* 16px */
-  --spacing-md: 1.5rem;    /* 24px */
-  --spacing-lg: 2rem;      /* 32px */
-  --spacing-xl: 3rem;      /* 48px */
-  --spacing-2xl: 4rem;     /* 64px */
-  --spacing-3xl: 6rem;     /* 96px */
-  
+  --spacing-xs: 0.5rem;
+  /* 8px */
+  --spacing-sm: 1rem;
+  /* 16px */
+  --spacing-md: 1.5rem;
+  /* 24px */
+  --spacing-lg: 2rem;
+  /* 32px */
+  --spacing-xl: 3rem;
+  /* 48px */
+  --spacing-2xl: 4rem;
+  /* 64px */
+  --spacing-3xl: 6rem;
+  /* 96px */
+
   /* Border Radius - Consistent rounded corners */
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
   --radius-xl: 32px;
   --radius-full: 9999px;
-  
+
   /* Shadows - Consistent elevation system */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -49,12 +56,12 @@
   --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
   --shadow-glow: 0 0 15px rgba(83, 234, 253, 0.75);
   --shadow-glow-purple: 0 0 15px rgba(200, 0, 222, 0.75);
-  
+
   /* Transitions - Consistent animation timing */
   --transition-fast: 150ms ease;
   --transition-base: 300ms ease-in-out;
   --transition-slow: 600ms ease;
-  
+
   /* Z-index layers - Consistent stacking context */
   --z-base: 1;
   --z-content: 10;
@@ -90,7 +97,7 @@
   html {
     scroll-behavior: auto;
   }
-  
+
   *,
   *::before,
   *::after {
@@ -102,24 +109,7 @@
 
 /* Accessibility utilities */
 
-/* Skip to main content link for keyboard navigation */
-.skip-to-main {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: var(--cyan-300);
-  color: var(--primary-blue-dark);
-  padding: 8px 16px;
-  text-decoration: none;
-  font-weight: bold;
-  z-index: var(--z-tooltip);
-  border-radius: var(--radius-sm);
-  transition: top var(--transition-fast);
-}
 
-.skip-to-main:focus {
-  top: 0;
-}
 
 /* Enhanced focus visible for all interactive elements */
 :focus-visible {
@@ -145,10 +135,7 @@ select:focus-visible,
   border-radius: var(--radius-sm);
 }
 
-/* Main content focus styles (for skip-to-main) */
-#main-content:focus {
-  outline: none;
-}
+
 
 /* Ensure logical tab order - prevent negative tabindex from breaking flow */
 [tabindex="-1"]:focus {
@@ -197,6 +184,7 @@ select:focus-visible,
     width: 0%;
     opacity: 0;
   }
+
   to {
     width: 80%;
     opacity: 1;
@@ -212,7 +200,7 @@ select:focus-visible,
 
 p,
 a {
-  font-size: 18px;
+  font-size: clamp(0.9375rem, 0.8942rem + 0.1923vw, 1.125rem);
   line-height: 1.5 !important;
   letter-spacing: 0% !important;
 
@@ -232,14 +220,7 @@ button {
   text-wrap: pretty !important;
 }
 
-@media (max-width: 1280px) {
 
-  p,
-  a {
-    font-size: 15px !important;
-    letter-spacing: 0% !important;
-  }
-}
 
 
 /* funnel-display-regular - latin */
@@ -269,3 +250,14 @@ button {
   src: url('/fonts/funnel-display-v3-latin-600.woff2') format('woff2');
 }
 
+/* Utility class for gradient borders */
+.border-gradient-cz {
+  position: relative;
+  background: transparent;
+  background-image:
+    linear-gradient(var(--primary-blue), var(--primary-blue)),
+    var(--cz-default-gradient);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  border: 2px solid transparent;
+}

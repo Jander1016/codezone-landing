@@ -164,18 +164,15 @@ import Button from "../components/Button.astro";
 <style>
   .form-contact {
     background: transparent;
-    background-image: linear-gradient(
-        180deg,
-        var(--primary-blue) 0%,
-        var(--primary-blue) 50%
-      ),
-      linear-gradient(90deg, #c800de 0%, #53eafd 100%);
+    background-image:
+      linear-gradient(180deg, var(--primary-blue) 0%, var(--primary-blue) 50%),
+      linear-gradient(90deg, var(--fuchsia-600) 0%, var(--cyan-300) 100%);
     background-clip: padding-box, border-box;
     background-origin: border-box;
     background-position: center left;
     background-size: 200% 200%;
     border: 2px solid transparent;
-    transition: all 600ms ease;
+    transition: all var(--transition-slow);
   }
 </style>
 
