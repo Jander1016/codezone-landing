@@ -1,0 +1,63 @@
+---
+import Card from "../components/Card.astro";
+import ServiceDetail from "../components/ServiceDetail.astro";
+import { DataWebSolutions, DataQuality, DataSoftwareSolutions, DataWarrantySoftware } from "../data/servicesDetail";
+---
+
+<ServiceDetail
+  title="Desarrollo Web"
+  description="Diseñamos y desarrollamos plataformas web a medida. Creamos soluciones digitales de máxima calidad, alineadas con su marca y enfocadas en el crecimiento de su negocio."
+>
+  <Card
+    title="Soluciones Web"
+    points={DataWebSolutions}
+    className="md:order-1 xl:order-1"
+  />
+  <Card
+    velocitySpeed={true}
+    className="md:order-3 md:col-span-2 md:justify-self-center md:w-[calc(50%-1.375rem)] xl:order-2 xl:col-span-1 xl:justify-self-auto xl:w-auto"
+  />
+  <Card
+    title="Estándard de Calidad"
+    points={DataQuality}
+    className="md:order-2 xl:order-3"
+  />
+</ServiceDetail>
+<ServiceDetail
+  title="Software a medida"
+  description="Transformamos procesos complejos en soluciones digitales eficientes. Diseñamos software empresarial y aplicaciones escalables que optimizan operaciones y potencian su productividad."
+>
+  <Card
+    image="/images/Gemini_Generated_Neon-5.webp"
+    className="md:order-3 md:col-span-2 md:justify-self-center md:w-[calc(50%-1.375rem)] xl:order-2 xl:col-span-1 xl:justify-self-auto xl:w-auto"
+  />
+  <Card
+    title="Soluciones de Software"
+    points={DataSoftwareSolutions}
+    className="md:order-1 xl:order-2"
+  />
+  <Card
+    title="Software de garantía"
+    points={DataWarrantySoftware}
+    className="md:order-2 xl:order-3"
+  />
+</ServiceDetail>
+<ServiceDetail
+  title="Integración de Sistemas y APIs"
+  description="Eliminamos la fricción de sus procesos. Conectamos sus sistemas de negocio (ERP, CRM, E-commerce, etc.) para que trabajen de forma unificada, garantizando la eficiencia operativa y el flujo de datos."
+>
+  <Card
+    image="/images/Gemini_Generated_Neon-4.webp"
+    className="md:order-3 md:col-span-2 md:justify-self-center md:w-[calc(50%-1.375rem)] xl:order-2 xl:col-span-1 xl:justify-self-auto xl:w-auto"
+  />
+  <Card
+    title="Soluciones de Software"
+    points={DataSoftwareSolutions}
+    className="md:order-1 xl:order-2"
+  />
+  <Card
+    title="Software de garantía"
+    points={DataWarrantySoftware}
+    className="md:order-2 xl:order-3"
+  />
+</ServiceDetail>
