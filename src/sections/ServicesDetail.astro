@@ -1,12 +1,14 @@
 ---
 import Card from "../components/Card.astro";
-import GradientText from "../components/GradientText.astro";
 import ServiceDetail from "../components/ServiceDetail.astro";
+import ServiceIA from "../components/ServiceIA.astro";
 import {
   DataWebSolutions,
   DataQuality,
   DataSoftwareSolutions,
   DataWarrantySoftware,
+  DataIntegrationAPI,
+  DataApiSecurity,
 } from "../data/servicesDetail";
 ---
 
@@ -62,60 +64,16 @@ import {
   />
   <Card
     image="/images/bg-services-cards/bg-card-api-01.webp"
-    title="Soluciones de Software"
-    points={DataSoftwareSolutions}
+    title="¿Qué Podemos integrar?"
+    points={DataIntegrationAPI}
     className="md:order-1 xl:order-2"
   />
   <Card
     image="/images/bg-services-cards/bg-card-api-02.webp"
-    title="Software de garantía"
-    points={DataWarrantySoftware}
+    title="Seguridad y Fiabilidad"
+    points={DataApiSecurity}
     className="md:order-2 xl:order-3"
   />
 </ServiceDetail>
 
-<div
-  class="container max-w-(--width-max-content) mx-auto flex justify-between items-center mt-40 gap-8"
->
-  <div
-    class="w-1/2 flex flex-col justify-between items-center gap-6 border border-cyan-300/20 rounded-xl p-8"
-  >
-    <GradientText
-      as="h2"
-      gradient="purple-cyan"
-      className="text-3xl md:text-4xl lg:text-5xl font-medium text-center pb-1.5"
-      style="letter-spacing:1px;"
-    >
-      Creatividad Potenciada con IA
-    </GradientText>
-
-    <div class="flex flex-col gap-2">
-      <p>
-        Optimizamos nuestros procesos creativos con IA para ofrecerle
-        creatividades, videos y contenidos únicos, personalizados y escalables.
-      </p>
-      <br />
-      <p>¿Qué impulsamos con IA?</p>
-    </div>
-    <div class="flex flex-col gap-2">
-      <div class="flex flex-row items-baseline gap-3.5">
-        <div
-          class="size-1 bg-fuchsia-600 rounded-full shadow-[0px_0px_8px_3px_rgba(83,234,253,0.75)] flex items-center justify-baseline p-0.5"
-        >
-        </div>
-        <p class="font-medium leading-10">Generación Visual:</p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="w-1/2 border border-cyan-300/20 rounded-xl"
-    style="aspect-ratio: 16/9"
-  >
-    <video
-      src="/videos/codezone-video-ia-web.webm"
-      autoplay
-      loop
-      muted
-      class="w-full h-full object-cover rounded-xl"></video>
-  </div>
-</div>
+<ServiceIA />

@@ -1,0 +1,65 @@
+---
+import { DATAIA } from "../data/servicesDetail";
+import GradientText from "./GradientText.astro";
+---
+
+<section
+    class="container max-w-(--width-max-content) h-full mx-auto flex flex-col-reverse lg:flex-row justify-between mt-24 md:mt-32 lg:mt-40 gap-8"
+>
+    <div
+        class="w-full lg:w-1/2 flex flex-col justify-between items-baseline bg-[url('/images/bg-services-cards/bg-creatividad-ia.webp')] bg-cover bg-center bg-no-repeat gap-6 border border-cyan-300/20 rounded-xl p-8"
+    >
+        <GradientText
+            as="h2"
+            gradient="purple-cyan"
+            className="text-3xl md:text-4xl lg:text-5xl font-medium pb-1.5"
+        >
+            Creatividad Potenciada con IA
+        </GradientText>
+
+        <div class="flex flex-col gap-2">
+            <p>
+                Optimizamos nuestros procesos creativos con IA para ofrecerle
+                creatividades, videos y contenidos únicos, personalizados y
+                escalables.
+            </p>
+            <p>¿Qué impulsamos con IA?</p>
+        </div>
+        <div class="flex flex-col gap-2">
+            {
+                DATAIA.map((item) => (
+                    <div class="flex flex-row items-baseline gap-3.5">
+                        <div class="size-1 bg-fuchsia-600 rounded-full shadow-[0px_0px_15px_5px_rgba(200,0,222,1.00)] flex items-center justify-center">
+                            <span class="text-xs font-medium text-fuchsia-600">
+                                •
+                            </span>
+                        </div>
+                        <div>
+                            <p class="subtitle font-bold leading-10 text-cyan-300">
+                                {item.subtitle}
+                            </p>
+                            <p class="leading-10">{item.description}</p>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+    <div
+        class="w-full lg:w-1/2 border border-cyan-300/20 rounded-xl"
+        style="aspect-ratio: 16/9"
+    >
+        <video
+            src="/videos/codezone-video-ia-web.webm"
+            autoplay
+            loop
+            muted
+            class="w-full h-full object-cover rounded-xl"></video>
+    </div>
+</section>
+
+<style is:inline>
+    .subtitle {
+        font-size: var(--font-size-subtitle);
+    }
+</style>
