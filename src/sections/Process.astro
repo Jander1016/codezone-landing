@@ -1,6 +1,5 @@
 ---
-import ProcessCard from "../components/ProcessCard.astro";
-import { processSteps } from "../data/process";
+import ProcessContent from "../components/ProcessContent.astro";
 ---
 
 <section id="process" class="process-section">
@@ -17,21 +16,7 @@ import { processSteps } from "../data/process";
       ¿Cómo lo hacemos?
     </h2>
 
-    <div
-      class="flex flex-col process-steps space-y-20 md:space-y-24 lg:space-y-34 mx-0 px-0"
-    >
-      <!-- {
-        processSteps.map((step, index) => (
-          <ProcessCard
-            number={step.number}
-            title={step.title}
-            description={step.description}
-            image={step.image}
-            isEven={index % 2 !== 0}
-          />
-        ))
-      } -->
-    </div>
+    <ProcessContent />
   </div>
 </section>
 
@@ -44,7 +29,7 @@ import { processSteps } from "../data/process";
 
   function initProcessAnimations() {
     // Initialize process timeline animations
-    initProcessTimeline()
+    initProcessTimeline();
   }
 
   // Initialize when DOM is ready
@@ -55,8 +40,8 @@ import { processSteps } from "../data/process";
   }
 </script>
 
-<style>
+<!-- <style>
   .process-section {
     width: 100%;
-  }
+  } -->
 </style>

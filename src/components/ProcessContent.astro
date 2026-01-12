@@ -1,0 +1,205 @@
+---
+// Accordion.astro - Componente de Acordeón Visual Sincronizado
+interface Props {
+    items?: Array<{
+        title: string;
+        content: string;
+    }>;
+}
+
+const {
+    items = [
+        {
+            title: "Empatizar",
+            content:
+                "Escuchamos y comprendemos a las personas que dan vida al negocio, profundizando en su contexto, retos y necesidades reales.",
+        },
+        {
+            title: "Definir",
+            content:
+                "Sintetizamos la información para priorizar retos. Conectamos objetivos estratégicos con la identidad del proyecto, potenciando su valor diferencial.",
+        },
+        {
+            title: "idear",
+            content:
+                "Diseñamos soluciones técnicas alineadas al negocio. Ideamos propuestas de valor desde un enfoque creativo, sujetas a su aprobación.",
+        },
+        {
+            title: "Prototipar",
+            content:
+                "Elaboramos prototipos y maquetas visuales. Clientes y usuarios validan anticipadamente que el desarrollo se mantiene alineado con lo definido.",
+        },
+        {
+            title: "Desarrollar y testear",
+            content:
+                "Desarrollamos los prototipos con SCRUM. Presentamos avances continuos para la validación del cliente, integrando su feedback para optimizar la UX.",
+        },
+        {
+            title: "Acompañar",
+            content:
+                "Tras la entrega, acompañamos la evolución de su negocio. Respondemos a nuevas necesidades para ser su equipo de confianza a largo plazo.",
+        },
+    ],
+} = Astro.props;
+---
+
+<section
+    class="visual-accordion-section relative overflow-hidden border border-[rgba(83,234,253,0.25)] px-26 md:px-28 lg:px-31 pt-4 md:pt-6 lg:pt-8 pb-0 mx-auto rounded-4xl"
+>
+    <video
+        autoplay
+        loop
+        muted
+        playsinline
+        class="absolute top-0 left-0 w-full h-full object-cover -z-10"
+    >
+        <source src="/videos/fondo-acordeon.webm" type="video/webm" />
+    </video>
+    <div class="w-full flex flex-col gap-5 relative z-10 pb-5">
+        {
+            items.map((item, index) => (
+                <div
+                    class="accordion-item cursor-pointer"
+                    data-tab={String(index + 1).padStart(2, "0")}
+                >
+                    <div class="accordion-header">
+                        <h3 class="item-title">{item.title}</h3>
+                        <span class="icon">»</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>{item.content}</p>
+                    </div>
+                    <div
+                        class={`w-full h-px bg-[rgba(83,234,253,0.25)] ${index === items.length - 1 ? "hidden" : ""}`}
+                    />
+                </div>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+       
+    .accordion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        /* padding: 10px 0; */
+        font-size: 1.25rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .accordion-header:hover {
+        color: var(--cyan-300);
+    }
+
+    .item-title {
+        flex-grow: 1;
+        margin: 0;
+        font-size: var(--font-size-subtitle);
+    }
+
+    .icon {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: var(--cyan-300);
+        opacity: 0.5;
+        transform: rotate(-45deg);
+        transition:
+            all 0.3s ease,
+            color 0.3s ease;
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+            max-height 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+            padding 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        padding: 0;
+        line-height: 1.4;
+    }
+
+    .accordion-content p {
+        margin: 0;
+        padding: 15px 0;
+        color: var(--text-color);
+        font-size: 0.95rem;
+    }
+
+    .accordion-item.active .accordion-header {
+        color: var(--cyan-300);
+    }
+
+    .accordion-item.active .accordion-content {
+        max-height: 500px;
+    }
+
+    .accordion-item.active .icon {
+        opacity: 1;
+        transform: rotate(0deg);
+    }
+
+    @media screen and (max-width: 768px) {
+        .visual-accordion-section {
+            padding: 20px 15px;
+        }
+
+        .accordion-header {
+            font-size: 1.05rem;
+        }
+
+        .item-number {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .icon {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const items = document.querySelectorAll(".accordion-item");
+
+        function toggleAccordion(clickedItem: Element) {
+            let shouldOpenFirst = false;
+
+            items.forEach((item) => {
+                if (item === clickedItem && item.classList.contains("active")) {
+                    item.classList.remove("active");
+                    shouldOpenFirst = true;
+                } else if (item === clickedItem) {
+                    item.classList.add("active");
+                    shouldOpenFirst = false;
+                } else {
+                    item.classList.remove("active");
+                }
+            });
+
+            const activeItemsCount = document.querySelectorAll(
+                ".accordion-item.active",
+            ).length;
+
+            if (shouldOpenFirst && activeItemsCount === 0) {
+                items[0].classList.add("active");
+            }
+        }
+
+        // Inicialización: Abrir el primer ítem
+        if (items.length > 0) {
+            items[0].classList.add("active");
+        }
+
+        // Agregar listeners
+        items.forEach((item) => {
+            const header = item.querySelector(".accordion-header");
+            header?.addEventListener("click", () => {
+                toggleAccordion(item);
+            });
+        });
+    });
+</script>
