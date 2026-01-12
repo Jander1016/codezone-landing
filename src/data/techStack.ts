@@ -1,8 +1,3 @@
-/**
- * Tech stack data for the "Nuestro Stack Tenológico" section
- * Contains technology categories with icons and descriptions
- */
-
 export interface TechCategoryData {
   name: string;
   icon: string;

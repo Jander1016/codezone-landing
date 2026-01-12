@@ -10,6 +10,7 @@ interface Props {
   className?: string;
   ariaLabel?: string;
   disabled?: boolean;
+  hoverColor?: string;
 }
 
 const {
@@ -21,6 +22,7 @@ const {
   className,
   ariaLabel,
   disabled = false,
+  hoverColor = "var(--cyan-300)",
 } = Astro.props;
 
 const sizes = {
@@ -38,15 +40,24 @@ const sizes = {
       aria-label={ariaLabel}
       aria-disabled={disabled ? "true" : undefined}
       tabindex={disabled ? -1 : undefined}
+      style={{ "--btn-hover-color": hoverColor }}
     >
       <slot />
       {icon && (
-        <img
-          src={`./${icon}`}
-          alt="icono de flecha a la derecha"
-          class="ml-2"
-          loading="eager"
-          decoding="async"
+        <span
+          class="ml-2 w-5 h-5 inline-block bg-current transition-colors"
+          style={{
+            maskImage: `url(./${icon})`,
+            WebkitMaskImage: `url(./${icon})`,
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+          }}
+          role="img"
+          aria-label="icono de flecha a la derecha"
         />
       )}
       <slot name="icon" />
@@ -57,15 +68,24 @@ const sizes = {
       class:list={["btn", `btn-${variant}`, sizes[size], className]}
       aria-label={ariaLabel}
       disabled={disabled}
+      style={{ "--btn-hover-color": hoverColor }}
     >
       <slot />
       {icon && (
-        <img
-          src={`./${icon}`}
-          alt="icono de flecha a la derecha"
-          class="ml-2"
-          loading="eager"
-          decoding="async"
+        <span
+          class="ml-2 w-5 h-5 inline-block bg-current transition-colors"
+          style={{
+            maskImage: `url(./${icon})`,
+            WebkitMaskImage: `url(./${icon})`,
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+          }}
+          role="img"
+          aria-label="icono de flecha a la derecha"
         />
       )}
       <slot name="icon" />
@@ -135,7 +155,7 @@ const sizes = {
 
   .btn-outline:hover {
     background-position: center right;
-    color: #b100ff;
+    color: var(--btn-hover-color);
   }
 
   /* Ensure active state works with hover */

@@ -90,14 +90,14 @@ import { gsap } from "gsap";
       );
     }
 
-    // // Escuchar evento del preloader
-    // window.addEventListener('preloader:complete', startAnimations);
+    // // // Escuchar evento del preloader
+    // // window.addEventListener('preloader:complete', startAnimations);
 
-    // // Fallback: si no hay preloader, iniciar después de un pequeño delay
-    setTimeout(() => {
-      const preloader = document.getElementById('electric-preloader');
-      if (!preloader) {
+    // // // Fallback: si no hay preloader, iniciar después de un pequeño delay
+    // setTimeout(() => {
+    //   const preloader = document.getElementById('electric-preloader');
+    //   if (!preloader) {
         startAnimations();
-      }
-    }, 100);
+    //   }
+    // }, 100);
   }

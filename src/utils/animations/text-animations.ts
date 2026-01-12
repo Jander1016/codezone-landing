@@ -26,7 +26,7 @@ function prepareTextForAnimation(el: Element): NodeListOf<Element> | null {
           <span style="display: inline-block; background: ${background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>
         </span>`;
       } else {
-        return `<span style="display: inline-block; overflow: hidden;">
+        return `<span style="display: inline-block;">
           <span style="display: inline-block; color: ${color};">${word}</span>
         </span>`;
       }
