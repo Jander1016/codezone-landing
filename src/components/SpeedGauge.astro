@@ -1,12 +1,17 @@
 ---
+import { Image } from "astro:assets";
+import gaugeImg from "../assets/images/velocimetro.png";
+import needleImg from "../assets/images/aguja.webp";
+import tooltipIconImg from "../assets/images/button-tooltip.png";
+
 interface Props {
   maxSpeed?: number;
   label?: string;
   title?: string;
   tooltipText?: string;
-  tooltipIcon?: string;
-  gaugeImage?: string;
-  needleImage?: string;
+  tooltipIcon?: ImageMetadata;
+  gaugeImage?: ImageMetadata;
+  needleImage?: ImageMetadata;
   animationDuration?: number;
 }
 
@@ -15,9 +20,9 @@ const {
   label = "PSI",
   title = "Alto rendimiento y velocidad",
   tooltipText = "Una puntuación alta en Google's PageSpeed Insights no es solo un número; es una mejor experiencia de usuario y un mejor posicionamiento. Desarrollamos para la velocidad.",
-  tooltipIcon = "/images/button-tooltip.png",
-  gaugeImage = "/images/velocimetro.png",
-  needleImage = "/images/aguja.webp",
+  tooltipIcon = tooltipIconImg,
+  gaugeImage = gaugeImg,
+  needleImage = needleImg,
   animationDuration = 2,
 } = Astro.props;
 ---
@@ -32,7 +37,7 @@ const {
       <div class="info-velocimetro">
         <h4>{title}</h4>
         <div class="box-tooltip">
-          <img src={tooltipIcon} alt="Info" />
+          <Image src={tooltipIcon} alt="Info" />
         </div>
       </div>
 
@@ -49,11 +54,11 @@ const {
       </div>
 
       <div class="velocimetro">
-        <img src={gaugeImage} alt="Velocímetro" />
+        <Image src={gaugeImage} alt="" aria-hidden="true" loading="eager" />
       </div>
 
       <div class="aguja">
-        <img src={needleImage} alt="Aguja" />
+        <Image src={needleImage} alt="" aria-hidden="true" loading="eager" />
       </div>
     </div>
   </div>
