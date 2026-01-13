@@ -4,7 +4,7 @@
   /* Typography */
   --font-sans: 'Funnel Display', sans-serif;
   --font-size-card: clamp(0.875rem, 0.8462rem + 0.1282vw, 1rem);
-  --font-size-subtitle: clamp(1.125rem, 1.0385rem + 0.3846vw, 1.5rem);
+  --font-size-subtitle: clamp(1.125rem, 1.0094rem + 0.5137vw, 1.5rem);
 
   /* Colors */
   --primary-blue-dark: #121D46;
@@ -23,6 +23,9 @@
       #c800de 10%,
       #53eafd 50%,
       #c800de 90%);
+  --cz-background: linear-gradient(rgba(255, 255, 255, .1) 1px,
+      transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .1) 1px,
+      transparent 1px);
 
   /* Layout */
   --width-max-content: 1528px;
@@ -201,7 +204,7 @@ select:focus-visible,
 
 p,
 a {
-  font-size: clamp(0.9375rem, 0.8942rem + 0.1923vw, 1.125rem);
+  font-size: clamp(0.9375rem, 0.8797rem + 0.2568vw, 1.125rem);
   line-height: 1.5 !important;
   letter-spacing: 0% !important;
 
@@ -255,8 +258,7 @@ button {
 .border-gradient-cz {
   position: relative;
   background: transparent;
-  background-image:
-    linear-gradient(var(--primary-blue), var(--primary-blue)),
+  background-image: linear-gradient(var(--primary-blue), var(--primary-blue)),
     var(--cz-default-gradient);
   background-origin: border-box;
   background-clip: padding-box, border-box;
