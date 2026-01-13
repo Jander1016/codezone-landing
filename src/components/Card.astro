@@ -14,8 +14,8 @@ const { title, points, image, velocitySpeed, className } = Astro.props;
 ---
 
 <div
-    class={`h-full rounded-3xl border border-cyan-300/20 flex flex-col justify-baseline gap-4 shadow-2xl 
-    ${velocitySpeed ? "p-0 border-0" : "p-8"}
+    class={`h-full rounded-3xl border-2 border-[#53eafd26] flex flex-col justify-baseline gap-4 shadow-2xl 
+    ${velocitySpeed ? "p-0 border-none" : "p-8"}
     ${image ? "bg-cover bg-center" : ""}
     ${className ?? ""}`}
     style={image ? { backgroundImage: `url(${image})` } : undefined}
