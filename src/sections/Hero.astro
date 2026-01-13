@@ -181,11 +181,5 @@ import Button from "../components/Button.astro";
 
 <script>
   import { initHeroAnimations } from "../utils/animations/hero-animations";
-
-  // Inicializar cuando el DOM esté listo
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initHeroAnimations);
-  } else {
-    initHeroAnimations();
-  }
+  initHeroAnimations();
 </script>

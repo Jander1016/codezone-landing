@@ -27,10 +27,10 @@ export function initHeroAnimations() {
   if (heroImage) {
     tl.add(
       animateScaleUp(heroImage, {
-        duration: 0.8, // Slightly faster
+        duration: 0.8,
         ease: 'back.out(1.7)'
       }),
-      '-=0.4' // More overlap
+      0 // Start immediately at timeline start
     );
   }
 
