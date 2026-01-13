@@ -41,10 +41,8 @@ const gradient1Id = `gradient1-${id}`;
 >
     <svg
         id={id}
-        class="separator-svg w-full h-auto"
-        width="348"
-        height="44"
-        viewBox="0 0 348 44"
+        class="separator-svg w-full h-10 mb-6"
+        viewBox="0 0 360 40"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
@@ -65,7 +63,7 @@ const gradient1Id = `gradient1-${id}`;
                 </feTurbulence>
                 <feDisplacementMap
                     in="SourceGraphic"
-                    scale="12"
+                    scale="8"
                     xChannelSelector="R"
                     yChannelSelector="G"
                 >
@@ -84,7 +82,7 @@ const gradient1Id = `gradient1-${id}`;
                 <feFlood flood-opacity="0" result="BackgroundImageFix"
                 ></feFlood>
                 <feOffset></feOffset>
-                <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+                <feGaussianBlur stdDeviation="3"></feGaussianBlur>
                 <feComposite in2="hardAlpha" operator="out"></feComposite>
                 <feBlend
                     mode="normal"
@@ -127,7 +125,7 @@ const gradient1Id = `gradient1-${id}`;
     }
 
     .cz-separator {
-        scroll-margin-top: 3.5rem;
+        /* scroll-margin-top: 3.5rem; */
     }
     
 </style>
