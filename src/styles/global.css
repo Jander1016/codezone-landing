@@ -16,6 +16,7 @@
   --neutral-100: #FAFAFA;
   --neutral-50: #F5F5F5;
   --cz-dark-base: #020618;
+  --cz-border-color: #0C2939;
 
   /* Gradients */
   --cz-default-gradient: linear-gradient(90deg, #C800DE 0%, #53EAFD 100%);

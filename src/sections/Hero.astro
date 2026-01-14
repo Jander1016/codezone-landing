@@ -2,64 +2,62 @@
 import Button from "../components/Button.astro";
 ---
 
-<main>
-  <section
-    id="hero"
-    class="flex items-center justify-center pt-24 md:pt-24 lg:pt-20 overflow-hidden"
+<section
+  id="hero"
+  class="flex items-center justify-center pt-24 md:pt-24 lg:pt-20 overflow-hidden"
+>
+  <div
+    class="flex flex-col-reverse md:flex-row items-center justify-between gap-4 md:pt-16 w-full max-w-(--width-max-content) mx-auto"
+    style="min-height: calc(100vh - var(--header-height));"
   >
-    <div
-      class="flex flex-col-reverse md:flex-row items-center justify-between gap-4 md:pt-16 w-full max-w-(--width-max-content) mx-auto"
-      style="min-height: calc(100vh - var(--header-height));"
-    >
-      <article class="flex-1 text-center md:text-left md:pr-6">
-        <h2
-          class="hero-title text-4xl md:text-5xl lg:text-6xl xl:text-[90px] font-medium"
-          data-animate="hero-title"
+    <article class="flex-1 text-center md:text-left md:pr-6">
+      <h2
+        class="hero-title text-4xl md:text-5xl lg:text-6xl xl:text-[90px] font-medium"
+        data-animate="hero-title"
+      >
+        <span class="hero-title-first block">Hacemos realidad</span>
+        <span class="hero-title-second">tu idea digital</span>
+      </h2>
+      <h1
+        class="hero-subtitle text-lg font-medium text-cyan-300 py-4 mx-auto md:mx-0 md:text-2xl lg:text-3xl xl:text-[40px]"
+        data-animate="hero-subtitle"
+      >
+        Desarrollo de páginas web, software a medida e integración de sistemas
+        (APIs)
+      </h1>
+      <div class="hero-cta py-6" data-animate="hero-cta">
+        <Button href="#contact-separator" variant="solid" size="large"
+          >Hablemos de tu proyecto</Button
         >
-          <span class="hero-title-first block">Hacemos realidad</span>
-          <span class="hero-title-second">tu idea digital</span>
-        </h2>
-        <h1
-          class="hero-subtitle text-lg font-medium text-cyan-300 py-4 mx-auto md:mx-0 md:text-2xl lg:text-3xl xl:text-[40px]"
-          data-animate="hero-subtitle"
-        >
-          Desarrollo de páginas web, software a medida e integración de sistemas
-          (APIs)
-        </h1>
-        <div class="hero-cta py-6" data-animate="hero-cta">
-          <Button href="#contact-separator" variant="solid" size="large"
-            >Hablemos de tu proyecto</Button
-          >
+      </div>
+    </article>
+    <article class="right-content">
+      <div
+        class="animation-circles-container py-4 md:py-2"
+        data-animate="hero-image"
+      >
+        <div class="capa-stack">
+          <img
+            class="logo-glow-fx animate-logo-pulse"
+            src="/codezone-logo-header.svg"
+            alt="Logo de CodeZone con iniciales C y Z"
+            fetchpriority="high"
+            loading="eager"
+          />
         </div>
-      </article>
-      <article class="right-content">
-        <div
-          class="animation-circles-container py-4 md:py-2"
-          data-animate="hero-image"
-        >
-          <div class="capa-stack">
-            <img
-              class="logo-glow-fx animate-logo-pulse"
-              src="/codezone-logo-header.svg"
-              alt="Logo de CodeZone con iniciales C y Z"
-              fetchpriority="high"
-              loading="eager"
-            />
-          </div>
-          <div class="capa-stack">
-            <img
-              class="neon-circle-img"
-              src="/neon-circles.svg"
-              alt="Círculos de neón decorativos animados"
-              fetchpriority="high"
-              loading="eager"
-            />
-          </div>
+        <div class="capa-stack">
+          <img
+            class="neon-circle-img"
+            src="/neon-circles.svg"
+            alt="Círculos de neón decorativos animados"
+            fetchpriority="high"
+            loading="eager"
+          />
         </div>
-      </article>
-    </div>
-  </section>
-</main>
+      </div>
+    </article>
+  </div>
+</section>
 
 <style>
   @keyframes spin-slow {
