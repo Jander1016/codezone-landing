@@ -10,6 +10,16 @@ import {
   DataIntegrationAPI,
   DataApiSecurity,
 } from "../data/servicesDetail";
+
+// Import images
+import bgWeb1 from "../assets/images/bg-services-cards/bg-card-desarrollo-web-01.webp";
+import bgWeb2 from "../assets/images/bg-services-cards/bg-card-desarrollo-web-02.webp";
+import bgSoft1 from "../assets/images/bg-services-cards/bg-card-software-01.webp";
+import bgSoft2 from "../assets/images/bg-services-cards/bg-card-software-02.webp";
+import bgApi1 from "../assets/images/bg-services-cards/bg-card-api-01.webp";
+import bgApi2 from "../assets/images/bg-services-cards/bg-card-api-02.webp";
+import bgNeon5 from "../assets/images/Gemini_Generated_Neon-5.webp";
+import bgNeon4 from "../assets/images/Gemini_Generated_Neon-4.webp";
 ---
 
 <ServiceDetail
@@ -17,7 +27,7 @@ import {
   description="Diseñamos y desarrollamos plataformas web a medida. Creamos soluciones digitales de máxima calidad, alineadas con su marca y enfocadas en el crecimiento de su negocio."
 >
   <Card
-    image="/images/bg-services-cards/bg-card-desarrollo-web-01.webp"
+    image={bgWeb1}
     title="Soluciones Web"
     points={DataWebSolutions}
     className="md:order-1 xl:order-1"
@@ -27,7 +37,7 @@ import {
     className="md:order-3 md:col-span-2 md:justify-self-center md:w-[calc(50%-1.375rem)] xl:order-2 xl:col-span-1 xl:justify-self-auto xl:w-auto"
   />
   <Card
-    image="/images/bg-services-cards/bg-card-desarrollo-web-02.webp"
+    image={bgWeb2}
     title="Estándard de Calidad"
     points={DataQuality}
     className="md:order-2 xl:order-3"
@@ -38,17 +48,17 @@ import {
   description="Transformamos procesos complejos en soluciones digitales eficientes. Diseñamos software empresarial y aplicaciones escalables que optimizan operaciones y potencian su productividad."
 >
   <Card
-    image="/images/Gemini_Generated_Neon-5.webp"
+    image={bgNeon5}
     className="md:order-3 md:col-span-2 md:justify-self-center md:w-[calc(50%-1.375rem)] xl:order-2 xl:col-span-1 xl:justify-self-auto xl:w-auto"
   />
   <Card
-    image="/images/bg-services-cards/bg-card-software-01.webp"
+    image={bgSoft1}
     title="Soluciones de Software"
     points={DataSoftwareSolutions}
     className="md:order-1 xl:order-2"
   />
   <Card
-    image="/images/bg-services-cards/bg-card-software-02.webp"
+    image={bgSoft2}
     title="Software de garantía"
     points={DataWarrantySoftware}
     className="md:order-2 xl:order-3"
@@ -59,17 +69,17 @@ import {
   description="Eliminamos la fricción de sus procesos. Conectamos sus sistemas de negocio (ERP, CRM, E-commerce, etc.) para que trabajen de forma unificada, garantizando la eficiencia operativa y el flujo de datos."
 >
   <Card
-    image="/images/Gemini_Generated_Neon-4.webp"
+    image={bgNeon4}
     className="md:order-3 md:col-span-2 md:justify-self-center md:w-[calc(50%-1.375rem)] xl:order-2 xl:col-span-1 xl:justify-self-auto xl:w-auto"
   />
   <Card
-    image="/images/bg-services-cards/bg-card-api-01.webp"
+    image={bgApi1}
     title="¿Qué Podemos integrar?"
     points={DataIntegrationAPI}
     className="md:order-1 xl:order-2"
   />
   <Card
-    image="/images/bg-services-cards/bg-card-api-02.webp"
+    image={bgApi2}
     title="Seguridad y Fiabilidad"
     points={DataApiSecurity}
     className="md:order-2 xl:order-3"
