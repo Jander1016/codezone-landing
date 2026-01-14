@@ -100,7 +100,7 @@ import { services } from "../data/services";
         y: 60,
         opacity: 0,
         filter: "blur(10px)",
-        duration: 0.6,
+        duration: 0.4,
         ease: "power2.out",
         scrollTrigger: {
           trigger: logo,
@@ -113,9 +113,9 @@ import { services } from "../data/services";
     // 2. Claim h2 con maskTextReveal2 (animación vertical)
     if (claim) {
       maskTextRevealVertical(claim, {
-        duration: 0.5,
+        duration: 0.4,
         stagger: 0.05,
-        ease: "power3.out",
+        ease: "power2.out",
         scrollTrigger: {
           trigger: claim,
           start: "top 80%",
@@ -130,7 +130,7 @@ import { services } from "../data/services";
         y: 40,
         opacity: 0,
         filter: "blur(8px)",
-        duration: 0.5,
+        duration: 0.4,
         ease: "power2.out",
         scrollTrigger: {
           trigger: p1,
@@ -146,7 +146,7 @@ import { services } from "../data/services";
         y: 40,
         opacity: 0,
         filter: "blur(8px)",
-        duration: 0.5,
+        duration: 0.4,
         ease: "power2.out",
         scrollTrigger: {
           trigger: p2,
@@ -164,7 +164,7 @@ import { services } from "../data/services";
             y: 100,
             opacity: 0,
             rotate: index % 2 === 0 ? 10 : -10,
-            duration: 0.5,
+            duration: 0.4,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
@@ -185,7 +185,7 @@ import { services } from "../data/services";
             y: 120,
             opacity: 0,
             rotate: 10,
-            duration: 0.7,
+            duration: 0.5,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card1,
@@ -201,7 +201,7 @@ import { services } from "../data/services";
             y: 120,
             opacity: 0,
             rotate: -10,
-            duration: 0.7,
+            duration: 0.5,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card3,
@@ -218,7 +218,7 @@ import { services } from "../data/services";
             y: 120,
             opacity: 0,
             rotate: 0,
-            duration: 0.7,
+            duration: 0.5,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card2,
@@ -235,8 +235,8 @@ import { services } from "../data/services";
       gsap.from(separator, {
         y: 50,
         opacity: 0,
-        duration: 0.5,
-        ease: "power3.out",
+        duration: 0.4,
+        ease: "power2.out",
         scrollTrigger: {
           trigger: separator,
           start: "top 75%",

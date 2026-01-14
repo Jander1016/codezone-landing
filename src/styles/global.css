@@ -265,3 +265,22 @@ button {
   background-clip: padding-box, border-box;
   border: 2px solid transparent;
 }
+
+/* WebKit & Experience Enhancements */
+::selection {
+  background: var(--cyan-300);
+  color: var(--primary-blue);
+}
+
+::-moz-selection {
+  background: var(--cyan-300);
+  color: var(--primary-blue);
+}
+
+input,
+button,
+textarea,
+select {
+  -webkit-appearance: none;
+  appearance: none;
+}

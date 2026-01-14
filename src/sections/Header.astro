@@ -5,11 +5,11 @@ import MobileMenu from "../components/MobileMenu.astro";
 ---
 
 <header
-  class="fixed top-0 px-2 left-0 right-0 z-(--z-header) backdrop-blur-sm"
+  class="fixed top-0 px-2 left-0 right-0 z-(--z-header) backdrop-blur-sm max-w-(--width-max-content) mx-auto"
   style="--header-height:72px"
 >
   <div
-    class="container max-w-(--width-max-content) h-14 md:h-18 mx-auto mt-4 px-4 flex justify-between items-center shadow-lg rounded-full glass-gradient-border backdrop-blur-md bg-transparent xl:p-4"
+    class="container h-14 md:h-18 max-w-(--width-max-content) mx-auto mt-4 px-4 flex justify-between items-center shadow-lg rounded-full glass-gradient-border backdrop-blur-md bg-transparent xl:p-4"
   >
     <a class="brand" href="#hero">
       <img
