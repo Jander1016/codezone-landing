@@ -1,11 +1,9 @@
-import { conditionalAnimate } from "../accessibility";
-import { animateFromWithBlur, animateScaleUp } from "./animation-helpers";
+import { animateFromWithBlur } from "./animation-helpers";
 import { maskTextReveal } from "./text-animations";
 import { gsap } from "gsap";
 
 export function initHeroAnimations() {
   const tl = gsap.timeline({
-    paused: true, // Create paused, play immediately via conditionalAnimate to respect preferences
     defaults: { ease: 'power3.out' }
   });
 
@@ -22,11 +20,13 @@ export function initHeroAnimations() {
     });
   }
 
-  // 2. animation-circles-container con scaleUp
   const heroImage = document.querySelector('.animation-circles-container');
   if (heroImage) {
     tl.add(
-      animateScaleUp(heroImage, {
+      gsap.from(heroImage, {
+        scale: 0.9,
+        opacity: 0.1,
+        filter: 'blur(10px)',
         duration: 0.8,
         ease: 'back.out(1.7)'
       }),
@@ -34,9 +34,8 @@ export function initHeroAnimations() {
     );
   }
 
-  // 3. h2 (hero-title) con maskTextReveal
   const heroTitle = document.querySelector('.hero-title');
-  if (heroTitle) {
+    if (heroTitle) {
     const titleTimeline = maskTextReveal(heroTitle, {
       duration: 0.6,
       stagger: 0.08,
@@ -45,7 +44,6 @@ export function initHeroAnimations() {
     tl.add(titleTimeline, '-=0.6');
   }
 
-  // 4. h1 (hero-subtitle)
   const heroSubtitle = document.querySelector('.hero-subtitle');
   if (heroSubtitle) {
     tl.add(
@@ -57,7 +55,6 @@ export function initHeroAnimations() {
     );
   }
 
-  // 5. CTA
   const heroCta = document.querySelector('.hero-cta');
   if (heroCta) {
     tl.add(
@@ -69,7 +66,6 @@ export function initHeroAnimations() {
     );
   }
 
-  // 6. Separator
   const separator = document.querySelector('#services-separator');
   if (separator) {
     tl.add(
@@ -83,14 +79,10 @@ export function initHeroAnimations() {
     );
   }
 
-  // Execute immediately
-  conditionalAnimate(
-    () => tl.play(),
-    () => {
-      // Preferences reduced motion: ensure visibility manually if needed, 
-      // but conditionalAnimate usually handles the 'no animation' check 
-      // by not playing. We should ensure final state is set.
-      tl.progress(1);
-    }
-  );
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    tl.progress(1).pause();
+  } else {
+    tl.play();
+  }
 }
