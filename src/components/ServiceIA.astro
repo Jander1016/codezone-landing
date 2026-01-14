@@ -1,23 +1,38 @@
 ---
 import { DATAIA } from "../data/servicesDetail";
 import GradientText from "./GradientText.astro";
+import { Image, getImage } from "astro:assets";
+import bgCreatividadIa from "../assets/images/bg-services-cards/bg-creatividad-ia.webp";
+import servicesIaBg from "../assets/images/bg-services-cards/services-ia-bg.webp";
+
+const optimizedPoster = await getImage({
+    src: servicesIaBg,
+    format: "webp",
+});
 ---
 
 <section
     class="container max-w-(--width-max-content) h-full mx-auto flex flex-col-reverse lg:flex-row justify-between mt-24 md:mt-32 lg:mt-40 gap-8"
 >
     <div
-        class="w-full lg:w-1/2 flex flex-col justify-between items-baseline bg-[url('/images/bg-services-cards/bg-creatividad-ia.webp')] bg-cover bg-center bg-no-repeat gap-6 border-2 border-(--cz-border-color) rounded-xl p-8"
+        class="relative overflow-hidden w-full lg:w-1/2 flex flex-col justify-between items-baseline gap-6 border-2 border-(--cz-border-color) rounded-xl p-8"
     >
+        <Image
+            src={bgCreatividadIa}
+            alt=""
+            aria-hidden="true"
+            class="absolute inset-0 w-full h-full object-cover -z-10"
+        />
+
         <GradientText
             as="h2"
             gradient="purple-cyan"
-            className="text-3xl md:text-4xl lg:text-5xl font-medium pb-1.5"
+            className="text-3xl md:text-4xl lg:text-5xl font-medium pb-1.5 relative z-10"
         >
             Creatividad Potenciada con IA
         </GradientText>
 
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 relative z-10">
             <p>
                 Optimizamos nuestros procesos creativos con IA para ofrecerle
                 creatividades, videos y contenidos únicos, personalizados y
@@ -25,7 +40,7 @@ import GradientText from "./GradientText.astro";
             </p>
             <p>¿Qué impulsamos con IA?</p>
         </div>
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 relative z-10">
             {
                 DATAIA.map((item) => (
                     <div class="flex flex-row items-baseline gap-3.5">
@@ -51,9 +66,11 @@ import GradientText from "./GradientText.astro";
     >
         <video
             src="/videos/codezone-video-ia-web.webm"
+            poster={optimizedPoster.src}
             autoplay
             loop
             muted
+            playsinline
             class="w-full h-full object-cover rounded-xl"></video>
     </div>
 </section>
