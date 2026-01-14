@@ -154,24 +154,15 @@ export function animateStackSection(
   sectionSelector: string = '#stack',
   options?: SectionAnimationOptions
 ): ScrollTrigger[] {
-  // Detectar preferencia de movimiento reducido
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return [];
 
-  // Detectar tamaño de pantalla
   const isMobile = window.innerWidth < 768;
   const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-  const isDesktop = window.innerWidth >= 1024 && window.innerWidth < 1920;
-  const isLargeScreen = window.innerWidth >= 1920;
-
-  // Configuración responsive con ajuste para pantallas grandes
+ 
   const getStartPosition = () => {
     if (options?.start) return options.start;
-    if (isMobile) return 'top-=350 bottom+=350'; // Mobile: se activa cuando está casi visible
-    if (isTablet) return 'top bottom+=150';
-    if (isDesktop) return 'top bottom+=900';
-    if (isLargeScreen) return 'top bottom+=400'; // Pantallas grandes: se activa antes
-    return 'top bottom+=200';
+    return 'top 80%';
   };
 
   const config = {
@@ -183,14 +174,12 @@ export function animateStackSection(
 
   const triggers: ScrollTrigger[] = [];
 
-  // Seleccionar la sección
   const section = document.querySelector(sectionSelector);
   if (!section) {
     console.warn(`animateStackSection: Section not found - ${sectionSelector}`);
     return triggers;
   }
 
-  // 1. Animar el subtítulo con blur desde abajo
   const subtitle = section.querySelector(STACK_SELECTORS.subtitle);
   if (subtitle) {
     const subtitleTimeline = gsap.timeline({
@@ -216,7 +205,6 @@ export function animateStackSection(
     console.warn(`animateStackSection: Subtitle not found - ${STACK_SELECTORS.subtitle}`);
   }
 
-  // 2. Animar el título usando maskTextRevealVertical
   const title = section.querySelector(STACK_SELECTORS.title);
   if (title) {
     const titleAnimation = maskTextRevealVertical(title, {
@@ -230,7 +218,6 @@ export function animateStackSection(
       }
     });
 
-    // maskTextRevealVertical con scrollTrigger retorna un Tween con scrollTrigger
     if ('scrollTrigger' in titleAnimation && titleAnimation.scrollTrigger) {
       triggers.push(titleAnimation.scrollTrigger as ScrollTrigger);
     }
@@ -238,7 +225,6 @@ export function animateStackSection(
     console.warn(`animateStackSection: Title not found - ${STACK_SELECTORS.title}`);
   }
 
-  // 3. Animar items del grid usando animateGridItems (lightbulb effect)
   const gridContainer = section.querySelector(STACK_SELECTORS.gridContainer);
   if (gridContainer) {
     const gridTrigger = animateGridItems(gridContainer, {
@@ -296,15 +282,12 @@ export function animateStackSection(
  * ```
  */
 export function cleanupSectionAnimations(): void {
-  // Obtener todos los ScrollTriggers activos
   const allTriggers = ScrollTrigger.getAll();
 
-  // Destruir cada ScrollTrigger
   allTriggers.forEach(trigger => {
     trigger.kill();
   });
 
-  // Log para debugging (solo en desarrollo)
   if (import.meta.env.DEV) {
     console.log(`cleanupSectionAnimations: Destroyed ${allTriggers.length} ScrollTriggers`);
   }

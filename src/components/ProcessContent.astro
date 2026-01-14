@@ -14,22 +14,24 @@ import { PROCESS_STEPS } from "../data/process";
     >
         <source src="/videos/fondo-acordeon.webm" type="video/webm" />
     </video>
-    <div class="w-full flex flex-col gap-5 relative z-10 pb-5">
+    <div class="w-full flex flex-col relative z-10">
         {
             PROCESS_STEPS.map((item, index) => (
                 <div
-                    class="accordion-item cursor-pointer"
+                    class="accordion-item flex flex-col gap-2 lg:gap-5 cursor-pointer"
                     data-tab={String(index + 1).padStart(2, "0")}
                 >
                     <div class="accordion-header">
-                        <h3 class="item-title">{item.title}</h3>
+                        <h3 class="item-title font-bold">{item.title}</h3>
                         <span class="icon">»</span>
                     </div>
                     <div class="accordion-content">
-                        <p>{item.description}</p>
+                        <div class="overflow-hidden">
+                            <p class="font-medium pb-5 m-0">{item.description}</p>
+                        </div>
                     </div>
                     <div
-                        class={`w-full h-px bg-[rgba(83,234,253,0.25)] ${index === PROCESS_STEPS.length - 1 ? "hidden" : ""}`}
+                        class={`w-full h-px mb-2 lg:mb-5 bg-[rgba(83,234,253,0.25)] ${index === PROCESS_STEPS.length - 1 ? "hidden" : ""}`}
                     />
                 </div>
             ))
@@ -45,6 +47,7 @@ import { PROCESS_STEPS } from "../data/process";
         font-size: var(--font-size-subtitle);
         font-weight: 600;
         transition: color 0.3s ease;
+        will-change: color;
     }
 
     .accordion-header:hover {
@@ -63,24 +66,18 @@ import { PROCESS_STEPS } from "../data/process";
     }
 
     .accordion-content {
-        max-height: 0;
-        overflow: hidden;
-        transition:
-            max-height 0.7s cubic-bezier(0.19, 1, 0.22, 1),
-            padding 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+        will-change: grid-template-rows;
     }
-
-    .accordion-content p {
-        margin: 0;
-        padding: 20px 0;
-    }
-
+    
     .accordion-item.active .accordion-header {
         color: var(--cyan-300);
     }
 
     .accordion-item.active .accordion-content {
-        max-height: 200px;
+        grid-template-rows: 1fr;
     }
 
     .accordion-item.active .icon {

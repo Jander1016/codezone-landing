@@ -28,7 +28,6 @@ export function animateContactSection() {
 		return [];
 	}
 
-	// 1. Título con máscara de texto
 	if (contactTitle) {
 
 		maskTextRevealMix(contactTitle, {
@@ -36,12 +35,11 @@ export function animateContactSection() {
 			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactTitle,
-				start: 'top-=420% 90%',
+				start: 'top 85%',
 			},
 		})
 	}
 
-	// 3. Párrafos en secuencia con gap fijo
 	contactParagraphs.forEach((p) => {
 		gsap.from(p, {
 			x: -30,
@@ -51,13 +49,12 @@ export function animateContactSection() {
 			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: p,
-				start: 'top-=850 90%',
+				start: 'top 85%',
 			},
 		});
 	});
 
 
-	// Logo y botones después de párrafos
 	if (contactLogo) {
 		gsap.from(contactLogo, {
 			x: -30,
@@ -67,7 +64,7 @@ export function animateContactSection() {
 			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactLogo,
-				start: 'top-=850 90%',
+				start: 'top 85%',
 			},
 		});
 	}
@@ -81,7 +78,7 @@ export function animateContactSection() {
 			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactButtons,
-				start: 'top-=850 90%',
+				start: 'top 85%',
 			},
 		});
 	}
@@ -95,7 +92,7 @@ export function animateContactSection() {
 			ease: ANIMATION_CONFIG.easings.default,
 			scrollTrigger: {
 				trigger: contactForm,
-				start: 'top-=105% 90%',
+				start: 'top 85%',
 			},
 		});
 	}
