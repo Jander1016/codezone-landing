@@ -48,6 +48,8 @@ import Button from "../components/Button.astro";
         <div class="capa-stack">
           <img
             class="neon-circle-img"
+            width="600"
+            height="600"
             src="/neon-circles.svg"
             alt="Círculos de neón decorativos animados"
             fetchpriority="high"
@@ -83,6 +85,7 @@ import Button from "../components/Button.astro";
 
   .animate-logo-pulse {
     animation: logo-pulse 6s infinite linear;
+    will-change: filter;
   }
 
   .animate-logo-pulse:hover {
@@ -107,6 +110,7 @@ import Button from "../components/Button.astro";
     height: auto;
     object-fit: cover;
     animation: rotate-animation 6s infinite linear;
+    will-change: transform;
   }
 
   @keyframes rotate-animation {
@@ -119,6 +123,7 @@ import Button from "../components/Button.astro";
     transition: transform 0.8s ease-out;
     transform: rotateY(0deg);
     animation: animate-logo-pulse 6s infinite linear;
+    will-change: filter, transform;
   }
 
   .header-container {

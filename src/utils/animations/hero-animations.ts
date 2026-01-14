@@ -25,7 +25,7 @@ export function initHeroAnimations() {
     tl.add(
       gsap.from(heroImage, {
         scale: 0.9,
-        opacity: 0.1,
+
         filter: 'blur(10px)',
         duration: 0.8,
         ease: 'back.out(1.7)'
@@ -35,7 +35,7 @@ export function initHeroAnimations() {
   }
 
   const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
+  if (heroTitle) {
     const titleTimeline = maskTextReveal(heroTitle, {
       duration: 0.6,
       stagger: 0.08,
