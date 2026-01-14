@@ -37,24 +37,8 @@ function initLenis() {
 
     gsap.ticker.lagSmoothing(0);
 
-    // Configurar Proxy
-    ScrollTrigger.scrollerProxy(document.body, {
-        scrollTop(value) {
-            if (arguments.length && lenis && typeof value === 'number') {
-                lenis.scrollTo(value, { immediate: true });
-            }
-            return lenis ? lenis.scroll : window.scrollY;
-        },
-        getBoundingClientRect() {
-            return {
-                top: 0,
-                left: 0,
-                width: window.innerWidth,
-                height: window.innerHeight,
-            };
-        },
-        pinType: document.body.style.transform ? "transform" : "fixed",
-    });
+    // Disable CSS smooth scroll to avoid conflicts with Lenis
+    document.documentElement.style.scrollBehavior = "auto";
 
     // Interceptar clicks en enlaces internos para usar Lenis smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -84,6 +68,9 @@ function destroyLenis() {
     gsap.ticker.remove((time) => {
         lenis?.raf(time * 1000);
     });
+
+    // Restore CSS smooth scroll
+    document.documentElement.style.scrollBehavior = "";
 
     // Forzamos refresh para volver a comportamiento nativo
     ScrollTrigger.refresh();
