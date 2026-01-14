@@ -1,5 +1,7 @@
 ---
 import GradientText from "./GradientText.astro";
+import { Image } from "astro:assets";
+import linePointImg from "../assets/images/line-point.webp";
 
 interface Props {
     title: string;
@@ -26,16 +28,9 @@ const { title, description } = Astro.props;
         <div
             class="flex items-center justify-center w-full h-full object-cover"
         >
-            <img
-                src="/line-point.webp"
-                alt="line-point"
-                loading="lazy"
-                decoding="async"
-            />
+            <Image src={linePointImg} alt="line-point" />
         </div>
-        <div
-            class="text-center justify-start leading-7"
-        >
+        <div class="text-center justify-start leading-7">
             <p>{description}</p>
         </div>
     </div>

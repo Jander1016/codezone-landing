@@ -1,11 +1,12 @@
 ---
 import Point from "./point.astro";
 import SpeedGauge from "./SpeedGauge.astro";
+import { Image } from "astro:assets";
 
 interface Props {
     title?: string;
     points?: string[];
-    image?: string;
+    image?: ImageMetadata;
     velocitySpeed?: boolean;
     className?: string;
 }
@@ -14,22 +15,30 @@ const { title, points, image, velocitySpeed, className } = Astro.props;
 ---
 
 <div
-    class={`h-full rounded-3xl border-2 border-(--cz-border-color) flex flex-col justify-baseline gap-4 shadow-2xl 
+    class={`relative overflow-hidden h-full rounded-3xl border-2 border-(--cz-border-color) flex flex-col justify-baseline gap-4 shadow-2xl 
     ${velocitySpeed ? "p-0 border-none" : "p-8"}
-    ${image ? "bg-cover bg-center" : ""}
     ${className ?? ""}`}
-    style={image ? { backgroundImage: `url(${image})` } : undefined}
 >
     {
+        image && (
+            <Image
+                src={image}
+                alt=""
+                aria-hidden="true"
+                class="absolute inset-0 w-full h-full object-cover -z-10"
+            />
+        )
+    }
+    {
         title && (
-            <h3 class="text-cyan-300 font-bold text-2xl lg:text-[28px] mb-0">
+            <h3 class="text-cyan-300 font-bold text-2xl lg:text-[28px] mb-0 relative z-10">
                 {title}
             </h3>
         )
     }
     {
         points && (
-            <ul class="flex flex-col gap-2.5">
+            <ul class="flex flex-col gap-2.5 relative z-10">
                 {points.map((point) => (
                     <li>
                         <Point description={point} />

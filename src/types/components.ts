@@ -3,6 +3,8 @@
  * Provides type safety and documentation for component props
  */
 
+import type { ImageMetadata } from 'astro';
+
 // Navigation types
 export interface NavItem {
   label: string;
@@ -28,7 +30,7 @@ export interface MobileMenuProps {
 export interface ServiceItem {
   title: string;
   description: string;
-  image: string;
+  image: string | ImageMetadata;
   ctaText?: string;
   ctaHref?: string;
 }
@@ -42,7 +44,7 @@ export interface ServicesProps {
 export interface ServiceCardProps {
   title: string;
   description: string;
-  image: string;
+  image: string | ImageMetadata;
   cta?: string;
   ctaHref?: string;
   className?: string;
@@ -83,7 +85,7 @@ export interface ProcessStep {
   number: number;
   title: string;
   description: string;
-  image: string;
+  image: string | ImageMetadata;
 }
 
 export interface ProcessProps {
@@ -96,7 +98,7 @@ export interface ProcessCardProps {
   number: number;
   title: string;
   description: string;
-  image: string;
+  image: string | ImageMetadata;
   isEven?: boolean;
 }
 

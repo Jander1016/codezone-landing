@@ -4,6 +4,7 @@ import type { ProcessCardProps } from "../types/components";
 interface Props extends ProcessCardProps {}
 
 const { number, title, description, image, isEven = false } = Astro.props;
+import { Image } from "astro:assets";
 ---
 
 <article class:list={["process-card", { "process-card-reverse": isEven }]}>
@@ -15,28 +16,28 @@ const { number, title, description, image, isEven = false } = Astro.props;
       {description}
     </p>
   </div>
-  <div class="process-image-wrapper outer-glow-fx relative max-w-[630px] w-full">
+  <div
+    class="process-image-wrapper outer-glow-fx relative max-w-[630px] w-full"
+  >
     <div
       class="process-badge absolute -top-6 -left-10 p-4 rounded-4xl z-10 font-medium linear-gradient-primary text-5xl text-cyan-300 flex items-center justify-center w-20 h-15"
     >
       {number}
     </div>
     <div class="card-image overflow-hidden">
-      <img
+      <Image
         src={image}
         alt={`Ilustración de la fase ${number}: ${title}`}
-        width="630"
-        height="420"
+        width={630}
+        height={420}
         class="process-image object-cover"
-        loading="lazy"
-        decoding="async"
       />
     </div>
   </div>
 </article>
 
 <style>
-  .process-card{
+  .process-card {
     display: flex;
     flex-direction: column;
     gap: 1.125rem;
@@ -65,7 +66,7 @@ const { number, title, description, image, isEven = false } = Astro.props;
     max-width: 630px;
     position: relative;
   }
-  
+
   .card-image {
     width: 100%;
     overflow: hidden;
@@ -87,17 +88,14 @@ const { number, title, description, image, isEven = false } = Astro.props;
   }
 
   .linear-gradient-primary {
-    background-image: linear-gradient(
-        180deg,
-        rgba(2, 6, 24, 1) 0%,
-        rgba(18, 29, 70, 1) 50%
-      ),
+    background-image:
+      linear-gradient(180deg, rgba(2, 6, 24, 1) 0%, rgba(18, 29, 70, 1) 50%),
       linear-gradient(45deg, var(--fuchsia-600), var(--cyan-300));
     background-clip: padding-box, border-box;
     background-origin: border-box;
     border: 2px solid transparent;
   }
-  
+
   /* EFECTO HOVER EN CARD - PRESERVED */
   .outer-glow-fx .card-image {
     /* -webkit-box-shadow: 0px 0px 0px 0px rgba(83, 233, 253, 0.75);
