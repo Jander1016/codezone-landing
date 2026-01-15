@@ -1,11 +1,6 @@
-/**
- * Services data for the "Tech Your Vibes" section
- * Contains service cards with descriptions and images
- */
-
-import webDevImg from '../assets/images/codezone-servicios-desarrollo-web.webp';
-import softwareImg from '../assets/images/codezone-servicios-software.webp';
-import apisImg from '../assets/images/codezone-servicios-apis.webp';
+import webDevImg from '../assets/images/bg-services-cards/codezone-servicios-desarrollo-web-v2.webp';
+import softwareImg from '../assets/images/bg-services-cards/codezone-servicios-software-v2.webp';
+import apisImg from '../assets/images/bg-services-cards/codezone-servicios-apis-v2.webp';
 
 export interface ServiceData {
   title: string;
@@ -21,20 +16,20 @@ export const services: ServiceData[] = [
     description: 'Diseñamos y desarrollamos sitios web a medida, optimizados para el rendimientos SEO y experiencia de usuario, alineados con la identidad de tu marca.',
     image: webDevImg,
     ctaText: 'Más info',
-    ctaHref: '#contact-separator'
+    ctaHref: '#servicios-desarrollo-web'
   },
   {
     title: 'Software a medida',
     description: 'Creamos aplicaciones y herramientas digitales personalizadas específicas para tu negocio y mejorar tus procesos internos.',
     image: softwareImg,
     ctaText: 'Más info',
-    ctaHref: '#contact-separator'
+    ctaHref: '#servicios-software'
   },
   {
     title: 'Integración de APIs',
     description: 'Implementamos integraciones de sistemas y APIs que conectan tus plataformas, automatizan tareas y garantizan flujos de datos eficientes y seguro.',
     image: apisImg,
     ctaText: 'Más info',
-    ctaHref: '#contact-separator'
+    ctaHref: '#servicios-apis'
   }
 ];

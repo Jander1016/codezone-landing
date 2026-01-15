@@ -2,7 +2,6 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
-// Aseguramos registro idempotente
 gsap.registerPlugin(ScrollTrigger);
 
 const DESKTOP_BREAKPOINT = 1024;
@@ -48,7 +47,11 @@ function initLenis() {
                 const target = document.querySelector(href);
                 if (target && lenis) {
                     e.preventDefault();
-                    lenis.scrollTo(target as HTMLElement);
+
+                    const style = window.getComputedStyle(target);
+                    const scrollMarginTop = parseInt(style.scrollMarginTop) || 0;
+
+                    lenis.scrollTo(target as HTMLElement, { offset: -scrollMarginTop });
                 }
             }
         });

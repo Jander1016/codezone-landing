@@ -21,12 +21,12 @@ import { services } from "../data/services";
     <GradientText
       as="h2"
       gradient="cyan-purple"
-      className="text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-4"
+      className="text-4xl sm:text-5xl md:text-[64px] font-medium text-center mb-12"
       style="letter-spacing:1px;"
     >
       Tech Your Vibes
     </GradientText>
-    <div class="flex flex-col mt-9 max-w-[504px] min-w-[342px] w-full px-4">
+    <div class="flex flex-col max-w-[504px] min-w-[342px] w-full px-4">
       <p class="paragraph-1 text-sm text-neutral-100 text-center mb-8">
         En Codezone convertimos lo que tu negocio busca y necesita en tecnología
         a medida, respetando su esencia y maximizando su valor.
@@ -38,7 +38,6 @@ import { services } from "../data/services";
     </div>
   </div>
 
-  <!-- Responsive Services Grid -->
   <div
     class={`services-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 justify-center w-full mx-auto`}
   >
@@ -164,8 +163,8 @@ import { services } from "../data/services";
             y: 100,
             opacity: 0,
             rotate: index % 2 === 0 ? 10 : -10,
-            duration: 0.4,
-            ease: "power2.out",
+            duration: 0.8,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: card,
               start: "top 70%",
@@ -185,8 +184,8 @@ import { services } from "../data/services";
             y: 120,
             opacity: 0,
             rotate: 10,
-            duration: 0.5,
-            ease: "power2.out",
+            duration: 0.9,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: card1,
               start: "top 70%",
@@ -201,8 +200,8 @@ import { services } from "../data/services";
             y: 120,
             opacity: 0,
             rotate: -10,
-            duration: 0.5,
-            ease: "power2.out",
+            duration: 0.9,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: card3,
               start: "top 70%",
@@ -218,8 +217,8 @@ import { services } from "../data/services";
             y: 120,
             opacity: 0,
             rotate: 0,
-            duration: 0.5,
-            ease: "power2.out",
+            duration: 0.9,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: card2,
               start: "top 70%",

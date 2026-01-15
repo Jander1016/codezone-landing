@@ -4,15 +4,17 @@ import { Image } from "astro:assets";
 import linePointImg from "../assets/images/line-point.webp";
 
 interface Props {
+    idServiceDetail?: string;
     title: string;
     description: string;
 }
 
-const { title, description } = Astro.props;
+const { idServiceDetail, title, description } = Astro.props;
 ---
 
 <section
-    class="max-w-(--width-max-content) mx-auto mt-24 md:mt-32 lg:mt-40 flex flex-col justify-start items-center gap-8"
+    id={idServiceDetail}
+    class="scroll-mt-32 max-w-(--width-max-content) mx-auto mt-24 md:mt-32 lg:mt-40 flex flex-col justify-start items-center gap-8"
 >
     <div
         class="max-w-[769px] inline-flex flex-col justify-start items-center gap-2"
