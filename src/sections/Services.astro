@@ -67,7 +67,6 @@ import { services } from "../data/services";
   </div>
 </section>
 
-
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -94,139 +93,121 @@ import { services } from "../data/services";
     const isMobile = () => window.innerWidth <= 768;
 
     // 1. Logo, se anima cuando está más dentro del viewport
-    if (logo) {
-      gsap.from(logo, {
-        y: 60,
-        opacity: 0,
-        filter: "blur(10px)",
-        duration: 0.4,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: logo,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-    }
+    if (!isMobile()) {
+      if (logo) {
+        gsap.from(logo, {
+          y: 60,
+          opacity: 0,
+          filter: "blur(10px)",
+          duration: 0.4,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: logo,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
 
-    // 2. Claim h2 con maskTextReveal2 (animación vertical)
-    if (claim) {
-      maskTextRevealVertical(claim, {
-        duration: 0.4,
-        stagger: 0.05,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: claim,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-    }
+      // 2. Claim h2 con maskTextReveal2 (animación vertical)
+      if (claim) {
+        maskTextRevealVertical(claim, {
+          duration: 0.4,
+          stagger: 0.05,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: claim,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
 
-    // 3. Párrafo 1
-    if (p1) {
-      gsap.from(p1, {
-        y: 40,
-        opacity: 0,
-        filter: "blur(8px)",
-        duration: 0.4,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: p1,
-          start: "top 70%",
-          toggleActions: "play none none none",
-        },
-      });
-    }
+      // 3. Párrafo 1
+      if (p1) {
+        gsap.from(p1, {
+          y: 40,
+          opacity: 0,
+          filter: "blur(8px)",
+          duration: 0.4,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: p1,
+            start: "top 70%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
 
-    // 4. Párrafo 2
-    if (p2) {
-      gsap.from(p2, {
-        y: 40,
-        opacity: 0,
-        filter: "blur(8px)",
-        duration: 0.4,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: p2,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-    }
+      // 4. Párrafo 2
+      if (p2) {
+        gsap.from(p2, {
+          y: 40,
+          opacity: 0,
+          filter: "blur(8px)",
+          duration: 0.4,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: p2,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
 
-    // 5. Cards - Animación según tamaño de pantalla
-    if (cards.length > 0) {
-      if (isMobile()) {
-        // cards.forEach((card, index) => {
-        //   gsap.from(card, {
-        //     y: 100,
-        //     opacity: 0,
-        //     rotate: index % 2 === 0 ? 10 : -10,
-        //     duration: 0.8,
-        //     ease: "power3.out",
-        //     scrollTrigger: {
-        //       trigger: card,
-        //       start: "top 70%",
-        //       toggleActions: "play none none none",
-        //     },
-        //   });
-        // });
-      } else {
-        // DESKTOP: Animación con scrub progresivo suave
-        const card1 = cards[0];
-        const card2 = cards[1];
-        const card3 = cards[2];
+      // DESKTOP: Animación con scrub progresivo suave
+      const card1 = cards[0];
+      const card2 = cards[1];
+      const card3 = cards[2];
 
-        // Cards de los extremos (1 y 3) con ScrollTrigger individual
-        if (card1) {
-          gsap.from(card1, {
-            y: 120,
-            opacity: 0,
-            rotate: 10,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card1,
-              start: "top 70%",
-              end: "top 50%",
-              toggleActions: "play none none none",
-            },
-          });
-        }
+      // Cards de los extremos (1 y 3) con ScrollTrigger individual
+      if (card1) {
+        gsap.from(card1, {
+          y: 120,
+          opacity: 0,
+          rotate: 10,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card1,
+            start: "top 70%",
+            end: "top 50%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
 
-        if (card3) {
-          gsap.from(card3, {
-            y: 120,
-            opacity: 0,
-            rotate: -10,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card3,
-              start: "top 70%",
-              end: "top 50%",
-              toggleActions: "play none none none",
-            },
-          });
-        }
+      if (card3) {
+        gsap.from(card3, {
+          y: 120,
+          opacity: 0,
+          rotate: -10,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card3,
+            start: "top 70%",
+            end: "top 50%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
 
-        // Card del centro (2) sin rotación
-        if (card2) {
-          gsap.from(card2, {
-            y: 120,
-            opacity: 0,
-            rotate: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card2,
-              start: "top 70%",
-              end: "top 50%",
-              toggleActions: "play none none none",
-            },
-          });
-        }
+      // Card del centro (2) sin rotación
+      if (card2) {
+        gsap.from(card2, {
+          y: 120,
+          opacity: 0,
+          rotate: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card2,
+            start: "top 70%",
+            end: "top 50%",
+            toggleActions: "play none none none",
+          },
+        });
       }
     }
 
