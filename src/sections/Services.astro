@@ -67,7 +67,8 @@ import { services } from "../data/services";
   </div>
 </section>
 
-<script>
+
+<!-- <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { maskTextRevealVertical } from "../utils/animations/text-animations";
@@ -91,7 +92,6 @@ import { services } from "../data/services";
 
     // Detectar tamaño de pantalla
     const isMobile = () => window.innerWidth <= 768;
-    const isTablet = () => window.innerWidth > 768 && window.innerWidth <= 1279;
 
     // 1. Logo, se anima cuando está más dentro del viewport
     if (logo) {
@@ -157,7 +157,7 @@ import { services } from "../data/services";
 
     // 5. Cards - Animación según tamaño de pantalla
     if (cards.length > 0) {
-      if (isMobile() || isTablet()) {
+      if (isMobile()) {
         cards.forEach((card, index) => {
           gsap.from(card, {
             y: 100,
@@ -165,6 +165,7 @@ import { services } from "../data/services";
             rotate: index % 2 === 0 ? 10 : -10,
             duration: 0.8,
             ease: "power3.out",
+            stagger: 0.15,
             scrollTrigger: {
               trigger: card,
               start: "top 70%",
@@ -219,6 +220,7 @@ import { services } from "../data/services";
             rotate: 0,
             duration: 0.9,
             ease: "power3.out",
+            delay: 0.3,
             scrollTrigger: {
               trigger: card2,
               start: "top 70%",
@@ -265,7 +267,7 @@ import { services } from "../data/services";
     timeout: 4000,
     finalDelay: 120,
   });
-</script>
+</script> -->
 
 <style>
   .service-card-center {
