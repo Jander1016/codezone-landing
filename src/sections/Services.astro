@@ -68,7 +68,7 @@ import { services } from "../data/services";
 </section>
 
 
-<!-- <script>
+<script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { maskTextRevealVertical } from "../utils/animations/text-animations";
@@ -248,11 +248,7 @@ import { services } from "../data/services";
   }
 
   // Inicializar cuando el DOM esté listo
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initServicesAnimations);
-  } else {
-    initServicesAnimations();
-  }
+  document.addEventListener("astro:page-load", initServicesAnimations);
   // Esto centraliza el comportamiento para todos los separadores.
   setupSectionAnimationRefresh({
     specialSectionIds: ["services-separator"],
@@ -267,7 +263,7 @@ import { services } from "../data/services";
     timeout: 4000,
     finalDelay: 120,
   });
-</script> -->
+</script>
 
 <style>
   .service-card-center {
