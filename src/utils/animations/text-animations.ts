@@ -22,11 +22,11 @@ function prepareTextForAnimation(el: Element): NodeListOf<Element> | null {
   el.innerHTML = words
     .map(word => {
       if (hasGradient) {
-        return `<span style="display: inline-block; overflow: hidden;">
+        return `<span style="display: inline-block; overflow: hidden; padding-bottom: 0.15em;">
           <span style="display: inline-block; background: ${background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${word}</span>
         </span>`;
       } else {
-        return `<span style="display: inline-block;">
+        return `<span style="display: inline-block; overflow: hidden; padding-bottom: 0.15em;">
           <span style="display: inline-block; color: ${color};">${word}</span>
         </span>`;
       }
