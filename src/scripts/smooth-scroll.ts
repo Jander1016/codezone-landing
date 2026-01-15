@@ -18,7 +18,7 @@ const isDesktop = (): boolean => window.innerWidth >= DESKTOP_BREAKPOINT;
 const shouldUseSmoothScroll = (): boolean => isDesktop() && !isIOS();
 
 function initLenis() {
-    if (lenis || !shouldUseSmoothScroll()) return;
+    // if (lenis || !shouldUseSmoothScroll()) return;
 
     lenis = new Lenis({
         lerp: 0.06,
