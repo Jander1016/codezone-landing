@@ -8,7 +8,6 @@ import Button from "../components/Button.astro";
 >
   <div
     class="flex flex-col-reverse md:flex-row items-center justify-between gap-4 md:pt-16 w-full max-w-(--width-max-content) mx-auto"
-    
   >
     <article class="flex-1 text-center md:text-left md:pr-6">
       <h2
@@ -37,13 +36,16 @@ import Button from "../components/Button.astro";
         data-animate="hero-image"
       >
         <div class="capa-stack">
-          <img
-            class="logo-glow-fx animate-logo-pulse"
-            src="/codezone-logo-header.svg"
-            alt="Logo de CodeZone con iniciales C y Z"
-            fetchpriority="high"
-            loading="eager"
-          />
+          <div class="logo-container">
+            <div class="logo-glow-bg"></div>
+            <img
+              class="logo-image"
+              src="/codezone-logo-header.svg"
+              alt="Logo de CodeZone con iniciales C y Z"
+              fetchpriority="high"
+              loading="eager"
+            />
+          </div>
         </div>
         <div class="capa-stack">
           <img
@@ -72,24 +74,41 @@ import Button from "../components/Button.astro";
     animation: spin-slow 6s linear infinite;
   }
 
-  @keyframes animate-logo-pulse {
+  /* Optimized Glow Animation using opacity/transform instead of filter */
+  @keyframes pulse-glow {
     0%,
     100% {
-      filter: drop-shadow(0 0 10px rgba(200, 0, 222, 0.75));
+      opacity: 0.5;
+      transform: scale(0.8);
     }
-
     50% {
-      filter: drop-shadow(0 0 25px rgba(83, 233, 253, 0.75));
+      opacity: 1;
+      transform: scale(1.1);
     }
   }
 
-  .animate-logo-pulse {
-    animation: logo-pulse 6s infinite linear;
-    will-change: filter;
+  .logo-container {
+    position: relative;
+    display: grid;
+    place-items: center;
   }
 
-  .animate-logo-pulse:hover {
-    transform: rotate(360deg);
+  /* Background glow layer */
+  .logo-glow-bg {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(
+      circle,
+      rgba(83, 233, 253, 0.4) 0%,
+      rgba(200, 0, 222, 0.1) 70%,
+      transparent 100%
+    );
+    filter: blur(20px);
+    z-index: 0;
+    border-radius: 50%;
+    animation: pulse-glow 3s ease-in-out infinite;
+    pointer-events: none;
+    will-change: opacity, transform;
   }
 
   .animation-circles-container {
@@ -119,11 +138,17 @@ import Button from "../components/Button.astro";
     }
   }
 
-  .logo-glow-fx {
+  .logo-image {
+    position: relative;
+    z-index: 1;
     transition: transform 0.8s ease-out;
     transform: rotateY(0deg);
-    animation: animate-logo-pulse 6s infinite linear;
-    will-change: filter, transform;
+    /* Static drop-shadow is less expensive than animated */
+    filter: drop-shadow(0 0 15px rgba(83, 233, 253, 0.3));
+  }
+
+  .logo-image:hover {
+    transform: rotate(360deg);
   }
 
   .header-container {
@@ -148,7 +173,7 @@ import Button from "../components/Button.astro";
 
   #hero {
     /* width: 888; */
-    height: 362;
+    /* height: 362; */
     /* min-height: 100dvh; */
     /* top: 275px;
     left: 192px;
