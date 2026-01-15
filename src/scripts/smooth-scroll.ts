@@ -7,7 +7,6 @@ gsap.registerPlugin(ScrollTrigger);
 const DESKTOP_BREAKPOINT = 1024;
 
 let lenis: Lenis | null = null;
-let rafId: number | null = null;
 
 const isIOS = (): boolean =>
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
