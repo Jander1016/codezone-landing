@@ -158,20 +158,20 @@ import { services } from "../data/services";
     // 5. Cards - Animación según tamaño de pantalla
     if (cards.length > 0) {
       if (isMobile()) {
-        cards.forEach((card, index) => {
-          gsap.from(card, {
-            y: 100,
-            opacity: 0,
-            rotate: index % 2 === 0 ? 10 : -10,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 70%",
-              toggleActions: "play none none none",
-            },
-          });
-        });
+        // cards.forEach((card, index) => {
+        //   gsap.from(card, {
+        //     y: 100,
+        //     opacity: 0,
+        //     rotate: index % 2 === 0 ? 10 : -10,
+        //     duration: 0.8,
+        //     ease: "power3.out",
+        //     scrollTrigger: {
+        //       trigger: card,
+        //       start: "top 70%",
+        //       toggleActions: "play none none none",
+        //     },
+        //   });
+        // });
       } else {
         // DESKTOP: Animación con scrub progresivo suave
         const card1 = cards[0];
@@ -260,11 +260,11 @@ import { services } from "../data/services";
   });
   // Asegurar que el separador principal aparezca después de las animaciones de la sección
   // Retorna una función de cleanup si se necesita
-  // animateSeparatorAfterSection("#services", "#services-separator", {
-  //   pollDelay: 150,
-  //   timeout: 4000,
-  //   finalDelay: 120,
-  // });
+  animateSeparatorAfterSection("#services", "#services-separator", {
+    pollDelay: 150,
+    timeout: 4000,
+    finalDelay: 120,
+  });
 </script>
 
 <style>
