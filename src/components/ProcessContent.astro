@@ -47,7 +47,6 @@ import { PROCESS_STEPS } from "../data/process";
         font-size: var(--font-size-subtitle);
         font-weight: 600;
         transition: color 0.3s ease;
-        will-change: color;
     }
 
     .accordion-header:hover {
@@ -69,9 +68,8 @@ import { PROCESS_STEPS } from "../data/process";
         display: grid;
         grid-template-rows: 0fr;
         transition: grid-template-rows 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-        will-change: grid-template-rows;
     }
-    
+
     .accordion-item.active .accordion-header {
         color: var(--cyan-300);
     }
