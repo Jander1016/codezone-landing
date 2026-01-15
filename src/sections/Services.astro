@@ -165,7 +165,6 @@ import { services } from "../data/services";
             rotate: index % 2 === 0 ? 10 : -10,
             duration: 0.8,
             ease: "power3.out",
-            stagger: 0.15,
             scrollTrigger: {
               trigger: card,
               start: "top 70%",
@@ -220,7 +219,6 @@ import { services } from "../data/services";
             rotate: 0,
             duration: 0.9,
             ease: "power3.out",
-            delay: 0.3,
             scrollTrigger: {
               trigger: card2,
               start: "top 70%",
@@ -248,7 +246,11 @@ import { services } from "../data/services";
   }
 
   // Inicializar cuando el DOM esté listo
-  document.addEventListener("astro:page-load", initServicesAnimations);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initServicesAnimations);
+  } else {
+    initServicesAnimations();
+  }
   // Esto centraliza el comportamiento para todos los separadores.
   setupSectionAnimationRefresh({
     specialSectionIds: ["services-separator"],
@@ -258,11 +260,11 @@ import { services } from "../data/services";
   });
   // Asegurar que el separador principal aparezca después de las animaciones de la sección
   // Retorna una función de cleanup si se necesita
-  animateSeparatorAfterSection("#services", "#services-separator", {
-    pollDelay: 150,
-    timeout: 4000,
-    finalDelay: 120,
-  });
+  // animateSeparatorAfterSection("#services", "#services-separator", {
+  //   pollDelay: 150,
+  //   timeout: 4000,
+  //   finalDelay: 120,
+  // });
 </script>
 
 <style>
