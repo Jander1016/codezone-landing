@@ -8,7 +8,6 @@ import Button from "../components/Button.astro";
 >
   <div
     class="flex flex-col-reverse md:flex-row items-center justify-between gap-4 md:pt-16 w-full max-w-(--width-max-content) mx-auto"
-    
   >
     <article class="flex-1 text-center md:text-left md:pr-6">
       <h2
@@ -25,9 +24,18 @@ import Button from "../components/Button.astro";
         Desarrollo de páginas web, software a medida e integración de sistemas
         (APIs)
       </h1>
-      <div class="hero-cta py-6" data-animate="hero-cta">
-        <Button href="#contact-separator" variant="solid" size="large"
-          >Hablemos de tu proyecto</Button
+      <div class="hero-cta py-6 hidden md:inline-flex" data-animate="hero-cta">
+        <Button
+          href="#contact-separator"
+          variant="solid"
+          size="large">Hablemos de tu proyecto</Button
+        >
+      </div>
+      <div class="hero-cta py-6 md:hidden" data-animate="hero-cta">
+        <Button
+          href="#mobile-contact-separator"
+          variant="solid"
+          size="large">Hablemos de tu proyecto</Button
         >
       </div>
     </article>
@@ -144,16 +152,6 @@ import Button from "../components/Button.astro";
     flex: 0 0 40%;
     width: 40%;
     margin-left: auto;
-  }
-
-  #hero {
-    /* width: 888; */
-    /* height: 362; */
-    /* min-height: 100dvh; */
-    /* top: 275px;
-    left: 192px;
-    opacity: 1;
-    gap: 32px; */
   }
 
   @media (width <= 1024px) {
