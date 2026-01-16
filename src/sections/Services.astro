@@ -199,10 +199,9 @@ import { services } from "../data/services";
     const card2 = cards[1];
     const card3 = cards[2];
     const grid = servicesSection.querySelector(".services-grid");
+    const allCards = [card1, card2, card3];
 
     if (grid && cards.length > 0) {
-      // Usamos fromTo para garantizar el estado inicial y final explícitamente.
-      // start: "top 90%" asegura que empiece apenas entre en pantalla.
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: grid,
@@ -212,23 +211,31 @@ import { services } from "../data/services";
       });
 
       if (isMobile()) {
-        // MOBILE
-        tl.fromTo(
-          cards,
-          { y: 50, autoAlpha: 0 },
-          {
-            y: 0,
-            autoAlpha: 1,
-            duration: 0.8,
-            stagger: 0.2,
+        // tl.fromTo(
+        //   allCards,
+        //   { y: 50, autoAlpha: 0 },
+        //   {
+        //     y: 0,
+        //     autoAlpha: 1,
+        //     duration: 0.8,
+        //     stagger: 0.2,
+        //     ease: "power3.out",
+        //   },
+        // );
+        cards.forEach((card) => {
+          gsap.from(card, {
+            y: 100,
+            opacity: 0,
+            duration: 0.9,
             ease: "power3.out",
-          },
-        );
+            scrollTrigger: {
+              trigger: card,
+              start: "top 90%",
+              toggleActions: "play none none none",
+            },
+          });
+        });
       } else {
-        // DESKTOP: Extremos (1 y 3) luego Centro (2)
-        // Usamos fromTo individual para asegurar control total
-
-        // Card 1
         if (card1) {
           tl.fromTo(
             card1,
@@ -244,7 +251,6 @@ import { services } from "../data/services";
           );
         }
 
-        // Card 3
         if (card3) {
           tl.fromTo(
             card3,
