@@ -297,48 +297,39 @@ export async function handleNavigationClick(
   options: NavigationOptions = {}
 ): Promise<void> {
   try {
-    // 1. Validate href
     if (!isValidNavigationHref(href)) {
-      return; // Fail silently with warning
+      return; 
     }
 
-    // 2. Prevent default
     event.preventDefault();
 
-    // 3. Execute beforeNavigate hook
     if (options.beforeNavigate) {
       try {
         await options.beforeNavigate();
       } catch (error) {
         console.error('NavigationManager: beforeNavigate hook failed', error);
-        // Continue navigation despite hook failure
       }
     }
 
-    // 4. Get target element
     const target = getTargetElement(href);
     if (!target) {
-      return; // Fail silently with warning
+      return; 
     }
-
-    // 5. Update active state
-    // Special case: don't mark hero or contact sections as active
-    // For mobile hrefs, use the original href for active state (not normalized)
     try {
       const activeHref = shouldNotMarkAsActive(href) ? null : href;
       setActiveNavHref(activeHref);
     } catch (error) {
       console.error('NavigationManager: failed to update active state', error);
-      // Continue navigation
+
     }
 
-    // 6. Perform scroll
     try {
       const lenis = getLenis();
       if (lenis) {
         const style = window.getComputedStyle(target);
         const scrollMarginTop = parseInt(style.scrollMarginTop) || 0;
         lenis.scrollTo(target, { offset: -scrollMarginTop });
+        console.log(scrollMarginTop);
       } else {
         target.scrollIntoView({
           behavior: NAV_CONFIG.SCROLL_BEHAVIOR,
@@ -347,10 +338,8 @@ export async function handleNavigationClick(
       }
     } catch (error) {
       console.error('NavigationManager: scroll failed', error);
-      // Continue with other operations
     }
 
-    // 7. Dispatch animation events (with delay to allow scroll to complete)
     try {
       setTimeout(() => {
         dispatchNavigationEvents(href);
@@ -359,10 +348,8 @@ export async function handleNavigationClick(
       console.error('NavigationManager: failed to dispatch events', error);
     }
 
-    // 8. Clean URL hash
     removeHashFromUrl();
 
-    // 9. Execute afterNavigate hook
     if (options.afterNavigate) {
       try {
         await options.afterNavigate();
@@ -373,7 +360,7 @@ export async function handleNavigationClick(
 
   } catch (error) {
     console.error('NavigationManager: unexpected error in handleNavigationClick', error);
-    // Fail gracefully - don't break the application
+
   }
 }
 

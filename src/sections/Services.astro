@@ -6,7 +6,7 @@ import { services } from "../data/services";
 
 <section
   id="services"
-  class="services-section lg:mb-20 flex flex-col items-center justify-center"
+  class="services-section mb-12 md:mb-16 lg:mb-20 flex flex-col items-center justify-center"
 >
   <div class="flex flex-col items-center w-full max-w-2xl mx-auto shift-up-10">
     <img
@@ -66,6 +66,44 @@ import { services } from "../data/services";
     }
   </div>
 </section>
+
+<style>
+  .service-card-center {
+    grid-column: auto;
+  }
+
+  /* Make grid rows equal height so cards stretch to the same size */
+  .services-grid {
+    grid-auto-rows: 1fr;
+    max-width: var(--width-max-content);
+  }
+
+  @media (min-width: 1280px) {
+    .shift-up-10 {
+      transform: translateY(15%);
+      z-index: var(--z-content);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .services-section {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  /* Accessibility: Show content immediately if prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .services-section img,
+    .services-section h2,
+    .services-section p,
+    .service-card {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+  }
+</style>
 
 <!-- 
 <script>
@@ -249,40 +287,3 @@ import { services } from "../data/services";
   });
 </script>
 -->
-<style>
-  .service-card-center {
-    grid-column: auto;
-  }
-
-  /* Make grid rows equal height so cards stretch to the same size */
-  .services-grid {
-    grid-auto-rows: 1fr;
-    max-width: var(--width-max-content);
-  }
-
-  @media (min-width: 1280px) {
-    .shift-up-10 {
-      transform: translateY(15%);
-      z-index: var(--z-content);
-    }
-  }
-
-  @media (max-width: 767px) {
-    .services-section {
-      margin: 0;
-      padding: 0;
-    }
-  }
-
-  /* Accessibility: Show content immediately if prefers-reduced-motion */
-  @media (prefers-reduced-motion: reduce) {
-    .services-section img,
-    .services-section h2,
-    .services-section p,
-    .service-card {
-      opacity: 1 !important;
-      transform: none !important;
-      filter: none !important;
-    }
-  }
-</style>
