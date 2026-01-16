@@ -105,7 +105,6 @@ import { services } from "../data/services";
   }
 </style>
 
-<!-- 
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -193,60 +192,89 @@ import { services } from "../data/services";
           },
         });
       }
+    }
 
-      // DESKTOP: Animación con scrub progresivo suave
-      const card1 = cards[0];
-      const card2 = cards[1];
-      const card3 = cards[2];
+    // 5. Animación de Tarjetas (Mobile & Desktop)
+    const card1 = cards[0];
+    const card2 = cards[1];
+    const card3 = cards[2];
+    const grid = servicesSection.querySelector(".services-grid");
 
-      // Cards de los extremos (1 y 3) con ScrollTrigger individual
-      if (card1) {
-        gsap.from(card1, {
-          y: 120,
-          opacity: 0,
-          rotate: 10,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card1,
-            start: "top 70%",
-            end: "top 50%",
-            toggleActions: "play none none none",
+    if (grid && cards.length > 0) {
+      // Usamos fromTo para garantizar el estado inicial y final explícitamente.
+      // start: "top 90%" asegura que empiece apenas entre en pantalla.
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: grid,
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      if (isMobile()) {
+        // MOBILE
+        tl.fromTo(
+          cards,
+          { y: 50, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power3.out",
           },
-        });
-      }
+        );
+      } else {
+        // DESKTOP: Extremos (1 y 3) luego Centro (2)
+        // Usamos fromTo individual para asegurar control total
 
-      if (card3) {
-        gsap.from(card3, {
-          y: 120,
-          opacity: 0,
-          rotate: -10,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card3,
-            start: "top 70%",
-            end: "top 50%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
+        // Card 1
+        if (card1) {
+          tl.fromTo(
+            card1,
+            { y: 100, autoAlpha: 0, rotate: 6 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            0,
+          );
+        }
 
-      // Card del centro (2) sin rotación
-      if (card2) {
-        gsap.from(card2, {
-          y: 120,
-          opacity: 0,
-          rotate: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card2,
-            start: "top 70%",
-            end: "top 50%",
-            toggleActions: "play none none none",
-          },
-        });
+        // Card 3
+        if (card3) {
+          tl.fromTo(
+            card3,
+            { y: 100, autoAlpha: 0, rotate: -6 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            0,
+          );
+        }
+
+        // Card 2
+        if (card2) {
+          tl.fromTo(
+            card2,
+            { y: 100, autoAlpha: 0, rotate: 0 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            0.2,
+          );
+        }
       }
     }
 
@@ -286,4 +314,3 @@ import { services } from "../data/services";
     finalDelay: 120,
   });
 </script>
--->
