@@ -199,7 +199,6 @@ import { services } from "../data/services";
     const card2 = cards[1];
     const card3 = cards[2];
     const grid = servicesSection.querySelector(".services-grid");
-    const allCards = [card1, card2, card3];
 
     if (grid && cards.length > 0) {
       const tl = gsap.timeline({
@@ -211,30 +210,18 @@ import { services } from "../data/services";
       });
 
       if (isMobile()) {
-        // tl.fromTo(
-        //   allCards,
-        //   { y: 50, autoAlpha: 0 },
-        //   {
-        //     y: 0,
-        //     autoAlpha: 1,
-        //     duration: 0.8,
-        //     stagger: 0.2,
-        //     ease: "power3.out",
-        //   },
-        // );
-        cards.forEach((card) => {
-          gsap.from(card, {
-            y: 100,
-            opacity: 0,
-            duration: 0.9,
+        tl.fromTo(
+          cards,
+          { y: 60, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.8,
+            stagger: 0.2, 
             ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 90%",
-              toggleActions: "play none none none",
-            },
-          });
-        });
+            clearProps: "transform,opacity,visibility", // Limpia propiedades al final para liberar memoria GPU
+          },
+        );
       } else {
         if (card1) {
           tl.fromTo(
@@ -246,6 +233,7 @@ import { services } from "../data/services";
               rotate: 0,
               duration: 1.0,
               ease: "power3.out",
+              force3D: true, // Fuerza aceleración de hardware
             },
             0,
           );
@@ -261,6 +249,7 @@ import { services } from "../data/services";
               rotate: 0,
               duration: 1.0,
               ease: "power3.out",
+              force3D: true,
             },
             0,
           );
@@ -277,6 +266,7 @@ import { services } from "../data/services";
               rotate: 0,
               duration: 1.0,
               ease: "power3.out",
+              force3D: true,
             },
             0.2,
           );
