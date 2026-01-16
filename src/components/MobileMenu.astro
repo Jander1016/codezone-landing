@@ -1,15 +1,4 @@
 ---
-/**
- * MobileMenu Component
- * 
- * Full-screen mobile navigation menu with:
- * - Hamburger toggle button
- * - Overlay with backdrop blur
- * - Slide-in animation
- * - Accessibility features (ARIA, keyboard navigation)
- * - Auto-close on link click and ESC key
- */
-
 import type { NavItem } from '../data/navigation';
 import Button from './Button.astro';
 
@@ -445,9 +434,10 @@ const {
   /* Full-screen overlay */
   .mobilemenu-overlay {
     position: fixed;
-    inset: 0;
-    height: 100dvh;
-    width: 100dvw;
+    top: -20px;
+    left: -20px;
+    width: 120vw;
+    height: 120dvh;
     z-index: var(--z-mobile-menu);
     transform: scaleY(0);
     transform-origin: top;
@@ -456,20 +446,22 @@ const {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    top:-20px;
+    padding: 0;
   }
 
   .mobilemenu-overlay.visible {
     transform: scaleY(1);
   }
 
-  /* Logo header - fixed position top left, same as closed state */
+  /* Logo header - fixed position top left */
   .mobilemenu-header {
     position: absolute;
-    top: 20px;
-    left: 0;
+    /* Visual adjust: -20px (overlay) + 35px = 15px from viewport top */
+    top: 35px; 
+    /* Visual adjust: -20px (overlay) + 35px = 15px from viewport left (approx) */
+    left: 35px;
     width: 100%;
-    padding: 1rem 1.25rem;
+    padding: 0;
     z-index: var(--z-base);
   }
 
@@ -497,11 +489,11 @@ const {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 100vh;
-    padding: 1rem 1.5rem;
+    min-height: 100dvh;
     gap: 1rem;
     margin-top: 0;
     padding-top: 120px;
+    padding-right: 5rem;
   }
 
   /* Navigation list */
@@ -517,7 +509,7 @@ const {
 
   /* Menu items */
   .mobilemenu-item {
-    font-size: 1.3rem;
+    font-size: var(--font-size-subtitle);
     font-weight: 400;
     text-decoration: none;
     opacity: 0;
