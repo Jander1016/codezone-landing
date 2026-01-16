@@ -9,6 +9,8 @@
  * - Special case handling (logo, contact button)
  */
 
+import { getLenis } from '../../scripts/smooth-scroll';
+
 // ============================================================================
 // Types and Interfaces
 // ============================================================================
@@ -91,25 +93,25 @@ export function isValidNavigationHref(href: string): boolean {
     console.warn('NavigationManager: href must be a string', href);
     return false;
   }
-  
+
   // Format check - must start with #
   if (!href.startsWith('#')) {
     console.warn('NavigationManager: href must start with #', href);
     return false;
   }
-  
+
   // Length check - prevent extremely long hrefs
   if (href.length > 100) {
     console.warn('NavigationManager: href is too long', href);
     return false;
   }
-  
+
   // Character whitelist - alphanumeric, dash, underscore only
   if (!/^#[a-zA-Z0-9_-]+$/.test(href)) {
     console.warn('NavigationManager: href contains invalid characters', href);
     return false;
   }
-  
+
   return true;
 }
 
@@ -141,7 +143,7 @@ function normalizeHref(href: string): string {
  */
 export function removeHashFromUrl(): void {
   if (!window.location.hash) return;
-  
+
   try {
     history.replaceState(
       null,
@@ -170,7 +172,7 @@ function getTargetElement(href: string): HTMLElement | null {
     console.warn('NavigationManager: target element not found', id);
     return null;
   }
-  
+
   return target;
 }
 
@@ -189,22 +191,22 @@ export function initialize(linkElements: HTMLElement[]): void {
   state.linkMap.clear();
   state.links = [];
   state.activeHref = null;
-  
+
   // Build link map
   linkElements.forEach(link => {
     const href = link.getAttribute('href');
     if (!href) return;
-    
+
     // Add to links array
     state.links.push(link);
-    
+
     // Add to link map
     if (!state.linkMap.has(href)) {
       state.linkMap.set(href, []);
     }
     state.linkMap.get(href)!.push(link);
   });
-  
+
   state.isInitialized = true;
 }
 
@@ -216,12 +218,12 @@ export function initialize(linkElements: HTMLElement[]): void {
 export function setActiveNavHref(href: string | null): void {
   // Update internal state
   state.activeHref = href;
-  
+
   // Remove aria-current from all links
   state.links.forEach(link => {
     link.removeAttribute('aria-current');
   });
-  
+
   // Set aria-current on matching links
   if (href && state.linkMap.has(href)) {
     const matchingLinks = state.linkMap.get(href)!;
@@ -229,7 +231,7 @@ export function setActiveNavHref(href: string | null): void {
       link.setAttribute('aria-current', 'page');
     });
   }
-  
+
   // Dispatch sync event
   try {
     const event = new CustomEvent('codezone:setActiveNavHref', {
@@ -264,7 +266,7 @@ function dispatchNavigationEvents(href: string): void {
   try {
     // Dispatch setActiveNavHref event (already done in setActiveNavHref)
     // This is for any additional sync needs
-    
+
     // Dispatch trigger-section-animations event
     const sectionId = href.slice(1); // Remove # prefix
     const animationEvent = new CustomEvent('trigger-section-animations', {
@@ -299,10 +301,10 @@ export async function handleNavigationClick(
     if (!isValidNavigationHref(href)) {
       return; // Fail silently with warning
     }
-    
+
     // 2. Prevent default
     event.preventDefault();
-    
+
     // 3. Execute beforeNavigate hook
     if (options.beforeNavigate) {
       try {
@@ -312,13 +314,13 @@ export async function handleNavigationClick(
         // Continue navigation despite hook failure
       }
     }
-    
+
     // 4. Get target element
     const target = getTargetElement(href);
     if (!target) {
       return; // Fail silently with warning
     }
-    
+
     // 5. Update active state
     // Special case: don't mark hero or contact sections as active
     // For mobile hrefs, use the original href for active state (not normalized)
@@ -329,18 +331,25 @@ export async function handleNavigationClick(
       console.error('NavigationManager: failed to update active state', error);
       // Continue navigation
     }
-    
+
     // 6. Perform scroll
     try {
-      target.scrollIntoView({
-        behavior: NAV_CONFIG.SCROLL_BEHAVIOR,
-        block: 'start'
-      });
+      const lenis = getLenis();
+      if (lenis) {
+        const style = window.getComputedStyle(target);
+        const scrollMarginTop = parseInt(style.scrollMarginTop) || 0;
+        lenis.scrollTo(target, { offset: -scrollMarginTop });
+      } else {
+        target.scrollIntoView({
+          behavior: NAV_CONFIG.SCROLL_BEHAVIOR,
+          block: 'start'
+        });
+      }
     } catch (error) {
       console.error('NavigationManager: scroll failed', error);
       // Continue with other operations
     }
-    
+
     // 7. Dispatch animation events (with delay to allow scroll to complete)
     try {
       setTimeout(() => {
@@ -349,10 +358,10 @@ export async function handleNavigationClick(
     } catch (error) {
       console.error('NavigationManager: failed to dispatch events', error);
     }
-    
+
     // 8. Clean URL hash
     removeHashFromUrl();
-    
+
     // 9. Execute afterNavigate hook
     if (options.afterNavigate) {
       try {
@@ -361,7 +370,7 @@ export async function handleNavigationClick(
         console.error('NavigationManager: afterNavigate hook failed', error);
       }
     }
-    
+
   } catch (error) {
     console.error('NavigationManager: unexpected error in handleNavigationClick', error);
     // Fail gracefully - don't break the application
@@ -386,7 +395,7 @@ export async function handleMobileNavigation(
     if (!isValidNavigationHref(href)) {
       return; // Fail silently with warning
     }
-    
+
     // 2. Execute close callback
     try {
       closeMenuCallback();
@@ -394,19 +403,19 @@ export async function handleMobileNavigation(
       console.error('NavigationManager: closeMenuCallback failed', error);
       // Continue with navigation
     }
-    
+
     // 3. Calculate delay based on menu animation
     const delay = options.menuCloseDelay || NAV_CONFIG.MENU_CLOSE_DELAY;
-    
+
     // 4. Wait for menu close animation
     await new Promise(resolve => setTimeout(resolve, delay));
-    
+
     // 5. Create a synthetic event for handleNavigationClick
     const syntheticEvent = new Event('click', { bubbles: true, cancelable: true });
-    
+
     // 6. Call handleNavigationClick
     await handleNavigationClick(syntheticEvent, href, options);
-    
+
   } catch (error) {
     console.error('NavigationManager: unexpected error in handleMobileNavigation', error);
     // Fail gracefully

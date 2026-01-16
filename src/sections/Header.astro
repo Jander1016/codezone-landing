@@ -60,8 +60,7 @@ import MobileMenu from "../components/MobileMenu.astro";
         href="#contact-separator"
         variant="outline"
         size="small"
-        icon="icon-arrow.svg"
-        >Contacto</Button
+        icon="icon-arrow.svg">Contacto</Button
       >
     </div>
 
@@ -89,34 +88,28 @@ import MobileMenu from "../components/MobileMenu.astro";
     // Combine all navigation links for initialization
     const allNavLinks = [...desktopLinks, ...mobileLinks];
 
-    // Initialize NavigationManager with all links
+    // Initialize NavigationManager with all links for 'active' state
     initialize(allNavLinks);
 
-    // Attach click handlers to desktop nav links
-    desktopLinks.forEach((link) => {
+    // Global click handler for all internal navigation
+    // This handles desktop nav, logo, CTA, and ANY other link in the page (like Service cards)
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest("a");
+
+      if (!link) return;
+
       const href = link.getAttribute("href");
-      if (!href) return;
 
-      link.addEventListener("click", (e) => {
-        handleNavigationClick(e, href);
-      });
+      // Only handle internal links starting with #
+      if (!href || !href.startsWith("#") || href === "#") return;
+
+      // Ignore Mobile Menu items (they have their own specific handling with delays)
+      if (link.classList.contains("mobilemenu-item")) return;
+
+      // Handle the navigation
+      handleNavigationClick(e, href);
     });
-
-    // Handle logo click
-    const logo = document.querySelector('a.brand[href="#hero"]');
-    if (logo) {
-      logo.addEventListener("click", (e) => {
-        handleNavigationClick(e, "#hero");
-      });
-    }
-
-    // Handle CTA button
-    const ctaButton = document.querySelector('a[href="#contact-separator"]');
-    if (ctaButton) {
-      ctaButton.addEventListener("click", (e) => {
-        handleNavigationClick(e, "#contact-separator");
-      });
-    }
 
     // Listen for active state sync events
     window.addEventListener("codezone:setActiveNavHref", (event) => {

@@ -19,7 +19,7 @@ function update(time: number) {
 }
 
 function initLenis() {
-    // if (lenis || !shouldUseSmoothScroll()) return;
+    if (lenis || !shouldUseSmoothScroll()) return;
 
     lenis = new Lenis({
         lerp: 0.06,
@@ -34,24 +34,10 @@ function initLenis() {
 
     // Disable CSS smooth scroll to avoid conflicts with Lenis
     document.documentElement.style.scrollBehavior = "auto";
+}
 
-    // Interceptar clicks en enlaces internos para usar Lenis smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", (e) => {
-            const href = anchor.getAttribute("href");
-            if (href && href !== "#") {
-                const target = document.querySelector(href);
-                if (target && lenis) {
-                    e.preventDefault();
-
-                    const style = window.getComputedStyle(target);
-                    const scrollMarginTop = parseInt(style.scrollMarginTop) || 0;
-
-                    lenis.scrollTo(target as HTMLElement, { offset: -scrollMarginTop });
-                }
-            }
-        });
-    });
+export function getLenis(): Lenis | null {
+    return lenis;
 }
 
 function destroyLenis() {
