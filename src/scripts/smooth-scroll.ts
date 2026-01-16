@@ -1,17 +1,8 @@
 import Lenis from "lenis";
 
-const DESKTOP_BREAKPOINT = 1024;
 
 let lenis: Lenis | null = null;
 let animationFrameId: number | null = null;
-
-const isIOS = (): boolean =>
-    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform.startsWith("Mac") && navigator.maxTouchPoints > 1);
-
-const isDesktop = (): boolean => window.innerWidth >= DESKTOP_BREAKPOINT;
-
-const shouldUseSmoothScroll = (): boolean => isDesktop() && !isIOS();
 
 function update(time: number) {
     lenis?.raf(time);
@@ -19,12 +10,12 @@ function update(time: number) {
 }
 
 function initLenis() {
-    if (lenis || !shouldUseSmoothScroll()) return;
+    if (lenis) return;
 
     lenis = new Lenis({
         lerp: 0.06,
         smoothWheel: true,
-        syncTouch: false,
+        syncTouch: false, // Ensure touch sync is configured correctly for mobile
         wheelMultiplier: 1.2,
         touchMultiplier: 1.2,
     });
@@ -55,15 +46,6 @@ function destroyLenis() {
     document.documentElement.style.scrollBehavior = "";
 }
 
-function handleResize() {
-    if (shouldUseSmoothScroll()) {
-        if (!lenis) initLenis();
-    } else {
-        if (lenis) destroyLenis();
-    }
-}
-
 export function initSmoothScroll() {
-    handleResize(); // Check initial state
-    window.addEventListener("resize", handleResize);
+    initLenis();
 }
