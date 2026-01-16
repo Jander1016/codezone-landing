@@ -1,12 +1,9 @@
 import Lenis from "lenis";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const DESKTOP_BREAKPOINT = 1024;
 
 let lenis: Lenis | null = null;
+let animationFrameId: number | null = null;
 
 const isIOS = (): boolean =>
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -15,6 +12,11 @@ const isIOS = (): boolean =>
 const isDesktop = (): boolean => window.innerWidth >= DESKTOP_BREAKPOINT;
 
 const shouldUseSmoothScroll = (): boolean => isDesktop() && !isIOS();
+
+function update(time: number) {
+    lenis?.raf(time);
+    animationFrameId = requestAnimationFrame(update);
+}
 
 function initLenis() {
     // if (lenis || !shouldUseSmoothScroll()) return;
@@ -27,13 +29,8 @@ function initLenis() {
         touchMultiplier: 1.2,
     });
 
-    lenis.on("scroll", ScrollTrigger.update);
-
-    gsap.ticker.add((time) => {
-        lenis?.raf(time * 1000);
-    });
-
-    gsap.ticker.lagSmoothing(0);
+    // Iniciar el loop de animación nativo
+    animationFrameId = requestAnimationFrame(update);
 
     // Disable CSS smooth scroll to avoid conflicts with Lenis
     document.documentElement.style.scrollBehavior = "auto";
@@ -55,27 +52,21 @@ function initLenis() {
             }
         });
     });
-
-    ScrollTrigger.refresh();
 }
 
 function destroyLenis() {
     if (!lenis) return;
 
+    if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+
     lenis.destroy();
     lenis = null;
 
-    // IMPORTANTE: No usamos ScrollTrigger.killAll() para mantener animaciones nativas en móvil
-    // Removemos el ticker de gsap
-    gsap.ticker.remove((time) => {
-        lenis?.raf(time * 1000);
-    });
-
     // Restore CSS smooth scroll
     document.documentElement.style.scrollBehavior = "";
-
-    // Forzamos refresh para volver a comportamiento nativo
-    ScrollTrigger.refresh();
 }
 
 function handleResize() {
