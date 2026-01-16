@@ -61,17 +61,19 @@ const optimizedPoster = await getImage({
         </div>
     </div>
     <div
-        class="w-full lg:w-1/2 border-2 border-(--cz-border-color) rounded-xl"
-        style="aspect-ratio: 16/9"
+        class="w-full lg:w-1/2 border-2 border-(--cz-border-color) rounded-3xl md:rounded-4xl overflow-hidden"
+      
     >
         <video
-            src="/videos/codezone-video-ia-web.webm"
-            poster={optimizedPoster.src}
             autoplay
+            poster={optimizedPoster.src}
             loop
             muted
             playsinline
-            class="w-full h-full object-cover rounded-xl"></video>
+            class="w-full h-full object-cover"
+        >
+            <source src="/videos/codezone-video-ia-web.webm" type="video/webm" />
+        </video>
     </div>
 </section>
 
