@@ -18,7 +18,7 @@ import { PROCESS_STEPS } from "../data/process";
         {
             PROCESS_STEPS.map((item, index) => (
                 <div
-                    class="accordion-item flex flex-col gap-2 lg:gap-5 cursor-pointer"
+                    class={`accordion-item flex flex-col border-b border-[rgba(83,234,253,0.25)] cursor-pointer  gap-2 lg:gap-5 ${index === PROCESS_STEPS.length - 1 ? "border-none" : ""}`}
                     data-tab={String(index + 1).padStart(2, "0")}
                 >
                     <div class="accordion-header">
@@ -27,12 +27,9 @@ import { PROCESS_STEPS } from "../data/process";
                     </div>
                     <div class="accordion-content">
                         <div class="overflow-hidden">
-                            <p class="font-medium">{item.description}</p>
+                            <p class="font-medium pb-2 lg:pb-5">{item.description}</p>
                         </div>
                     </div>
-                    <div
-                        class={`w-full h-px bg-[rgba(83,234,253,0.25)] ${index === PROCESS_STEPS.length - 1 ? "hidden" : ""}`}
-                    />
                 </div>
             ))
         }
