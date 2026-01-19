@@ -45,7 +45,7 @@ export function animateServicesSection(): ScrollTrigger[] {
       ease: "power2.out",
       scrollTrigger: {
         trigger: logo,
-        start: "top 80%",
+        start: "top 90%",
       },
     });
     if (t.scrollTrigger) triggers.push(t.scrollTrigger);
