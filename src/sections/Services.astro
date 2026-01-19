@@ -113,6 +113,9 @@ import { services } from "../data/services";
 
   gsap.registerPlugin(ScrollTrigger);
 
+  // Configuración para evitar saltos en iOS por la barra de navegación
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
   function initServicesAnimations() {
     const servicesSection = document.querySelector("#services");
     if (!servicesSection) return;
@@ -126,6 +129,10 @@ import { services } from "../data/services";
 
     const isMobile = () => window.innerWidth <= 768;
 
+    // Optimización: Eliminar o reducir blur en mobile para mejorar FPS
+    const getBlur = () => (isMobile() ? "0px" : "10px");
+    const getBlurText = () => (isMobile() ? "0px" : "8px");
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: servicesSection,
@@ -138,9 +145,10 @@ import { services } from "../data/services";
       tl.from(logo, {
         y: 60,
         opacity: 0,
-        filter: "blur(10px)",
+        filter: `blur(${getBlur()})`,
         duration: 0.6,
         ease: "power2.out",
+        force3D: true,
       });
     }
 
@@ -159,9 +167,10 @@ import { services } from "../data/services";
         {
           y: 40,
           opacity: 0,
-          filter: "blur(8px)",
+          filter: `blur(${getBlurText()})`,
           duration: 0.4,
           ease: "power3.out",
+          force3D: true,
         },
         "-=0.2",
       );
@@ -173,9 +182,10 @@ import { services } from "../data/services";
         {
           y: 40,
           opacity: 0,
-          filter: "blur(8px)",
+          filter: `blur(${getBlurText()})`,
           duration: 0.4,
           ease: "power3.out",
+          force3D: true,
         },
         "-=0.2",
       );
@@ -183,61 +193,20 @@ import { services } from "../data/services";
 
     if (cards.length > 0) {
       if (isMobile()) {
-        // tl.fromTo(
-        //   cards,
-        //   { y: 60, autoAlpha: 0 },
-        //   {
-        //     y: 0,
-        //     autoAlpha: 1,
-        //     duration: 0.8,
-        //     stagger: 0.2,
-        //     ease: "power3.out",
-        //     clearProps: "transform,opacity,visibility",
-        //   },
-        //   "-=0.2",
-        // );
-        gsap.fromTo(cards[0], {
-          y: 60,
-          autoAlpha: 0,
-        }, {
-          scrollTrigger: {
-            trigger: cards[0],
-            start: "top 80%",
+        tl.fromTo(
+          cards,
+          { y: 60, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: "power3.out",
+            clearProps: "transform,opacity,visibility",
+            force3D: true,
           },
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          clearProps: "transform,opacity,visibility",
-        });
-        gsap.fromTo(cards[1], {
-          y: 60,
-          autoAlpha: 0,
-        }, {
-          scrollTrigger: {
-            trigger: cards[1],
-            start: "top 80%",
-          },
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          clearProps: "transform,opacity,visibility",
-        });
-        gsap.fromTo(cards[2], {
-          y: 60,
-          autoAlpha: 0,
-        }, {
-          scrollTrigger: {
-            trigger: cards[2],
-            start: "top 80%",
-          },
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          clearProps: "transform,opacity,visibility",
-        });
+          "-=0.1",
+        );
       } else {
         tl.addLabel("cardsStart", "-=0.1");
 
@@ -303,6 +272,7 @@ import { services } from "../data/services";
           opacity: 0,
           duration: 0.4,
           ease: "power2.out",
+          force3D: true,
         },
         "-=0.5",
       );
