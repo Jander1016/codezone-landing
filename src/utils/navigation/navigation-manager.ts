@@ -329,7 +329,6 @@ export async function handleNavigationClick(
         const style = window.getComputedStyle(target);
         const scrollMarginTop = parseInt(style.scrollMarginTop) || 0;
         lenis.scrollTo(target, { offset: -scrollMarginTop });
-        console.log(scrollMarginTop);
       } else {
         target.scrollIntoView({
           behavior: NAV_CONFIG.SCROLL_BEHAVIOR,

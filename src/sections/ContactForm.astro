@@ -4,7 +4,10 @@ import FormInput from "../components/FormInput.astro";
 import Button from "../components/Button.astro";
 ---
 
-<section id="contact" class="w-full mb-50 max-w-(--width-max-content) mx-auto lg:px-4">
+<section
+  id="contact"
+  class="w-full mb-50 max-w-(--width-max-content) mx-auto lg:px-4"
+>
   <div
     class="grid grid-cols-1 items-center lg:items-baseline lg:grid-cols-[60%_40%] gap-12 lg:gap-4"
   >
@@ -83,12 +86,7 @@ import Button from "../components/Button.astro";
           FORMULARIO DE CONTACTO
         </h3>
 
-        <form
-          id="contact-form"
-          class="flex flex-col gap-4"
-          autocomplete="off"
-          novalidate
-        >
+        <form id="contact-form" class="flex flex-col gap-4" autocomplete="off">
           <div>
             <FormInput
               type="text"
@@ -178,7 +176,7 @@ import Button from "../components/Button.astro";
   }
 </style>
 
-<!-- <script>
+<script>
   // import { gsap } from "gsap";
   // import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { animateContactSection } from "../utils/animations/contact-animations";
@@ -191,4 +189,4 @@ import Button from "../components/Button.astro";
   } else {
     animateContactSection();
   }
-</script> -->
+</script>
