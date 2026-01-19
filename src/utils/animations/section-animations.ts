@@ -259,28 +259,6 @@ export function animateStackSection(
   return triggers;
 }
 
-/**
- * Limpia todas las animaciones de secciones
- * Destruye todos los ScrollTriggers creados por las funciones de animación de secciones
- * para prevenir memory leaks y conflictos cuando se desmonta el componente o se navega fuera
- * 
- * Esta función debe llamarse cuando:
- * - Se desmonta un componente que usa animaciones de sección
- * - Se navega a otra página
- * - Se necesita reinicializar las animaciones
- * 
- * @example
- * ```typescript
- * // Limpiar al desmontar componente
- * onCleanup(() => {
- *   cleanupSectionAnimations();
- * });
- * 
- * // Limpiar antes de reinicializar
- * cleanupSectionAnimations();
- * animateStackSection();
- * ```
- */
 export function cleanupSectionAnimations(): void {
   const allTriggers = ScrollTrigger.getAll();
 
