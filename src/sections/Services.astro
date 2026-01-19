@@ -109,10 +109,7 @@ import { services } from "../data/services";
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { maskTextRevealVertical } from "../utils/animations/text-animations";
-  import {
-    setupSectionAnimationRefresh,
-    animateSeparatorAfterSection,
-  } from "../utils/animations/animation-helpers";
+  import { setupSectionAnimationRefresh } from "../utils/animations/animation-helpers";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -127,102 +124,127 @@ import { services } from "../data/services";
     const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
     const separator = document.querySelector("#process-separator");
 
-    // Detectar tamaño de pantalla
     const isMobile = () => window.innerWidth <= 768;
 
-    // 1. Logo, se anima cuando está más dentro del viewport
-    if (!isMobile()) {
-      if (logo) {
-        gsap.from(logo, {
-          y: 60,
-          opacity: 0,
-          filter: "blur(10px)",
-          duration: 0.4,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: logo,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: servicesSection,
+        start: "top 70%",
+        toggleActions: "play none none none",
+      },
+    });
 
-      // 2. Claim h2 con maskTextReveal2 (animación vertical)
-      if (claim) {
-        maskTextRevealVertical(claim, {
-          duration: 0.4,
-          stagger: 0.05,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: claim,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
-
-      // 3. Párrafo 1
-      if (p1) {
-        gsap.from(p1, {
-          y: 40,
-          opacity: 0,
-          filter: "blur(8px)",
-          duration: 0.4,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: p1,
-            start: "top 70%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
-
-      // 4. Párrafo 2
-      if (p2) {
-        gsap.from(p2, {
-          y: 40,
-          opacity: 0,
-          filter: "blur(8px)",
-          duration: 0.4,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: p2,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
+    if (logo) {
+      tl.from(logo, {
+        y: 60,
+        opacity: 0,
+        filter: "blur(10px)",
+        duration: 0.6,
+        ease: "power2.out",
+      });
     }
 
-    // 5. Animación de Tarjetas (Mobile & Desktop)
-    const card1 = cards[0];
-    const card2 = cards[1];
-    const card3 = cards[2];
-    const grid = servicesSection.querySelector(".services-grid");
-
-    if (grid && cards.length > 0) {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: grid,
-          start: "top 90%",
-          toggleActions: "play none none reverse",
-        },
+    if (claim) {
+      const claimTl = maskTextRevealVertical(claim, {
+        duration: 0.4,
+        stagger: 0.05,
+        ease: "power2.out",
       });
+      tl.add(claimTl, "-=0.3");
+    }
 
+    if (p1) {
+      tl.from(
+        p1,
+        {
+          y: 40,
+          opacity: 0,
+          filter: "blur(8px)",
+          duration: 0.4,
+          ease: "power3.out",
+        },
+        "-=0.2",
+      );
+    }
+
+    if (p2) {
+      tl.from(
+        p2,
+        {
+          y: 40,
+          opacity: 0,
+          filter: "blur(8px)",
+          duration: 0.4,
+          ease: "power3.out",
+        },
+        "-=0.2",
+      );
+    }
+
+    if (cards.length > 0) {
       if (isMobile()) {
-        tl.fromTo(
-          cards,
-          { y: 60, autoAlpha: 0 },
-          {
-            y: 0,
-            autoAlpha: 1,
-            duration: 0.8,
-            stagger: 0.2, 
-            ease: "power3.out",
-            clearProps: "transform,opacity,visibility", // Limpia propiedades al final para liberar memoria GPU
+        // tl.fromTo(
+        //   cards,
+        //   { y: 60, autoAlpha: 0 },
+        //   {
+        //     y: 0,
+        //     autoAlpha: 1,
+        //     duration: 0.8,
+        //     stagger: 0.2,
+        //     ease: "power3.out",
+        //     clearProps: "transform,opacity,visibility",
+        //   },
+        //   "-=0.2",
+        // );
+        gsap.fromTo(cards[0], {
+          y: 60,
+          autoAlpha: 0,
+        }, {
+          scrollTrigger: {
+            trigger: cards[0],
+            start: "top 80%",
           },
-        );
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          clearProps: "transform,opacity,visibility",
+        });
+        gsap.fromTo(cards[1], {
+          y: 60,
+          autoAlpha: 0,
+        }, {
+          scrollTrigger: {
+            trigger: cards[1],
+            start: "top 80%",
+          },
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          clearProps: "transform,opacity,visibility",
+        });
+        gsap.fromTo(cards[2], {
+          y: 60,
+          autoAlpha: 0,
+        }, {
+          scrollTrigger: {
+            trigger: cards[2],
+            start: "top 80%",
+          },
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          clearProps: "transform,opacity,visibility",
+        });
       } else {
+        tl.addLabel("cardsStart", "-=0.1");
+
+        const card1 = cards[0];
+        const card2 = cards[1];
+        const card3 = cards[2];
+
         if (card1) {
           tl.fromTo(
             card1,
@@ -233,9 +255,9 @@ import { services } from "../data/services";
               rotate: 0,
               duration: 1.0,
               ease: "power3.out",
-              force3D: true, // Fuerza aceleración de hardware
+              force3D: true,
             },
-            0,
+            "cardsStart",
           );
         }
 
@@ -251,11 +273,10 @@ import { services } from "../data/services";
               ease: "power3.out",
               force3D: true,
             },
-            0,
+            "cardsStart",
           );
         }
 
-        // Card 2
         if (card2) {
           tl.fromTo(
             card2,
@@ -268,24 +289,23 @@ import { services } from "../data/services";
               ease: "power3.out",
               force3D: true,
             },
-            0.2,
+            "cardsStart+=0.2",
           );
         }
       }
     }
 
     if (separator) {
-      gsap.from(separator, {
-        y: 50,
-        opacity: 0,
-        duration: 0.4,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: separator,
-          start: "top 75%",
-          toggleActions: "play none none none",
+      tl.from(
+        separator,
+        {
+          y: 50,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power2.out",
         },
-      });
+        "-=0.5",
+      );
     }
   }
 
@@ -295,18 +315,11 @@ import { services } from "../data/services";
   } else {
     initServicesAnimations();
   }
-  // Esto centraliza el comportamiento para todos los separadores.
+  // Helpers de refresco y separadores
   setupSectionAnimationRefresh({
     specialSectionIds: ["services-separator"],
     specialDelay: 150,
     includeResize: true,
     resizeDebounce: 250,
-  });
-  // Asegurar que el separador principal aparezca después de las animaciones de la sección
-  // Retorna una función de cleanup si se necesita
-  animateSeparatorAfterSection("#services", "#services-separator", {
-    pollDelay: 150,
-    timeout: 4000,
-    finalDelay: 120,
   });
 </script>
