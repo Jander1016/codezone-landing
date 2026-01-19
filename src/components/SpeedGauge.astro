@@ -282,7 +282,7 @@ const {
       ) as HTMLElement | null;
 
       const maxSpeed = parseFloat(
-        gaugeSection.getAttribute("data-max-speed") || "95",
+        gaugeSection.getAttribute("data-max-speed") || "90",
       );
       const animationDuration = parseFloat(
         gaugeSection.getAttribute("data-animation-duration") || "2",
@@ -338,7 +338,7 @@ const {
       // ScrollTrigger
       ScrollTrigger.create({
         trigger: gaugeSection,
-        start: "top center",
+        start: "top 90%",
         onEnter: () => tl.play(),
       });
 
