@@ -127,3 +127,187 @@ import { services } from "../data/services";
     animateServicesSection();
   }
 </script>
+
+
+<!-- <script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { maskTextRevealVertical } from "../utils/animations/text-animations";
+  import { setupSectionAnimationRefresh } from "../utils/animations/animation-helpers";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Configuración para evitar saltos en iOS por la barra de navegación
+  ScrollTrigger.config({ ignoreMobileResize: true });
+  // Normalizar scroll para iOS
+  ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
+
+  function initServicesAnimations() {
+    const servicesSection = document.querySelector("#services");
+    if (!servicesSection) return;
+
+    const logo = servicesSection.querySelector("img");
+    const claim = servicesSection.querySelector("h2");
+    const p1 = servicesSection.querySelector(".paragraph-1");
+    const p2 = servicesSection.querySelector(".paragraph-2");
+    const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
+    const separator = document.querySelector("#process-separator");
+
+    const isMobile = () => window.innerWidth <= 768;
+
+    // Optimización: Eliminar o reducir blur en mobile para mejorar FPS
+    const getBlur = () => (isMobile() ? "0px" : "10px");
+    const getBlurText = () => (isMobile() ? "0px" : "8px");
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: servicesSection,
+        start: "top 70%",
+        toggleActions: "play none none none",
+      },
+    });
+
+    if (logo) {
+      tl.from(logo, {
+        y: 60,
+        opacity: 0,
+        filter: `blur(${getBlur()})`,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+    }
+
+    if (claim) {
+      const claimTl = maskTextRevealVertical(claim, {
+        duration: 0.4,
+        stagger: 0.05,
+        ease: "power2.out",
+      });
+      tl.add(claimTl, "-=0.3");
+    }
+
+    if (p1) {
+      tl.from(
+        p1,
+        {
+          y: 40,
+          opacity: 0,
+          filter: `blur(${getBlurText()})`,
+          duration: 0.4,
+          ease: "power3.out",
+        },
+        "-=0.2",
+      );
+    }
+
+    if (p2) {
+      tl.from(
+        p2,
+        {
+          y: 40,
+          opacity: 0,
+          filter: `blur(${getBlurText()})`,
+          duration: 0.4,
+          ease: "power3.out",
+        },
+        "-=0.2",
+      );
+    }
+
+    if (cards.length > 0) {
+      if (isMobile()) {
+        tl.fromTo(
+          cards,
+          { y: 60, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: "power3.out",
+            clearProps: "transform,opacity,visibility",
+          },
+          "-=0.1",
+        );
+      } else {
+        tl.addLabel("cardsStart", "-=0.1");
+
+        const card1 = cards[0];
+        const card2 = cards[1];
+        const card3 = cards[2];
+
+        if (card1) {
+          tl.fromTo(
+            card1,
+            { y: 100, autoAlpha: 0, rotate: 6 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            "cardsStart",
+          );
+        }
+
+        if (card3) {
+          tl.fromTo(
+            card3,
+            { y: 100, autoAlpha: 0, rotate: -6 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            "cardsStart",
+          );
+        }
+
+        if (card2) {
+          tl.fromTo(
+            card2,
+            { y: 100, autoAlpha: 0, rotate: 0 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            "cardsStart+=0.2",
+          );
+        }
+      }
+    }
+
+    if (separator) {
+      tl.from(
+        separator,
+        {
+          y: 50,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power2.out",
+        },
+        "-=0.5",
+      );
+    }
+  }
+
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initServicesAnimations);
+  } else {
+    initServicesAnimations();
+  }
+  // Helpers de refresco y separadores
+  setupSectionAnimationRefresh({
+    specialSectionIds: ["services-separator"],
+    specialDelay: 150,
+    includeResize: true,
+    resizeDebounce: 250,
+  });
+</script> -->

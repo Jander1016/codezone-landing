@@ -6,9 +6,9 @@ import { setupSectionAnimationRefresh } from "./animation-helpers";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Configuración para evitar saltos en iOS
-ScrollTrigger.config({ ignoreMobileResize: true });
-ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
+// // Configuración para evitar saltos en iOS
+// ScrollTrigger.config({ ignoreMobileResize: true });
+// ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
 
 export function animateServicesSection(): ScrollTrigger[] {
   const triggers: ScrollTrigger[] = [];
@@ -21,7 +21,15 @@ export function animateServicesSection(): ScrollTrigger[] {
   const gridContainer = servicesSection.querySelector(".services-grid");
   const separator = document.querySelector("#process-separator");
 
+  const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
+
   const isMobile = () => window.innerWidth <= 768;
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: gridContainer,
+      start: "top 80%",
+    },
+  });
 
   // Helpers de optimización
   const getBlur = () => (isMobile() ? "0px" : "10px");
@@ -51,7 +59,7 @@ export function animateServicesSection(): ScrollTrigger[] {
       ease: "power2.out",
       scrollTrigger: {
         trigger: claim,
-        start: "top 75%",
+        start: "top 80%",
       },
     });
     // @ts-ignore
@@ -64,8 +72,8 @@ export function animateServicesSection(): ScrollTrigger[] {
       y: 40,
       opacity: 0,
       filter: `blur(${getBlurText()})`,
-      duration: 0.4,
-      ease: "power3.out",
+      duration: 0.6,
+      ease: "power4.out",
       scrollTrigger: {
         trigger: p,
         start: "top 85%",
@@ -76,13 +84,63 @@ export function animateServicesSection(): ScrollTrigger[] {
 
   // 4. Grid de tarjetas
   if (gridContainer) {
-    const gridTrigger = animateGridItems(gridContainer, {
-      itemsSelector: ".service-card",
-      start: "top 75%",
-      itemDelay: 0.15,
-      duration: 0.6,
-    });
-    if (gridTrigger) triggers.push(gridTrigger);
+    if(isMobile()){
+      animateGridItems(gridContainer, {
+        itemsSelector: ".service-card",
+        start: "top 80%",
+      });
+    }else{
+       tl.addLabel("cardsStart", "-=0.1");
+
+        const card1 = cards[0];
+        const card2 = cards[1];
+        const card3 = cards[2];
+
+        if (card1) {
+          tl.fromTo(
+            card1,
+            { y: 100, autoAlpha: 0, rotate: 6 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            "cardsStart",
+          );
+        }
+
+        if (card3) {
+          tl.fromTo(
+            card3,
+            { y: 100, autoAlpha: 0, rotate: -6 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            "cardsStart",
+          );
+        }
+
+        if (card2) {
+          tl.fromTo(
+            card2,
+            { y: 100, autoAlpha: 0, rotate: 0 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              rotate: 0,
+              duration: 1.0,
+              ease: "power3.out",
+            },
+            "cardsStart+=0.2",
+          );
+        }
+    }
   }
 
   // 5. Separador
