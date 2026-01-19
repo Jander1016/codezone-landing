@@ -31,7 +31,7 @@ import { techStack } from "../data/techStack";
   </div>
 </section>
 
-<!-- <script>
+<script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { animateStackSection } from "../utils/animations/section-animations";
@@ -39,16 +39,12 @@ import { techStack } from "../data/techStack";
   gsap.registerPlugin(ScrollTrigger);
 
   function initStackAnimations() {
-    // Animar toda la sección Stack usando la función centralizada
     animateStackSection();
-    // Asegurar que el separador #stack-separator aparezca tras las animaciones
-    // animateSeparatorAfterSection('#stack', '#stack-separator', { pollDelay: 150, timeout: 4000, finalDelay: 120 });
   }
 
-  // Initialize when DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initStackAnimations);
   } else {
     initStackAnimations();
   }
-</script> -->
+</script>

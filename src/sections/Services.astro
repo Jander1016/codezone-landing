@@ -68,6 +68,19 @@ import { services } from "../data/services";
 </section>
 
 <style>
+  /* Performance optimizations */
+  .services-section img,
+  .paragraph-1,
+  .paragraph-2 {
+    will-change: transform, opacity, filter;
+  }
+  .service-card {
+    will-change: transform, opacity;
+  }
+  .services-section :global(.word-mask-inner) {
+    will-change: transform, opacity;
+  }
+
   .service-card-center {
     grid-column: auto;
   }
@@ -105,7 +118,7 @@ import { services } from "../data/services";
   }
 </style>
 
-<script>
+<!-- <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { maskTextRevealVertical } from "../utils/animations/text-animations";
@@ -115,6 +128,8 @@ import { services } from "../data/services";
 
   // Configuración para evitar saltos en iOS por la barra de navegación
   ScrollTrigger.config({ ignoreMobileResize: true });
+  // Normalizar scroll para iOS
+  ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
 
   function initServicesAnimations() {
     const servicesSection = document.querySelector("#services");
@@ -148,7 +163,6 @@ import { services } from "../data/services";
         filter: `blur(${getBlur()})`,
         duration: 0.6,
         ease: "power2.out",
-        force3D: true,
       });
     }
 
@@ -170,7 +184,6 @@ import { services } from "../data/services";
           filter: `blur(${getBlurText()})`,
           duration: 0.4,
           ease: "power3.out",
-          force3D: true,
         },
         "-=0.2",
       );
@@ -185,7 +198,6 @@ import { services } from "../data/services";
           filter: `blur(${getBlurText()})`,
           duration: 0.4,
           ease: "power3.out",
-          force3D: true,
         },
         "-=0.2",
       );
@@ -203,7 +215,6 @@ import { services } from "../data/services";
             stagger: 0.15,
             ease: "power3.out",
             clearProps: "transform,opacity,visibility",
-            force3D: true,
           },
           "-=0.1",
         );
@@ -224,7 +235,6 @@ import { services } from "../data/services";
               rotate: 0,
               duration: 1.0,
               ease: "power3.out",
-              force3D: true,
             },
             "cardsStart",
           );
@@ -240,7 +250,6 @@ import { services } from "../data/services";
               rotate: 0,
               duration: 1.0,
               ease: "power3.out",
-              force3D: true,
             },
             "cardsStart",
           );
@@ -256,7 +265,6 @@ import { services } from "../data/services";
               rotate: 0,
               duration: 1.0,
               ease: "power3.out",
-              force3D: true,
             },
             "cardsStart+=0.2",
           );
@@ -272,7 +280,6 @@ import { services } from "../data/services";
           opacity: 0,
           duration: 0.4,
           ease: "power2.out",
-          force3D: true,
         },
         "-=0.5",
       );
@@ -292,4 +299,4 @@ import { services } from "../data/services";
     includeResize: true,
     resizeDebounce: 250,
   });
-</script>
+</script> -->
