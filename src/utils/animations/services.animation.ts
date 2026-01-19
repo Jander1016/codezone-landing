@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // // Configuración para evitar saltos en iOS
 // ScrollTrigger.config({ ignoreMobileResize: true });
-// ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
+ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
 
 export function animateServicesSection(): ScrollTrigger[] {
   const triggers: ScrollTrigger[] = [];
