@@ -6,8 +6,8 @@ import { setupSectionAnimationRefresh } from "./animation-helpers";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// // Configuración para evitar saltos en iOS
-// ScrollTrigger.config({ ignoreMobileResize: true });
+// Configuración para evitar saltos en iOS
+ScrollTrigger.config({ ignoreMobileResize: true });
 ScrollTrigger.normalizeScroll({ allowNestedScroll: true });
 
 export function animateServicesSection(): ScrollTrigger[] {
@@ -20,149 +20,151 @@ export function animateServicesSection(): ScrollTrigger[] {
   const paragraphs = servicesSection.querySelectorAll(".paragraph-1, .paragraph-2");
   const gridContainer = servicesSection.querySelector(".services-grid");
   const separator = document.querySelector("#process-separator");
-
   const cards = Array.from(servicesSection.querySelectorAll(".service-card"));
 
-  const isMobile = () => window.innerWidth <= 768;
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: gridContainer,
-      start: "top 80%",
+  const mm = gsap.matchMedia();
+
+  mm.add(
+    {
+      isMobile: "(max-width: 768px)",
+      isDesktop: "(min-width: 769px)",
+      reduceMotion: "(prefers-reduced-motion: reduce)",
     },
-  });
+    (context) => {
+      const { isMobile, reduceMotion } = context.conditions as {
+        isMobile: boolean;
+        reduceMotion: boolean;
+      };
 
-  // Helpers de optimización
-  const getBlur = () => (isMobile() ? "0px" : "10px");
-  const getBlurText = () => (isMobile() ? "0px" : "8px");
+      if (reduceMotion) return;
 
-  // 1. Logo
-  if (logo) {
-    const t = gsap.from(logo, {
-      y: 60,
-      opacity: 0,
-      filter: `blur(${getBlur()})`,
-      duration: 0.6,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: logo,
-        start: "top 90%",
-      },
-    });
-    if (t.scrollTrigger) triggers.push(t.scrollTrigger);
-  }
+      // DRY & Performance Config
+      // Optimizamos para Safari reduciendo filtros en móvil
+      const config = {
+        blur: isMobile ? "0px" : "10px",
+        textBlur: isMobile ? "0px" : "8px",
+        force3D: true, // Ayuda al rendimiento
+      };
 
-  // 2. Claim
-  if (claim) {
-    const claimAnim = maskTextRevealVertical(claim, {
-      duration: 0.4,
-      stagger: 0.05,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: claim,
-        start: "top 80%",
-      },
-    });
-    // @ts-ignore
-    if (claimAnim.scrollTrigger) triggers.push(claimAnim.scrollTrigger);
-  }
+      // 1. Logo
+      if (logo) {
+        const t = gsap.from(logo, {
+          y: 60,
+          autoAlpha: 0, // Más performant que opacity
+          filter: `blur(${config.blur})`,
+          force3D: true, // Forzar GPU
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: logo,
+            start: "top 90%",
+          },
+        });
+        if (t.scrollTrigger) triggers.push(t.scrollTrigger);
+      }
 
-  // 3. Párrafos
-  paragraphs.forEach((p) => {
-    const t = gsap.from(p, {
-      y: 40,
-      opacity: 0,
-      filter: `blur(${getBlurText()})`,
-      duration: 0.6,
-      ease: "power4.out",
-      scrollTrigger: {
-        trigger: p,
-        start: "top 85%",
-      },
-    });
-    if (t.scrollTrigger) triggers.push(t.scrollTrigger);
-  });
+      // 2. Claim (Título)
+      if (claim) {
+        const claimAnim = maskTextRevealVertical(claim, {
+          duration: 0.4,
+          stagger: 0.05,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: claim,
+            start: "top 80%",
+          },
+        });
+        // @ts-ignore
+        if (claimAnim.scrollTrigger) triggers.push(claimAnim.scrollTrigger);
+      }
 
-  // 4. Grid de tarjetas
-  if (gridContainer) {
-    if(isMobile()){
-      animateGridItems(gridContainer, {
-        itemsSelector: ".service-card",
-        start: "top 80%",
+      // 3. Párrafos
+      paragraphs.forEach((p) => {
+        const t = gsap.from(p, {
+          y: 40,
+          autoAlpha: 0,
+          filter: `blur(${config.textBlur})`,
+          duration: 0.6,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: p,
+            start: "top 85%",
+          },
+        });
+        if (t.scrollTrigger) triggers.push(t.scrollTrigger);
       });
-    }else{
-       tl.addLabel("cardsStart", "-=0.1");
 
-        const card1 = cards[0];
-        const card2 = cards[1];
-        const card3 = cards[2];
-
-        if (card1) {
-          tl.fromTo(
-            card1,
-            { y: 100, autoAlpha: 0, rotate: 6 },
-            {
-              y: 0,
-              autoAlpha: 1,
-              rotate: 0,
-              duration: 1.0,
-              ease: "power3.out",
+      // 4. Grid de tarjetas (DRY Logic con ramificación)
+      if (gridContainer) {
+        if (isMobile) {
+          // Versión Móvil: Simple y ligera
+          const gridTrigger = animateGridItems(gridContainer, {
+            itemsSelector: ".service-card",
+            start: "top 80%",
+          });
+          if (gridTrigger) triggers.push(gridTrigger);
+        } else {
+          // Versión Desktop: Timeline coreografiada
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: gridContainer,
+              start: "top 80%",
             },
-            "cardsStart",
-          );
-        }
+          });
 
-        if (card3) {
-          tl.fromTo(
-            card3,
-            { y: 100, autoAlpha: 0, rotate: -6 },
-            {
-              y: 0,
-              autoAlpha: 1,
-              rotate: 0,
-              duration: 1.0,
-              ease: "power3.out",
-            },
-            "cardsStart",
-          );
-        }
+          // Definición de animaciones para bucle (DRY)
+          const cardAnimations = [
+            { el: cards[0], props: { rotate: 6 }, pos: "cardsStart" },
+            { el: cards[2], props: { rotate: -6 }, pos: "cardsStart" },
+            { el: cards[1], props: { rotate: 0 }, pos: "cardsStart+=0.2" },
+          ];
 
-        if (card2) {
-          tl.fromTo(
-            card2,
-            { y: 100, autoAlpha: 0, rotate: 0 },
-            {
-              y: 0,
-              autoAlpha: 1,
-              rotate: 0,
-              duration: 1.0,
-              ease: "power3.out",
-            },
-            "cardsStart+=0.2",
-          );
+          tl.addLabel("cardsStart", "-=0.1");
+
+          cardAnimations.forEach(({ el, props, pos }) => {
+            if (el) {
+              tl.fromTo(
+                el,
+                { y: 100, autoAlpha: 0, ...props },
+                {
+                  y: 0,
+                  autoAlpha: 1,
+                  rotate: 0,
+                  force3D: true, // Forzar GPU
+                  duration: 1.0,
+                  ease: "power3.out",
+                },
+                pos
+              );
+            }
+          });
+
+          if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
         }
+      }
+
+      // 5. Separator
+      if (separator) {
+        const t = gsap.from(separator, {
+          y: 50,
+          autoAlpha: 0,
+          duration: 0.4,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: separator,
+            start: "top 85%",
+          },
+        });
+        if (t.scrollTrigger) triggers.push(t.scrollTrigger);
+      }
     }
-  }
-
-  // 5. Separador
-  if (separator) {
-    const t = gsap.from(separator, {
-      y: 50,
-      opacity: 0,
-      duration: 0.4,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: separator,
-        start: "top 85%",
-      },
-    });
-    if (t.scrollTrigger) triggers.push(t.scrollTrigger);
-  }
+  );
 
   // Helpers de refresco
   setupSectionAnimationRefresh({
     specialSectionIds: ["services-separator"],
     specialDelay: 150,
-    includeResize: true,
+    includeResize: false, // Desactivado para evitar conflictos con ignoreMobileResize en iOS
     resizeDebounce: 250,
   });
 
