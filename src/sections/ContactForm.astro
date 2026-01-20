@@ -2,6 +2,38 @@
 import GradientText from "../components/GradientText.astro";
 import FormInput from "../components/FormInput.astro";
 import Button from "../components/Button.astro";
+
+import { actions } from "astro:actions";
+const formFields = [
+  {
+    name: "name",
+    type: "text",
+    label: "Nombre:",
+    placeholder: "Tu nombre y apellidos",
+    required: true,
+  },
+  {
+    name: "email",
+    type: "email",
+    label: "Email:",
+    placeholder: "ejemplo: tu.nombre@example.com",
+    required: true,
+  },
+  {
+    name: "phone",
+    type: "tel",
+    label: "Teléfono:",
+    placeholder: "Ejemplo: +34681019753",
+    required: true,
+  },
+  {
+    name: "message",
+    type: "textarea",
+    label: "Mensaje:",
+    placeholder: "Déjanos un mensaje",
+    required: false,
+  },
+];
 ---
 
 <section
@@ -86,62 +118,31 @@ import Button from "../components/Button.astro";
           FORMULARIO DE CONTACTO
         </h3>
 
-        <form id="contact-form" class="flex flex-col gap-4" autocomplete="off">
-          <div>
-            <FormInput
-              type="text"
-              name="nombre"
-              label="Nombre:"
-              placeholder="Tu nombre y apellidos"
-              required={true}
-            />
-            <span
-              id="error-nombre"
-              class="text-red-400 text-sm mt-1 block"
-              aria-live="polite"></span>
-          </div>
-
-          <div>
-            <FormInput
-              type="email"
-              name="email"
-              label="Email:"
-              placeholder="ejemplo: tu.nombre@example.com"
-              required={true}
-            />
-            <span
-              id="error-email"
-              class="text-red-400 text-sm mt-1 block"
-              aria-live="polite"></span>
-          </div>
-
-          <div>
-            <FormInput
-              type="tel"
-              name="telefono"
-              label="Teléfono:"
-              placeholder="Ejemplo: +34681019753"
-              required={true}
-            />
-            <span
-              id="error-telefono"
-              class="text-red-400 text-sm mt-1 block"
-              aria-live="polite"></span>
-          </div>
-
-          <div>
-            <FormInput
-              type="textarea"
-              name="mensaje"
-              label="Mensaje:"
-              placeholder="Déjanos un mensaje"
-              required={false}
-            />
-            <span
-              id="error-mensaje"
-              class="text-red-400 text-sm mt-1 block"
-              aria-live="polite"></span>
-          </div>
+        <form
+          id="contact-form"
+          action={actions.sendMail}
+          method="post"
+          class="flex flex-col gap-4"
+          autocomplete="off"
+        >
+          {
+            formFields.map((field) => (
+              <div>
+                <FormInput
+                  type={field.type as any}
+                  name={field.name}
+                  label={field.label}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                />
+                <span
+                  id={`error-${field.name}`}
+                  class="text-red-400 text-sm mt-1 block"
+                  aria-live="polite"
+                />
+              </div>
+            ))
+          }
 
           <div id="form-message" class="hidden" role="alert" aria-live="polite">
           </div>
@@ -177,16 +178,17 @@ import Button from "../components/Button.astro";
 </style>
 
 <script>
-  // import { gsap } from "gsap";
-  // import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { animateContactSection } from "../utils/animations/contact-animations";
+  import { setupFormValidation } from "../utils/validation"; 
 
-  // gsap.registerPlugin(ScrollTrigger);
-
-  // Inicializar cuando el DOM esté listo
+  // Initialize animations and validation when DOM is ready
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", animateContactSection);
+    document.addEventListener("DOMContentLoaded", () => {
+      animateContactSection();
+      setupFormValidation();
+    });
   } else {
     animateContactSection();
+    setupFormValidation();
   }
 </script>

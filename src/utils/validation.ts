@@ -1,3 +1,6 @@
+
+import { actions } from "astro:actions";
+
 /**
  * Form validation utilities with Spanish error messages
  * Provides validation rules and functions for contact form
@@ -21,7 +24,7 @@ export interface ValidationError {
  * Validation rules for contact form fields
  */
 export const validationRules: Record<string, ValidationRule> = {
-  nombre: {
+  name: {
     required: true,
     minLength: 2,
     maxLength: 100,
@@ -31,12 +34,12 @@ export const validationRules: Record<string, ValidationRule> = {
     required: true,
     pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   },
-  telefono: {
+  phone: {
     required: true,
     pattern: /^(\+34|0034|34)?[6789]\d{8}$/
   },
-  mensaje: {
-    required: true,
+  message: {
+    required: false,
     minLength: 10,
     maxLength: 1000
   }
@@ -46,7 +49,7 @@ export const validationRules: Record<string, ValidationRule> = {
  * Error messages in Spanish for each field and validation type
  */
 export const errorMessages: Record<string, Record<string, string>> = {
-  nombre: {
+  name: {
     required: 'El nombre es obligatorio',
     minLength: 'El nombre debe tener al menos 2 caracteres',
     maxLength: 'El nombre no puede exceder 100 caracteres',
@@ -56,11 +59,11 @@ export const errorMessages: Record<string, Record<string, string>> = {
     required: 'El email es obligatorio',
     pattern: 'Por favor, introduce un email válido'
   },
-  telefono: {
+  phone: {
     required: 'El teléfono es obligatorio',
     pattern: 'Por favor, introduce un teléfono válido (ej: +34 600 000 000)'
   },
-  mensaje: {
+  message: {
     required: 'El mensaje es obligatorio',
     minLength: 'El mensaje debe tener al menos 10 caracteres',
     maxLength: 'El mensaje no puede exceder 1000 caracteres'
@@ -76,7 +79,7 @@ export const errorMessages: Record<string, Record<string, string>> = {
 export function validateField(field: string, value: string): ValidationError | null {
   const rules = validationRules[field];
   const messages = errorMessages[field];
-  
+
   if (!rules || !messages) {
     return null;
   }
@@ -151,3 +154,122 @@ export function validateForm(formData: Record<string, string>): ValidationError[
 export function isFormValid(formData: Record<string, string>): boolean {
   return validateForm(formData).length === 0;
 }
+
+export const setupFormValidation = () => {
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+
+  // Field configuration derived from naming convention
+  const fieldNames = ["name", "email", "phone", "message"];
+  const fields = fieldNames.map((name) => ({
+    name,
+    inputId: `input-${name}`,
+    errorId: `error-${name}`,
+  }));
+
+  // Helper to validate a single field and update UI
+  const validateFieldInput = (
+    input: HTMLInputElement | HTMLTextAreaElement,
+    errorElement: HTMLElement,
+    name: string,
+  ) => {
+    const error = validateField(name, input.value);
+    if (error) {
+      errorElement.textContent = error.message;
+      input.classList.add("form-input-error");
+      input.setAttribute("aria-invalid", "true");
+      return false;
+    }
+    errorElement.textContent = "";
+    input.classList.remove("form-input-error");
+    input.setAttribute("aria-invalid", "false");
+    return true;
+  };
+
+  // Attach listeners to each field
+  fields.forEach(({ name, inputId, errorId }) => {
+    const input = document.getElementById(inputId) as
+      | HTMLInputElement
+      | HTMLTextAreaElement;
+    const errorElement = document.getElementById(errorId);
+
+    if (!input || !errorElement) return;
+
+    const runValidation = () => validateFieldInput(input, errorElement, name);
+
+    input.addEventListener("blur", runValidation);
+    input.addEventListener("input", () => {
+      if (errorElement.textContent) runValidation();
+    });
+  });
+
+  // Validate all fields on submit
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    let isValid = true;
+    let firstInvalidInput: HTMLElement | null = null;
+
+    for (const { name, inputId, errorId } of fields) {
+      const input = document.getElementById(inputId) as
+        | HTMLInputElement
+        | HTMLTextAreaElement;
+      const errorElement = document.getElementById(errorId);
+
+      if (input && errorElement) {
+        const valid = validateFieldInput(input, errorElement, name);
+        if (!valid) {
+          isValid = false;
+          if (!firstInvalidInput) firstInvalidInput = input;
+        }
+      }
+    }
+
+    if (!isValid && firstInvalidInput) {
+      (firstInvalidInput as HTMLElement).focus();
+      return;
+    }
+
+    // Handle submission
+    const submitButton = form.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    const formMessage = document.getElementById("form-message");
+
+    if (submitButton) submitButton.disabled = true;
+    if (formMessage) formMessage.classList.add("hidden");
+
+    try {
+      const formData = new FormData(form);
+      const { error } = await actions.sendMail(formData);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // Success
+      form.reset();
+      // Clear success checkmarks or error states from UI
+      fields.forEach(({ inputId }) => {
+        const input = document.getElementById(inputId);
+        input?.classList.remove("form-input-error");
+        input?.setAttribute("aria-invalid", "false");
+      });
+
+      if (formMessage) {
+        formMessage.textContent =
+          "¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.";
+        formMessage.className =
+          "text-green-400 text-center font-medium mt-4 block";
+      }
+    } catch (err: any) {
+      if (formMessage) {
+        formMessage.textContent =
+          "Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.";
+        formMessage.className =
+          "text-red-400 text-center font-medium mt-4 block";
+      }
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+    }
+  });
+};

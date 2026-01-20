@@ -3,14 +3,17 @@ import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 import { imagetools } from 'vite-imagetools';
+import netlify from '@astrojs/netlify';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static',
+  output: 'server',
   
   build: {
     inlineStylesheets: 'auto', // Inline CSS pequeño automáticamente
   },
+
+  
   
   vite: {
     plugins: [tailwindcss(), imagetools()],
@@ -30,4 +33,5 @@ export default defineConfig({
   
   // Compresión nativa de Astro
   compressHTML: true,
+  adapter: netlify(),
 });
