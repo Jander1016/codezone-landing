@@ -1,5 +1,5 @@
 <footer class="footer-section">
-  <div class="footer-container">
+  <div class="footer-container max-w-(--container-max) mx-auto">
     <div>
       <img
         src="/cz-logo-colors.svg"
@@ -13,10 +13,9 @@
     <p class="footer-copyright mb-0">
       &copy; {new Date().getFullYear()} Copyright www.codezone.es
       <br />
-      Contacto: Telf:<a href="tel:+34691019753" class="footer-link"
-        > +34 691 019 753</a
-      >-
-      Mail: <a href="mailto:info@codezone.es" class="footer-link"
+      Contacto: Telf:<a href="tel:+34691019753" class="footer-link">
+        +34 691 019 753</a
+      >- Mail: <a href="mailto:info@codezone.es" class="footer-link"
         >info@codezone.es</a
       >
     </p>
@@ -25,10 +24,41 @@
 
 <style>
   .footer-section {
-    padding: 2rem 0;
+    padding: 4rem 0 2rem;
+    position: relative;
+    background-image:
+      radial-gradient(
+        ellipse 60% 120% at 50% 95%,
+        rgba(200, 0, 222, 0.45) 0%,
+        rgba(200, 0, 222, 0.1) 45%,
+        rgba(2, 6, 24, 0) 70%
+      ),
+      var(--cz-background);
+    background-size:
+      100% 100%,
+      50px 50px;
+    background-position:
+      center bottom,
+      center center;
+    background-repeat: no-repeat, repeat;
+    overflow: hidden;
   }
+
+  @media (max-width: 768px) {
+    .footer-section {
+      background-image:
+        radial-gradient(
+          ellipse 120% 70% at 50% 90%,
+          rgba(200, 0, 222, 0.45) 0%,
+          rgba(200, 0, 222, 0.1) 45%,
+          rgba(2, 6, 24, 0) 70%
+        ),
+        var(--cz-background);
+    }
+  }
+
   .footer-container {
-    max-width: 7xl;
+    max-width: var(--width-max-content);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -44,7 +74,6 @@
   }
 
   .footer-tagline {
-    font-size: 0.875rem;
     color: var(--cyan-300);
     font-weight: 500;
     letter-spacing: 1px;
@@ -53,7 +82,7 @@
   .footer-link {
     color: var(--cyan-300);
     text-decoration: none;
-    font-size: 0.75rem;
+    font-size: medium;
     letter-spacing: 1px;
     transition: all var(--transition-slow);
     border-bottom: 1px solid transparent;
@@ -65,10 +94,9 @@
   }
 
   .footer-copyright {
-    font-size: 0.75rem;
     color: #d4d4d4;
     text-align: center;
-    line-height: 1.6;
+    font-size: medium;
     max-width: 600px;
   }
 </style>
