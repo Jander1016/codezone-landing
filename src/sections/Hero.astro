@@ -25,10 +25,8 @@ import Button from "../components/Button.astro";
         (APIs)
       </h1>
       <div class="hero-cta py-6 hidden md:inline-flex" data-animate="hero-cta">
-        <Button
-          href="#contact-separator"
-          variant="solid"
-          size="large">Hablemos de tu proyecto</Button
+        <Button href="#contact-separator" variant="solid" size="large"
+          >Hablemos de tu proyecto</Button
         >
       </div>
       <!-- <div class="hero-cta py-6 md:hidden" data-animate="hero-cta">
@@ -117,8 +115,12 @@ import Button from "../components/Button.astro";
     width: 100%;
     height: auto;
     object-fit: cover;
-    animation: rotate-animation 6s infinite linear;
+    /* animation: rotate-animation 6s infinite linear; removed for perf */
     will-change: transform;
+  }
+
+  .neon-circle-img.animate {
+    animation: rotate-animation 6s infinite linear;
   }
 
   @keyframes rotate-animation {
@@ -179,6 +181,13 @@ import Button from "../components/Button.astro";
       height: auto;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .neon-circle-img,
+    .logo-glow-fx {
+      animation: none;
+    }
+  }
 </style>
 
 <script>
@@ -189,4 +198,11 @@ import Button from "../components/Button.astro";
   } else {
     initHeroAnimations();
   }
+
+  window.addEventListener("load", () => {
+    const neonCircle = document.querySelector(".neon-circle-img");
+    if (neonCircle) {
+      neonCircle.classList.add("animate");
+    }
+  });
 </script>
