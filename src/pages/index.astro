@@ -7,7 +7,7 @@ import Process from "../sections/Process.astro";
 import Services from "../sections/Services.astro";
 import Stack from "../sections/Stack.astro";
 import ContactForm from "../sections/ContactForm.astro";
-import SeparatorMobile from "../components/SeparatorMobile.astro";
+// import SeparatorMobile from "../components/SeparatorMobile.astro";
 import ServicesDetail from "../sections/ServicesDetail.astro";
 ---
 
@@ -17,7 +17,7 @@ import ServicesDetail from "../sections/ServicesDetail.astro";
 	</GradientOverlay>
 
 	<Separator  wormDuration={0.08} loopInterval={5} idSeparator="services-separator" />
-	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-services-separator" />
+	<!-- <SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-services-separator" /> -->
 
 	<GradientOverlay position="center" size="small" color="fuchsia" opacity="medium" blur="high">
 		<Services />
@@ -25,17 +25,17 @@ import ServicesDetail from "../sections/ServicesDetail.astro";
 	<ServicesDetail />
 
 	<Separator wormDuration={0.08} loopInterval={5} idSeparator="process-separator" />
-	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-process-separator" />
+	<!-- <SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-process-separator" /> -->
 	<Process />
 
 	<Separator wormDuration={0.08} loopInterval={5} idSeparator="stack-separator" />
-	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-stack-separator" />
+	<!-- <SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-stack-separator" /> -->
 	<GradientOverlay position="center" size="small" color="fuchsia" opacity="low" blur="high">
 		<Stack />
 	</GradientOverlay>
 
 	<Separator wormDuration={0.08} loopInterval={5} idSeparator="contact-separator" />
-	<SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-contact-separator" />
+	<!-- <SeparatorMobile  wormDuration={0.08} loopInterval={5} idSeparator="mobile-contact-separator" /> -->
 
 	<GradientOverlay position="center" size="small" color="cyan" opacity="medium" blur="high">
 		<ContactForm />

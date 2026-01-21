@@ -1,15 +1,4 @@
 ---
-/**
- * Separator2 Component - Animated SVG Separator with Worm Effect
- *
- * Props:
- * @param {string} id - Unique identifier for the separator (default: auto-generated)
- * @param {number} fadeDuration - Duration of fade-in animation in seconds (default: 3.5)
- * @param {number} wormDuration - Duration of single worm effect in seconds (default: 1.5)
- * @param {number} loopInterval - Time between worm effects in seconds (default: 120 = 2 minutes)
- * @param {string} className - Additional CSS classes
- */
-
 interface Props {
     idSeparator?: string;
     id?: string;
@@ -38,7 +27,7 @@ const gradient2Id = `gradient2-${id}`;
 
 <div
     id={idSeparator}
-    class={`cz-separator w-full mt-20 relative hidden md:flex justify-center items-end pointer-events-none select-none ${className}`}
+    class={`cz-separator scroll-mt-10 md:scroll-mt-20 w-full mt-10 md:mt-20 relative flex justify-center items-end pointer-events-none select-none ${className}`}
 >
     <svg
         id={id}
@@ -150,82 +139,7 @@ const gradient2Id = `gradient2-${id}`;
 </style>
 
 <script>
-    import { gsap } from "gsap";
-
-    function initSeparatorAnimation() {
-        // Get all separator SVGs
-        const separators = document.querySelectorAll(".separator-svg");
-
-        separators.forEach((sep) => {
-            // Buscar el turbulence dentro del SVG
-            const turb = sep.querySelector('[id^="turbulence-"]');
-
-            // Get animation parameters from data attributes
-            const fadeDuration = parseFloat(
-                sep.getAttribute("data-fade-duration") || "3.5",
-            );
-            const wormDuration = parseFloat(
-                sep.getAttribute("data-worm-duration") || "1.5",
-            );
-            const loopInterval = parseFloat(
-                sep.getAttribute("data-loop-interval") || "120",
-            );
-
-            if (!turb) {
-                console.warn(`Turbulence element not found in separator`);
-                // Fallback: just fade in without worm effect
-                gsap.to(sep, {
-                    opacity: 1,
-                    duration: fadeDuration,
-                    ease: "power2.out",
-                });
-                return;
-            }
-
-            // Obtener el ID del wiggle filter
-            const wiggleFilter = sep.querySelector('[id^="wiggle-"]');
-            const wiggleId = wiggleFilter ? wiggleFilter.id : null;
-
-            // Fade in animation
-            gsap.to(sep, {
-                opacity: 1,
-                duration: fadeDuration,
-                ease: "power2.out",
-            });
-
-            // Función para ejecutar el efecto worm
-            function playWormEffect() {
-                // Aplicar el filtro
-                if (wiggleId) {
-                    gsap.set(sep, { filter: `url(#${wiggleId})` });
-                }
-
-                // Animar el seed para crear movimiento horizontal suave
-                gsap.to(turb, {
-                    attr: { baseFrequency: 0.09 },
-                    duration: wormDuration,
-                    yoyo: true,
-                    repeat: 12,
-                    ease: "sine.inOut",
-                    onComplete: () => {
-                        // Remover el filtro al finalizar
-                        gsap.set(sep, { filter: "none" });
-                        // Reset baseFrequency
-                        gsap.set(turb, { attr: { baseFrequency: 0 } });
-                    },
-                });
-            }
-
-            // Ejecutar el efecto inmediatamente después del fade-in
-            gsap.delayedCall(fadeDuration, playWormEffect);
-
-            // Configurar el bucle continuo
-            gsap.delayedCall(fadeDuration + loopInterval, function loop() {
-                playWormEffect();
-                gsap.delayedCall(loopInterval, loop);
-            });
-        });
-    }
+    import { initSeparatorAnimation } from "../utils/animations/separator-animations";
 
     // Initialize when DOM is ready
     if (document.readyState === "loading") {
