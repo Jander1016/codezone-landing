@@ -120,14 +120,13 @@ import { services } from "../data/services";
 
 <script>
   import { animateServicesSection } from "../utils/animations/services.animation";
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", animateServicesSection);
-  } else {
+  
+  if (document.readyState === "complete") {
     animateServicesSection();
+  } else {
+    window.addEventListener("load", animateServicesSection);
   }
 </script>
-
 
 <!-- <script>
   import { gsap } from "gsap";

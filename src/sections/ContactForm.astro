@@ -180,16 +180,15 @@ const formFields = [
 
 <script>
   import { animateContactSection } from "../utils/animations/contact-animations";
-  import { setupFormValidation } from "../utils/validation"; 
+  import { setupFormValidation } from "../utils/validation";
 
-  // Initialize animations and validation when DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
+  if (document.readyState === "complete") {
+    animateContactSection();
+    setupFormValidation();
+  } else {
+    window.addEventListener("load", () => {
       animateContactSection();
       setupFormValidation();
     });
-  } else {
-    animateContactSection();
-    setupFormValidation();
   }
 </script>

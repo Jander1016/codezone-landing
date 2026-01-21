@@ -193,16 +193,22 @@ import Button from "../components/Button.astro";
 <script>
   import { initHeroAnimations } from "../utils/animations/hero-animations";
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initHeroAnimations);
-  } else {
+  if (document.readyState === "complete") {
     initHeroAnimations();
+  } else {
+    window.addEventListener("load", initHeroAnimations);
   }
 
-  window.addEventListener("load", () => {
+  function enableNeonAnimation() {
     const neonCircle = document.querySelector(".neon-circle-img");
     if (neonCircle) {
       neonCircle.classList.add("animate");
     }
-  });
+  }
+
+  if (document.readyState === "complete") {
+    enableNeonAnimation();
+  } else {
+    window.addEventListener("load", enableNeonAnimation);
+  }
 </script>

@@ -180,26 +180,26 @@ export const setupFormValidation = () => {
         input.setAttribute("aria-invalid", "false");
       });
 
-      if (formMessage) {
+      if (formMessage) {  
         formMessage.innerHTML =
-          `<div class="flex items-center gap-3 bg-slate-800 text-cyan-300 px-4 py-3 text-lg">
+          `<div class="flex items-center gap-3 bg-[#53eafd26] text-cyan-300 p-3 text-sm rounded-full border-2 border-cyan-300">
             <span class="flex items-center justify-center w-8 h-8 rounded-full border border-cyan-300">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><polyline points="20 6 9 17 4 12"/></svg> 
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
             <span>Datos Enviados. Pronto te responderemos</span>
           </div>`;
-        // formMessage.className = "text-cyan-300 text-center font-medium mt-4 block";
+        formMessage.classList.remove("hidden");
       }
     } catch (err: any) {
       if (formMessage) {
         formMessage.innerHTML =
-          `<div class="flex items-center gap-3 bg-slate-800 text-red-300 px-4 py-3 text-lg">
+          `<div class="flex items-center gap-3 bg-[#f43f5e26] text-red-300 p-3 text-sm rounded-full border-2 border-red-300">
             <span class="flex items-center justify-center w-8 h-8 rounded-full border border-red-300">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
             </span>
             <span>Datos inválidos. Revisa los campos.</span>
           </div>`;
-        // formMessage.className = "text-red-400 text-center font-medium mt-4 block";
+        formMessage.classList.remove("hidden");
       }
     } finally {
       if (submitButton) submitButton.disabled = false;

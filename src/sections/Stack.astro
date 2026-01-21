@@ -42,9 +42,9 @@ import { techStack } from "../data/techStack";
     animateStackSection();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initStackAnimations);
-  } else {
+  if (document.readyState === "complete") {
     initStackAnimations();
+  } else {
+    window.addEventListener("load", initStackAnimations);
   }
 </script>
