@@ -1,11 +1,6 @@
 
 import { actions } from "astro:actions";
 
-/**
- * Form validation utilities with Spanish error messages
- * Provides validation rules and functions for contact form
- */
-
 export interface ValidationRule {
   required?: boolean;
   minLength?: number;
@@ -20,9 +15,6 @@ export interface ValidationError {
   type: 'required' | 'pattern' | 'minLength' | 'maxLength';
 }
 
-/**
- * Validation rules for contact form fields
- */
 export const validationRules: Record<string, ValidationRule> = {
   name: {
     required: true,
@@ -45,9 +37,6 @@ export const validationRules: Record<string, ValidationRule> = {
   }
 };
 
-/**
- * Error messages in Spanish for each field and validation type
- */
 export const errorMessages: Record<string, Record<string, string>> = {
   name: {
     required: 'El nombre es obligatorio',
@@ -70,131 +59,76 @@ export const errorMessages: Record<string, Record<string, string>> = {
   }
 };
 
-/**
- * Validates a single field value against its validation rules
- * @param field - Field name
- * @param value - Field value to validate
- * @returns ValidationError if validation fails, null if valid
- */
 export function validateField(field: string, value: string): ValidationError | null {
   const rules = validationRules[field];
   const messages = errorMessages[field];
 
-  if (!rules || !messages) {
-    return null;
+  if (!rules || !messages) return null;
+
+  const isValueEmpty = !value || value.trim() === '';
+
+  // Helper to create error object
+  const createError = (type: ValidationError['type']): ValidationError => ({
+    field,
+    message: messages[type],
+    type
+  });
+
+  if (rules.required && isValueEmpty) {
+    return createError('required');
   }
 
-  // Required validation
-  if (rules.required && (!value || value.trim() === '')) {
-    return {
-      field,
-      message: messages.required,
-      type: 'required'
-    };
-  }
+  if (isValueEmpty) return null;
 
-  // Skip other validations if field is empty and not required
-  if (!value || value.trim() === '') {
-    return null;
-  }
-
-  // Min length validation
   if (rules.minLength && value.length < rules.minLength) {
-    return {
-      field,
-      message: messages.minLength,
-      type: 'minLength'
-    };
+    return createError('minLength');
   }
 
-  // Max length validation
   if (rules.maxLength && value.length > rules.maxLength) {
-    return {
-      field,
-      message: messages.maxLength,
-      type: 'maxLength'
-    };
+    return createError('maxLength');
   }
 
-  // Pattern validation
   if (rules.pattern && !rules.pattern.test(value)) {
-    return {
-      field,
-      message: messages.pattern,
-      type: 'pattern'
-    };
+    return createError('pattern');
   }
 
   return null;
 }
 
-/**
- * Validates all fields in a form data object
- * @param formData - Object containing form field values
- * @returns Array of validation errors, empty if all valid
- */
-export function validateForm(formData: Record<string, string>): ValidationError[] {
-  const errors: ValidationError[] = [];
-
-  for (const field in formData) {
-    const error = validateField(field, formData[field]);
-    if (error) {
-      errors.push(error);
-    }
-  }
-
-  return errors;
-}
-
-/**
- * Checks if a form is valid (no validation errors)
- * @param formData - Object containing form field values
- * @returns true if form is valid, false otherwise
- */
-export function isFormValid(formData: Record<string, string>): boolean {
-  return validateForm(formData).length === 0;
-}
 
 export const setupFormValidation = () => {
   const form = document.getElementById("contact-form") as HTMLFormElement;
+  if (!form) return;
 
-  // Field configuration derived from naming convention
-  const fieldNames = ["name", "email", "phone", "message"];
-  const fields = fieldNames.map((name) => ({
-    name,
-    inputId: `input-${name}`,
-    errorId: `error-${name}`,
-  }));
+  const fieldNames = Object.keys(validationRules);
 
-  // Helper to validate a single field and update UI
-  const validateFieldInput = (
-    input: HTMLInputElement | HTMLTextAreaElement,
-    errorElement: HTMLElement,
-    name: string,
-  ) => {
-    const error = validateField(name, input.value);
+  // Cache DOM elements
+  const fields = fieldNames.map((name) => {
+    const input = document.getElementById(`input-${name}`) as HTMLInputElement | HTMLTextAreaElement;
+    const errorElement = document.getElementById(`error-${name}`);
+    return { name, input, errorElement };
+  }).filter((f): f is { name: string, input: HTMLInputElement | HTMLTextAreaElement, errorElement: HTMLElement } =>
+    !!f.input && !!f.errorElement
+  );
+
+  const validateInput = (field: typeof fields[0]) => {
+    const error = validateField(field.name, field.input.value);
     if (error) {
-      errorElement.textContent = error.message;
-      input.classList.add("form-input-error");
-      input.setAttribute("aria-invalid", "true");
+      field.errorElement.textContent = error.message;
+      field.input.classList.add("form-input-error");
+      field.input.setAttribute("aria-invalid", "true");
       return false;
     }
-    errorElement.textContent = "";
-    input.classList.remove("form-input-error");
-    input.setAttribute("aria-invalid", "false");
+    field.errorElement.textContent = "";
+    field.input.classList.remove("form-input-error");
+    field.input.setAttribute("aria-invalid", "false");
     return true;
   };
 
-  // Attach listeners to each field
-  fields.forEach(({ name, inputId, errorId }) => {
-    const input = document.getElementById(inputId) as
-      | HTMLInputElement
-      | HTMLTextAreaElement;
-    const errorElement = document.getElementById(errorId);
-
-    if (!input || !errorElement) return;
-
-    const runValidation = () => validateFieldInput(input, errorElement, name);
+  // Attach listeners
+  fields.forEach((field) => {
+    const { input, errorElement } = field;
+    const runValidation = () => validateInput(field);
 
     input.addEventListener("blur", runValidation);
     input.addEventListener("input", () => {
@@ -202,27 +136,19 @@ export const setupFormValidation = () => {
     });
   });
 
-  // Validate all fields on submit
-  form?.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     let isValid = true;
     let firstInvalidInput: HTMLElement | null = null;
 
-    for (const { name, inputId, errorId } of fields) {
-      const input = document.getElementById(inputId) as
-        | HTMLInputElement
-        | HTMLTextAreaElement;
-      const errorElement = document.getElementById(errorId);
-
-      if (input && errorElement) {
-        const valid = validateFieldInput(input, errorElement, name);
-        if (!valid) {
-          isValid = false;
-          if (!firstInvalidInput) firstInvalidInput = input;
-        }
+    fields.forEach(field => {
+      const valid = validateInput(field);
+      if (!valid) {
+        isValid = false;
+        if (!firstInvalidInput) firstInvalidInput = field.input;
       }
-    }
+    });
 
     if (!isValid && firstInvalidInput) {
       (firstInvalidInput as HTMLElement).focus();
@@ -249,10 +175,9 @@ export const setupFormValidation = () => {
       // Success
       form.reset();
       // Clear success checkmarks or error states from UI
-      fields.forEach(({ inputId }) => {
-        const input = document.getElementById(inputId);
-        input?.classList.remove("form-input-error");
-        input?.setAttribute("aria-invalid", "false");
+      fields.forEach(({ input }) => {
+        input.classList.remove("form-input-error");
+        input.setAttribute("aria-invalid", "false");
       });
 
       if (formMessage) {

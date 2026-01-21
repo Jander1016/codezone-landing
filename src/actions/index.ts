@@ -6,7 +6,6 @@ const resend = new Resend(import.meta.env.RESEND_API_KEY);
 export const server = {
   sendMail: defineAction({
     accept: "form",
-
     handler: async (formData) => {
 
       const name = formData.get("name") as string;
