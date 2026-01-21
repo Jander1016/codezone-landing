@@ -1,14 +1,3 @@
-/**
- * NavigationManager - Centralized navigation logic for Header and MobileMenu
- * 
- * This module consolidates all navigation-related functionality including:
- * - Click handling for desktop and mobile navigation
- * - Active state management and synchronization
- * - Programmatic scrolling coordination
- * - Event dispatching for component synchronization
- * - Special case handling (logo, contact button)
- */
-
 import { getLenis } from '../../scripts/smooth-scroll';
 
 // ============================================================================
@@ -69,7 +58,7 @@ const state: NavigationState = {
 const SPECIAL_HREFS_NO_ACTIVE = [
   '#hero',
   '#contact-separator',
-  '#mobile-contact-separator'
+  // '#mobile-contact-separator'
 ];
 
 /**
@@ -77,7 +66,8 @@ const SPECIAL_HREFS_NO_ACTIVE = [
  * Used to normalize mobile hrefs for consistent target resolution
  */
 const MOBILE_HREF_MAP: Record<string, string> = {
-  '#mobile-contact-separator': '#mobile-contact-separator',
+  // '#mobile-contact-separator': '#mobile-contact-separator',
+  '#contact-separator': '#contact-separator',
   '#hero': '#hero'
 };
 

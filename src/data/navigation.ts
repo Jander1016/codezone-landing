@@ -30,17 +30,17 @@ export const mainNavigation: NavItem[] = [
 export const mainNavigationMobile: NavItem[] = [
   {
     label: 'Tecnología a medida',
-    href: '#mobile-services-separator',
+    href: '#services-separator',
     isActive: false
   },
   {
     label: 'Cómo lo hacemos',
-    href: '#mobile-process-separator',
+    href: '#process-separator',
     isActive: false
   },
   {
     label: 'Nuestro stack tecnológico',
-    href: '#mobile-stack-separator',
+    href: '#stack-separator',
     isActive: false
   }
 ];
