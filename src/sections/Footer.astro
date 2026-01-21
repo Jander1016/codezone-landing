@@ -13,7 +13,12 @@
     <p class="footer-copyright mb-0">
       &copy; {new Date().getFullYear()} Copyright www.codezone.es
       <br />
-      Contacto: Telf: +34 691 019 753 - Mail: info@codezone.es
+      Contacto: Telf:<a href="tel:+34691019753" class="footer-link"
+        > +34 691 019 753</a
+      >-
+      Mail: <a href="mailto:info@codezone.es" class="footer-link"
+        >info@codezone.es</a
+      >
     </p>
   </div>
 </footer>
@@ -43,6 +48,20 @@
     color: var(--cyan-300);
     font-weight: 500;
     letter-spacing: 1px;
+  }
+
+  .footer-link {
+    color: var(--cyan-300);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    transition: all var(--transition-slow);
+    border-bottom: 1px solid transparent;
+  }
+
+  .footer-link:hover {
+    color: var(--color-fuchsia-600);
+    text-decoration: none;
   }
 
   .footer-copyright {
