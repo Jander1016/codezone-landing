@@ -1,11 +1,11 @@
 ---
-import { Image } from "astro:assets";
 import Button from "./Button.astro";
 
 export interface Props {
   title: string;
   description: string;
-  image: string;
+  image?: string;
+  video?: string;
   cta?: string;
   ctaHref?: string;
   className?: string;
@@ -15,6 +15,7 @@ const {
   title,
   description,
   image,
+  video,
   cta = "Más info",
   ctaHref = "#",
   className = "",
@@ -23,13 +24,26 @@ const {
 
 <div class={`card-layout outer-glow-fx rounded-3xl md:rounded-4xl ${className}`}>
   <div class="card-image">
-    <Image
-      src={image}
-      alt={`Imagen representativa de ${title}`}
-      width={480}
-      height={220}
-      class="w-full h-full object-cover"
+    {image && (
+      <img
+        src={image}
+        alt={`Imagen representativa de ${title}`}
+        width={480}
+        height={220}
+        class="w-full h-full object-cover"
     />
+    )}
+    {video && (
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        class="w-full h-full object-fill"
+      >
+        <source src={video} type="video/webm" />
+      </video>
+    )}
   </div>
   <div class="card-text">
     <h3

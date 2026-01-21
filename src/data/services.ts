@@ -5,7 +5,8 @@
 export interface ServiceData {
   title: string;
   description: string;
-  image: string;
+  image?: string;
+  video?: string;
   ctaText: string;
   ctaHref: string;
 }
@@ -14,7 +15,7 @@ export const services: ServiceData[] = [
   {
     title: 'Desarrollo Web',
     description: 'Diseñamos y desarrollamos sitios web a medida, optimizados para el rendimientos SEO y experiencia de usuario, alineados con la identidad de tu marca.',
-    image: '/codezone-servicios-desarrollo-web-v2.webp',
+    video: '/videos/cz-servicio-desarrollo.webm',
     ctaText: 'Más info',
     ctaHref: '#servicios-desarrollo-web'
   },
@@ -28,7 +29,7 @@ export const services: ServiceData[] = [
   {
     title: 'Integración de APIs',
     description: 'Implementamos integraciones de sistemas y APIs que conectan tus plataformas, automatizan tareas y garantizan flujos de datos eficientes y seguro.',
-    image: '/codezone-servicios-apis-v2.webp',
+    video: '/videos/cz-servicio-apis.webm',
     ctaText: 'Más info',
     ctaHref: '#servicios-apis'
   }
